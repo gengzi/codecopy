@@ -1,11 +1,11 @@
 server:
-  port: 9052
+  port: 8089
 spring:
   application:
     name: codecopy
   datasource:
-    # ×¢Òâmysql Ê±Çø ×Ö·û¼¯±àÂë
-    url: jdbc:mysql://127.0.0.1:3306/test?autoReconnect=true&serverTimezone=UTC
+    # æ³¨æ„mysql æ—¶åŒº å­—ç¬¦é›†ç¼–ç 
+    url: jdbc:mysql://127.0.0.1:3306/zyws_new?autoReconnect=true&serverTimezone=UTC
     username: root
     password: 111
     type: com.alibaba.druid.pool.DruidDataSource
