@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: codecopy
+  profiles:
+    active: dev
   datasource:
     # 注意mysql 时区 字符集编码
     url: jdbc:mysql://127.0.0.1:3306/zyws_new?autoReconnect=true&serverTimezone=UTC

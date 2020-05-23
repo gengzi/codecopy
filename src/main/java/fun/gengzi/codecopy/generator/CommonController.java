@@ -1,4 +1,4 @@
-package fun.gengzi.codecopy.common;
+package fun.gengzi.codecopy.generator;
 
 
 import org.apache.commons.lang3.StringUtils;

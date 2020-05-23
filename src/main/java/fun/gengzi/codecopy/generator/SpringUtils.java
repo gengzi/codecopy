@@ -1,4 +1,4 @@
-package fun.gengzi.codecopy.common;
+package fun.gengzi.codecopy.generator;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * spring 上下文
+ */
 @Component
 public class SpringUtils implements ApplicationContextAware {
 
