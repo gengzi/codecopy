@@ -1,2 +1,5 @@
 # 开发环境配置
-
+# 配置日志输出级别
+logging:
+  level:
+    root: info
