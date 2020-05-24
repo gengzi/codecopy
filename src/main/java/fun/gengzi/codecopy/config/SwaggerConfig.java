@@ -32,6 +32,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
+//@EnableKnife4j
 // 生效的配置文件
 @Profile({"dev","test"})
 public class SwaggerConfig{
