@@ -2,6 +2,7 @@ package fun.gengzi.codecopy.business.payment.controller;
 
 import javax.annotation.Resource;
 
+import fun.gengzi.codecopy.aop.ServiceLimit;
 import fun.gengzi.codecopy.business.payment.entity.QueryPayStatusInput;
 import fun.gengzi.codecopy.vo.ReturnData;
 import org.slf4j.Logger;
@@ -49,6 +50,7 @@ public class PaymentActionController {
 			"\t    \"bzcode\": \"\"\n" +
             "\t}\n")})
     @RequestMapping(value = "/queryPayStatus", method = RequestMethod.POST)
+    @ServiceLimit(limitType = ServiceLimit.LimitType.IP)
     public ReturnData queryPayStatus(@RequestBody QueryPayStatusInput data) {
         logger.info("qryParams {} ",data.toString());
         // 示例
