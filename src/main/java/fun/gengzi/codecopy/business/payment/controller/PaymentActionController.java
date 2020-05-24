@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 
 import fun.gengzi.codecopy.business.payment.entity.QueryPayStatusInput;
 import fun.gengzi.codecopy.vo.ReturnData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("pay/paymentAction")
 public class PaymentActionController {
+    private Logger logger = LoggerFactory.getLogger(PaymentActionController.class);
 
     @ApiOperation(value = "查询支付状态", notes = "查询支付状态")
     @ApiImplicitParams({
@@ -47,6 +50,7 @@ public class PaymentActionController {
             "\t}\n")})
     @RequestMapping(value = "/queryPayStatus", method = RequestMethod.POST)
     public ReturnData queryPayStatus(@RequestBody QueryPayStatusInput data) {
+        logger.info("qryParams {} ",data.toString());
         // 示例
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();

@@ -4,12 +4,13 @@
 
 适用于复制粘贴的组件化的代码工程
 
-版本号：1.0.0
+版本号：1.0.1
 
 ## 包含模块
 ```shell script
 ### fun.gengzi.codecopy.config 全局配置
 swagger 配置
+增加了 logback 的配置 logback.xml 
 
 ### fun.gengzi.codecopy.utils 工具类
 

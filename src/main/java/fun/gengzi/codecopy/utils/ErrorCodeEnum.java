@@ -1,0 +1,149 @@
+package fun.gengzi.codecopy.utils;
+
+//错误码
+public enum ErrorCodeEnum {
+
+
+    //六同-同伴
+    CIRCLE_SIXWITH_COMPANION("CIRC_SIX_COMP"),
+
+    //六同-同伙
+    CIRCLE_SIXWITH_PARTNER("CIRC_SIX_PART"),
+    //六同-同行
+    CIRCLE_SIXWITH_PEER("CIRC_SIX_PEER"),
+    //六同-同学
+    CIRCLE_SIXWITH_SCHOOL("CIRC_SIX_SCHO"),
+    //六同-同乡
+    CIRCLE_SIXWITH_COUNTRYMEN("CIRC_SIX_COUN"),
+
+    //六同-同龄
+    CIRCLE_SIXWITH_AGE("CIRC_SIX_AGE"),
+
+    //参数错误通用
+    PARM_ERROR("PARAERROR"),
+//    无数据
+    NO_DATA("NO-DATA"),
+    //新增失败通用
+    ADD_ERROR("COMM-ADDERROR"),
+    //删除失败通用
+    DEL_ERROR("COMM-DELERROR"),
+    //查找失败通用
+    FIND_ERROR("COMM-FINDERROR"),
+    //修改失败通用
+    UPDATE_ERROR("COMM-UPDATEERROR"),
+    //请稍后通用
+    PLEASE_WAIT("COMM-PLEASEWAIT"),
+    //设置主圈异常
+    SETMAINCIRCLEFAIL("CIRC-SETMAINCIRCLEFAIL"),
+    //发送主题异常
+    THEM_THSENDNOTSUCSS("CIRC-THEMTHSENDNOTSUCSS"),
+    //评论发送异常
+    THEM_COMNOTSUCSS("CIRC-THEMCOMNOTSUCSS"),
+    //删除评论异常
+    THEM_DELCOMNOTSUCSS("CIRC-DELCOMNOTSUCSS"),
+    //圈子详情异常
+    CIRCLE_INFO_ERROR("CIRC-CIRCLEINFOERROR"),
+    //二级圈子列表异常
+    SECOND_CIRCLE_LIST_ERROR("CIRC-SECONDCIRCLELISTERRO"),
+    //用户列表异常
+    USER_LIST_ERROR("CIRC-USERLISTERROR"),
+    //圈子公告列表异常
+    CIRCLE_ANNOUN_ERROR("CIRC-CIRCLEANNOUNERROR"),
+    //我的圈子列表异常
+    MY_CIRCLE_LIST_ERROR("CIRC-MYCIRCLELISTERROR"),
+    //热门圈子列表异常
+    HOT_CIRCLE_ERROR("CIRC-HOTCIRCLEERROR"),
+    //分组列表异常
+    GROUP_LIST_ERROR("CIRC-GROUPLISTERROR"),
+    //分组中圈子的列表异常
+    GROUP_CIRCLE_LIST_ERROR("CIRC-GROUPCIRCLELISTERROR"),
+    //用户名片异常
+    USER_IDENTITY_ERROR("CIRC-USERIDENTITYERROR"),
+    //踢出圈子异常
+    KICK_ERROR("CIRC-KICKERROR"),
+    //退出圈子异常
+    QUITE_ERROR("CIRC-QUITEERROR"),
+    //邀请异常
+    INVITE_ERROR("CIRC-INVITEERROR"),
+    //接受邀请异常
+    ACCEPT_ERROR("CIRC-ACCEPTERROR"),
+    //拒绝邀请异常
+    REFUSE_ERROR("CIRC-REFUSEERROR"),
+    //加入圈子异常
+    JOIN_ERROR("CIRC-JOINERROR"),
+    //发布圈子公告异常
+    PUBLISH_ANNOUNCE_ERROR("CIRC-PUBLISHANNOUNCEERRO"),
+    //删除分组异常
+    DEL_GROUP_ERROR("CIRC-DELGROUPERROR"),
+    //添加分组异常
+    ADD_GROUP_ERROR("CIRC-ADDGROUPERROR"),
+    //设置昵称异常
+    SET_NICK_ERROR("CIRC-SETNICKERROR"),
+    //设置群组名字异常
+    SET_GROUP_NAME_ERROR("CIRC-SETGROUPNAMEERROR"),
+    //圈子到分组异常
+    CIRCLE_TO_GROUP_ERROR("CIRC-CIRCLETOGROUPERROR"),
+    //圈子移除分组
+    CIRCLE_MOVE_GROUP_ERROR("CIRC-CIRCLEMOVEGROUPERRO"),
+    //六同异常
+    SIX_ERROR("CIRC-SIXERROR"),
+    //修改主题异常
+    UPDATE_TOPIC_ERROR("CIRC-UPDATETOPICERROR"),
+    //主题列表异常
+    TOPIC_LIST_ERROR("CIRC-TOPICLISTERROR"),
+    //用户主题列表异常
+    USER_TOPIC_LIST_ERROR("CIRC-USERTOPICLISTERROR"),
+    //删除主题异常
+    DEL_TOPIC_ERROR("CIRC-DELTOPICERROR"),
+    //主题详情异常
+    TOPIC_DETAIL_ERROR("CIRC-TOPICDETAILERROR"),
+    //喜欢主题异常
+    LIKE_TPIC_ERROR("CIRC-LIKETPICERROR"),
+    //分享主题异常
+    SHARE_TOPIC_ERROR("CIRC-SHARETOPICERROR"),
+    //转发主题异常
+    FORWARD_TOPIC_ERROR("CIRC-FORWARDTOPICERROR"),
+    //评论列表异常
+    COMMENT_LIST_ERROR("CIRC-COMMENTLISTERROR"),
+    //喜欢评论异常
+    LIKE_COMMENT_ERROR("CIRC-LIKECOMMENTERROR"),
+    //喜欢评论的回复异常
+    LIKE_REPLY_ERROR("CIRC-LIKEREPLYERROR"),
+    //对评论发表回复异常
+    PUBLISH_REPLY_ERROR("CIRC-PUBLISHREPLYERROR"),
+
+    //删除评论的回复异常
+    DEL_REPLY_ERROR("CIRC-DELREPLYERROR"),
+    //评论回复的列表异常
+    REPLY_LIST_ERROR("CIRC-REPLYLISTERROR"),
+    //新消息数量异常
+    NEWEST_ERROR("CIRC-NEWESTERROR"),
+    //消息列表异常
+    MESSAGE_LIST_ERROR("CIRC-MESSAGELISTERROR"),
+    //清空未读消息异常
+    CLEAR_MESSAGE_ERROR("CIRC-CLEARMESSAGEERROR"),
+    //删除消息列表异常
+    DEL_MESSAGE_ERROR("CIRC-DELMESSAGEERROR"),
+    //屏蔽主题异常
+    TOPIC_SHIELD_ERROR("CIRC-TOPICSHIELDERROR"),
+    //屏蔽聊天异常
+    USER_SHIELD_ERROR("CIRC-USERSHIELDERROR"),
+    //进群异常
+    JOIN_CROWD_ERROR("CROWD-JOINERROR"),
+    //清除位置异常
+    CLEAR_LOCATION_ERROR("QUICK-LOCATIONERROR"),
+    //没有搜索到好友，请稍后再试
+    NOT_SEARCH_FRIEND("QUICK-SEARCHERROR");
+    private String code;
+    ErrorCodeEnum(String code){
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+}

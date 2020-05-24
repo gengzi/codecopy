@@ -154,10 +154,60 @@
             <version>1.0.8</version>
         </dependency>
 
+        <!-- logback 日志 begin -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <!-- 日志 end -->
+        <!-- redis springboot 整合start-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+        <!-- redis springboot 整合end-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--alibaba fastjson-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.58</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.12</version>
         </dependency>
 
 
@@ -195,11 +245,11 @@
                     </execution>
                 </executions>
                 <dependencies>
-<!--                    <dependency>-->
-<!--                        <groupId>org.springframework.restdocs</groupId>-->
-<!--                        <artifactId>spring-restdocs-asciidoctor</artifactId>-->
-<!--                        <version>${spring-restdocs.version}</version>-->
-<!--                    </dependency>-->
+                    <!--                    <dependency>-->
+                    <!--                        <groupId>org.springframework.restdocs</groupId>-->
+                    <!--                        <artifactId>spring-restdocs-asciidoctor</artifactId>-->
+                    <!--                        <version>${spring-restdocs.version}</version>-->
+                    <!--                    </dependency>-->
                 </dependencies>
             </plugin>
             <plugin>
