@@ -7,8 +7,21 @@ spring:
     active: dev
   datasource:
     # 注意mysql 时区 字符集编码
-    url: jdbc:mysql://127.0.0.1:3306/zyws_new?autoReconnect=true&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/sqltest?autoReconnect=true&serverTimezone=UTC
     username: root
     password: 111
     type: com.alibaba.druid.pool.DruidDataSource
+    # redis 配置
+  redis:
+    host: localhost
+    port: 6379
+    jedis.pool.max-wait: -1ms
+    timeout: 2000ms
+  jpa: #jpa配置
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+      hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    hibernate:
+      ddl-auto: none
+    show-sql: true
 
