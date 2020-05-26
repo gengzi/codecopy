@@ -3,7 +3,7 @@
 
 目的打造一个适用于复制粘贴的组件化的代码工程，把常见业务场景和工具类都提供实现
 
-版本号：1.0.3
+版本号：1.0.5
 
 参考的开源工程代码：
 [从0到1构建分布式秒杀系统，脱离案例讲架构都是耍流氓](https://gitee.com/52itstyle/spring-boot-seckill)
@@ -35,6 +35,8 @@ RspCodeEnum 响应code枚举类
 ### fun.gengzi.codecopy.business 业务模块
 这里按业务来区分不同的 controller service dao entity
 没有把所有的controller 都放在一个包下，不好区分不同业务
+
+增加短链接生成服务
 
 
 ### fun.gengzi.codecopy.vo 全局vo

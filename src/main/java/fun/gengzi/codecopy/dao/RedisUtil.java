@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * <h1>RedisUtil 操作工具类</h1>
+ *
+ */
 @Component
 public class RedisUtil {
 
@@ -35,10 +39,10 @@ public class RedisUtil {
     }
 
     public long getRedisSequence() {
-        long sequence = 0L;
+        long sequence = 100L;
         try {
             if (redisAtomicLong.get() == 0) {
-                redisAtomicLong.getAndSet(0L);
+                redisAtomicLong.getAndSet(100L);
             }
             sequence = redisAtomicLong.incrementAndGet();
         } catch (Exception ex) {
