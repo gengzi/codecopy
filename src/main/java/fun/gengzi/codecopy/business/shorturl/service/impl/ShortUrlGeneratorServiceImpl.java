@@ -21,6 +21,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * <h1>短连接生成器接口实现</h1>
  *
+ * 方案1：单机，redis 发号器
+ * 方案2：多实例部署，redis 分段发号器
+ * 方案3：多实例部署，使用分布式发号器（雪花算法（SnowFlake），Leaf 等等）
+ *
+ *
+ *
  * @author gengzi
  * @date 2020年5月26日16:20:18
  */
@@ -42,12 +48,12 @@ public class ShortUrlGeneratorServiceImpl implements ShortUrlGeneratorService {
      * 返回短链接
      * // 判断当前连接能否在redis 查找到，查找到直接返回短链接，并更新这个key value 的过期时间为1小时
      * // 逻辑发号器
-     * // 返回号码，作为数据库的主键，检测主键是否冲突，冲突重新尝试拿新的号码
+     * // 返回号码，作为数据库的主键，检测主键是否冲突，冲突重新尝试拿新的号码（也可以不验证是否主键冲突，只要能保证发号器发的号码是唯一的）
      * // 将长连接和号码绑定，将10进制的号码，转换为62进制
      * // 组拼短链接，设置超时时间
      * // 存入数据库
-     * // 存入redis，key value 的形式，key 62进制 ，对应一个长连接
-     * // 再次存入reids， key value 的形式，长连接，对应一个 短链接的62进制，设置失效时间是 1 小时
+     * // 存入redis，key value 的形式，key 62进制 ，对应一个长连接，如果数量太多，可以设置一个失效时间（比如 三天），防止redis中缓存太多
+     * // 再次存入reids， key value 的形式，长连接，对应一个 短链接的62进制，设置失效时间是 1 小时，当同一个长链接再来，就可以直接从redis中返回
      * // 返回
      *
      * @param longUrl 普通链接

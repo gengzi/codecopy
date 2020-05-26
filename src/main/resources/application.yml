@@ -27,3 +27,11 @@ spring:
 
 shorturl:
   pre: http://localhost:8089/u/
+
+
+
+redis:
+  subsection:
+    subkey: oneNum
+    initValue: 101
+    step: 20

@@ -3,12 +3,14 @@ package fun.gengzi.codecopy.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import javax.rmi.CORBA.Tie;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +29,25 @@ public class RedisUtil {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Autowired
+    @Resource
     private RedisAtomicLong redisAtomicLong;
 
+    @Resource
+    private RedisAtomicLong subRedisAtomicLong;
+
     private final String LONG_KEY = "num";
+
+    // 分段key
+    @Value("${redis.subsection.subkey}")
+    private String subkey;
+    // 初始化值
+    @Value("${redis.subsection.initValue}")
+    private String initValue;
+
+    // 步长
+    @Value("${redis.subsection.step}")
+    private String step;
+
 
     @Bean
     public RedisAtomicLong getRedisAtomicLong() {
@@ -38,13 +55,67 @@ public class RedisUtil {
         return counter;
     }
 
+    @Bean
+    public RedisAtomicLong getSubRedisAtomicLong() {
+        RedisAtomicLong counter = new RedisAtomicLong(subkey, redisTemplate.getConnectionFactory());
+        return counter;
+    }
+
+    /**
+     * 单一发号器
+     * @return
+     */
     public long getRedisSequence() {
         long sequence = 100L;
         try {
             if (redisAtomicLong.get() == 0) {
+                // 初始化值从 100L 开始生成的62进制，才能是两位
                 redisAtomicLong.getAndSet(100L);
             }
+            // incrementAndGet 只能递增1
             sequence = redisAtomicLong.incrementAndGet();
+        } catch (Exception ex) {
+            logger.error("Failed to get sequence.", ex);
+        }
+        return sequence;
+    }
+
+    /**
+     * 分段发号器
+     * # 假如说该服务部署了三台生成短链接实例，都操作不同 key ，达到分段发号，步长设置为3 ，这样在逻辑上，不会出现生成号码重复的问题
+     * # 也就解决了，分布式下高并发下生成，万一发号重复的问题
+     * # 例子： 101  102  103
+     * #        104 105  106
+     * #        107  108  109
+     * # 但是，这样做局限性太大，一旦要增加新的实例，之前发号器生成的数字就重复了。
+     * # 所以，在初始化阶段，就大概预设实例数，比如增加到20 个实例，步长是 20
+     *
+     * 细节：
+     * 当前互联网上的网页总数大概是 45亿(参考 短网址_短网址资讯mrw.so)，45亿超过了 2^{32}=4294967296232=4294967296，但远远小于64位整数的上限值，
+     * 那么用一个64位整数足够了。微博的短网址服务用的是长度为7的字符串，这个字符串可以看做是62进制的数，那么最大能表示{62}^7=3521614606208627=3521614606208
+     * 个网址，远远大于45亿。所以长度为7就足够了。一个64位整数如何转化为字符串呢？，假设我们只是用大小写字母加数字，那么可以看做是62进制数，
+     * log_{62{(2^{64}-1)=10.7log62(264−1)=10.7，即字符串最长11就足够了。实际生产中，还可以再短一点，比如新浪微博采用的长度就是7，
+     * 因为 62^7=3521614606208627=3521614606208，这个量级远远超过互联网上的URL总数了，绝对够用了。
+     * 现代的web服务器（例如Apache, Nginx）大部分都区分URL里的大小写了，所以用大小写字母来区分不同的URL是没问题的。
+     * 因此，正确答案：长度不超过7的字符串，由大小写字母加数字共62个字母组成。
+     *
+     * 作者：武林
+     * 链接：https://www.zhihu.com/question/20103344/answer/573638467
+     * 来源：知乎
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     *
+     *
+     * @return
+     */
+    public long getSubsectionRedisSequence() {
+        long sequence = Long.parseLong(initValue);
+        try {
+            if (subRedisAtomicLong.get() == 0) {
+                subRedisAtomicLong.getAndSet(sequence);
+            }
+            // 控制递增步长
+            sequence = subRedisAtomicLong.addAndGet(Integer.parseInt(step));
         } catch (Exception ex) {
             logger.error("Failed to get sequence.", ex);
         }
