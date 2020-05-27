@@ -26,20 +26,14 @@ import java.util.concurrent.TimeUnit;
  * 方案3：多实例部署，使用分布式发号器（雪花算法（SnowFlake），Leaf 等等）
  *
  *
- * 业务代码中还可以添加，对该短链接是否失效的判断，设置短链接的失效时间等等的业务
- * 建立一个高可用大量的短链接转换服务，还要考虑短连接的存储和查询效率，还要考虑安全问题
- * 防止短链接转换接口的恶意请求，可以加鉴权模块，只有有权限的请求，才进行转换。记录转换的次数，频度过高的请求进行拒绝
- * 或者限制每天转换短链接的次数，避免恶意的攻击请求
- *
- *
  *
  * @author gengzi
  * @date 2020年5月26日16:20:18
  */
-@Service("shortUrlGeneratorServiceImpl")
-public class ShortUrlGeneratorServiceImpl implements ShortUrlGeneratorService {
+@Service("shortUrlSubGeneratorServiceImpl")
+public class ShortUrlSubGeneratorServiceImpl implements ShortUrlGeneratorService {
 
-    private Logger logger = LoggerFactory.getLogger(ShortUrlGeneratorServiceImpl.class);
+    private Logger logger = LoggerFactory.getLogger(ShortUrlSubGeneratorServiceImpl.class);
     // 考虑之后项目会有nginx 负载，这里指定生成短链接的前缀地址
     @Value("${shorturl.pre}")
     private String linkUrlPre;
@@ -79,7 +73,8 @@ public class ShortUrlGeneratorServiceImpl implements ShortUrlGeneratorService {
                 logger.info("redis get shorturl success, return shorturl : {}", linkUrlPre + shortUrl);
                 return linkUrlPre + shortUrl;
             } else {
-                long number = redisUtil.getRedisSequence();
+                // 只需要这里修改为分段发号器
+                long number = redisUtil.getSubsectionRedisSequence();
                 String str62 = BaseConversionUtils.to62RadixString(number);
                 String genShortUrl = linkUrlPre + str62;
 

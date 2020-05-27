@@ -3,15 +3,15 @@ package fun.gengzi.codecopy.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
-import javax.rmi.CORBA.Tie;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,10 +29,12 @@ public class RedisUtil {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Resource
+    @Autowired
+    @Qualifier("beanredisAtomicLong")
     private RedisAtomicLong redisAtomicLong;
 
-    @Resource
+    @Autowired
+    @Qualifier("beansubRedisAtomicLong")
     private RedisAtomicLong subRedisAtomicLong;
 
     private final String LONG_KEY = "num";
@@ -49,16 +51,16 @@ public class RedisUtil {
     private String step;
 
 
-    @Bean
+    @Bean("beanredisAtomicLong")
     public RedisAtomicLong getRedisAtomicLong() {
         RedisAtomicLong counter = new RedisAtomicLong(LONG_KEY, redisTemplate.getConnectionFactory());
         return counter;
     }
 
-    @Bean
-    public RedisAtomicLong getSubRedisAtomicLong() {
-        RedisAtomicLong counter = new RedisAtomicLong(subkey, redisTemplate.getConnectionFactory());
-        return counter;
+    @Bean("beansubRedisAtomicLong")
+    // 这里要注意，由于加载顺序问题，在创建 RedisAtomicLong @value的值，还没有加载到对象中，所以需要当做方法参数，传递到创建方法中
+    public RedisAtomicLong getSubRedisAtomicLong(@Value("${redis.subsection.subkey}") String subkey) {
+        return new RedisAtomicLong(subkey, redisTemplate.getConnectionFactory());
     }
 
     /**

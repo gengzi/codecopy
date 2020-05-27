@@ -8,6 +8,7 @@ import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,15 @@ public class ShortUrlGeneratorController {
 
     private Logger logger = LoggerFactory.getLogger(PaymentActionController.class);
 
+    // 使用一般发号器实现
     @Autowired
+    @Qualifier("shortUrlGeneratorServiceImpl")
     private ShortUrlGeneratorService shortUrlGeneratorService;
+
+    // 使用分段发号器实现
+    @Autowired
+    @Qualifier("shortUrlSubGeneratorServiceImpl")
+    private ShortUrlGeneratorService shortUrlSubGeneratorServiceImpl;
 
 
 
@@ -43,7 +51,6 @@ public class ShortUrlGeneratorController {
     public ReturnData generatorShortUrl(@RequestParam("longurl") String longurl) {
         logger.info("getShortUrl start {} ", System.currentTimeMillis());
         String shortUrl = shortUrlGeneratorService.generatorShortUrl(longurl);
-
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(shortUrl);
@@ -59,6 +66,30 @@ public class ShortUrlGeneratorController {
         logger.info("redirectUrl start {} ", System.currentTimeMillis());
         String longUrl = shortUrlGeneratorService.getLongUrl(shorturl);
         return "redirect:" + longUrl;
+    }
+
+
+    // ------------------- 分段发号器 ----------------------------------
+
+
+    @ApiOperation(value = "长链接转短链接", notes = "长链接转短链接")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "longurl", value = "长链接", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n"	+
+            "\t    \"message\": \"短链接\",\n" +
+            "\t}\n")})
+    @PostMapping("/getShortUrlSub")
+    @ResponseBody
+    public ReturnData generatorShortUrlBySub(@RequestParam("longurl") String longurl) {
+        logger.info("getShortUrl start {} ", System.currentTimeMillis());
+        String shortUrl = shortUrlSubGeneratorServiceImpl.generatorShortUrl(longurl);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(shortUrl);
+        return ret;
     }
 
 

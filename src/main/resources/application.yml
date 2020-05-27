@@ -32,6 +32,6 @@ shorturl:
 
 redis:
   subsection:
-    subkey: oneNum
+    subkey: onenum
     initValue: 101
     step: 20
