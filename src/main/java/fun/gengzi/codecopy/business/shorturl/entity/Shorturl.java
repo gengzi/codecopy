@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ import org.springframework.data.relational.core.mapping.Column;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+// 如下字段不输出
+@JsonIgnoreProperties({"createtime","updatetime","id"})
 @Entity
 @Table(name = "shorturl")
 public class Shorturl implements Serializable {

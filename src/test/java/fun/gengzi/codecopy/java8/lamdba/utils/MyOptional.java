@@ -64,10 +64,10 @@ public class MyOptional {
         System.out.println(info);
 
         // 抛出一个异常 Supplier
-        Optional.ofNullable(personNull)
-                .orElseThrow(() -> {
-                    throw new RuntimeException("error");
-                });
+//        Optional.ofNullable(personNull)
+//                .orElseThrow(() -> {
+//                    throw new RuntimeException("error");
+//                });
 
 
     }
