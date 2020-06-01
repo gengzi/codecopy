@@ -1,8 +1,14 @@
 package fun.gengzi.codecopy.java8.lamdba.utils;
 
+import java.util.List;
+import java.util.Optional;
+
 public class Person{
     Integer id;
     String name;
+    Optional<List<Role>> roles;
+
+
     public Integer getId() {
         return id;
     }
@@ -29,6 +35,14 @@ public class Person{
 //            return this.name;
 //        }
 
+
+    public Optional<List<Role>> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Optional<List<Role>> roles) {
+        this.roles = roles;
+    }
 
     @Override
     public String toString() {
