@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy.java8.lamdba;
 
+import java.util.Comparator;
+
 /**
  * 函数式接口，只包含一个抽象方法
  */
@@ -7,5 +9,10 @@ package fun.gengzi.codecopy.java8.lamdba;
 public interface MyPrint<T> {
 
     String output(T str);
+
+
+    default void outputinfo(){
+        System.out.println("info");
+    }
 
 }

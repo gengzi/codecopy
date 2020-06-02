@@ -4,6 +4,7 @@ import fun.gengzi.codecopy.utils.JsonUtils;
 import io.swagger.models.auth.In;
 import oracle.ucp.proxy.annotation.Pre;
 import org.junit.jupiter.api.Test;
+import scala.collection.immutable.Stream;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -11,7 +12,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * lamdba 函数式接口测试
@@ -297,7 +297,7 @@ public class UtilsTest {
         String not_found = map.getOrDefault(100, "not found");
         System.out.println(not_found);
         // 合并操作，如果存在，就合并，如果不存在，就存入map
-        map.merge(112,"val9",(value,newvalue)-> value.concat(newvalue));
+        map.merge(112, "val9", (value, newvalue) -> value.concat(newvalue));
         map.merge(0, "concat", (value, newValue) -> value.concat(newValue));
 
         map.forEach((id, val) -> System.out.println(id + ":" + val));
@@ -317,5 +317,26 @@ public class UtilsTest {
 //Map<Integer, String> map = list.stream().collect(Collectors.toMap(Person::getId, Person::getName,(x1,x2)->x1))
 
     }
+
+    @Test
+    public void fun102() {
+        fun101(s -> {
+            System.out.println(s);
+            s.toLowerCase();
+        });
+
+        fun101(new Consumer<String>() {
+            @Override
+            public void accept(String s) {
+                System.out.println(s);
+            }
+        });
+
+    }
+
+    public void fun101(Consumer<String> consumer) {
+        consumer.accept("M");
+    }
+
 
 }
