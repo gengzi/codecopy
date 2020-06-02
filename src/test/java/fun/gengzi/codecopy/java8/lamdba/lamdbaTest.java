@@ -2,12 +2,12 @@ package fun.gengzi.codecopy.java8.lamdba;
 
 
 import com.sun.xml.internal.fastinfoset.sax.SAXDocumentSerializerWithPrefixMapping;
+import fun.gengzi.codecopy.java8.lamdba.utils.Person;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class lamdbaTest {
 
@@ -26,6 +26,10 @@ public class lamdbaTest {
             }
         });
 
+        strs.forEach((s) -> {
+            System.out.print(s);
+        });
+        System.out.println("");
         Collections.sort(strs, (String o1, String o2) -> {
             return o2.compareTo(o1);
         });
@@ -53,12 +57,21 @@ public class lamdbaTest {
     }
 
     /**
-     *  使用函数式接口
+     * 使用函数式接口
      */
     @Test
     public void fun2() {
         String strw = "aaa";
-        MyPrint<String> myPrint = (str) -> str;
+
+        System.out.println(new MyPrint<String>() {
+            @Override
+            public String output(String str) {
+                return str + "1";
+            }
+        }.output(strw));
+
+
+        MyPrint<String> myPrint = (str) -> str + "2";
         System.out.println(myPrint.output(strw));
     }
 
@@ -69,7 +82,7 @@ public class lamdbaTest {
      * 类 :: 静态方法
      */
     @Test
-    public void fun3(){
+    public void fun3() {
         int num = 100;
         MyPrint<Integer> myPrint = String::valueOf;
         System.out.println(myPrint.output(num));
@@ -81,9 +94,12 @@ public class lamdbaTest {
      * 对象 :: 一般方法
      */
     @Test
-    public void fun4(){
+    public void fun4() {
         Something something = new Something();
         String strw = "hello world";
+
+
+
         MyPrint<String> myPrint = something::startsWith;
         System.out.println(myPrint.output(strw));
     }
@@ -94,11 +110,25 @@ public class lamdbaTest {
      * 类 :: 构造方法
      */
     @Test
-    public void fun5(){
+    public void fun5() {
         String strw = "hello world";
         // String::new 来拿到一个 String 对象的引用
         MyPrint<String> myPrint = String::new;
         System.out.println(myPrint.output(strw));
+    }
+
+
+    @Test
+    public void fun6() {
+        new Thread(
+                () -> System.out.println(Thread.currentThread().getName())
+        ,"thread100").start();
+    }
+
+    @Test
+    public void fun7(){
+        Collector<Person, ?, Map<String, String>> personMapCollector = Collectors.toMap(Person::getName, Person::getName);
+
     }
 
 }
