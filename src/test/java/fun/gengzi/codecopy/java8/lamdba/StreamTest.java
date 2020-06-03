@@ -1,10 +1,13 @@
 package fun.gengzi.codecopy.java8.lamdba;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.kafka.common.protocol.types.Field;
 import org.junit.Test;
 
 import javax.naming.PartialResultException;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -184,6 +187,23 @@ public class StreamTest {
         IntStream.range(1, 4).forEach(
             num -> System.out.println(num)
         );
+
+
+
+    }
+
+    @Test
+    public void fun09(){
+        Stream<Object> objectStream = Stream.of(null);
+        ArrayList<String> arrayList = Lists.newArrayList();
+        Stream<String> stream = arrayList.stream();
+
+        Stream<String> stream1 = Arrays.stream(new String[]{"1", "2"});
+        ConcurrentMap<String, String> objectObjectConcurrentMap = Maps.newConcurrentMap();
+        Stream<String> stream2 = objectObjectConcurrentMap.values().stream();
+
+        Set<String> strings = objectObjectConcurrentMap.keySet();
+        Stream<Map.Entry<String, String>> stream3 = objectObjectConcurrentMap.entrySet().stream();
 
 
 
