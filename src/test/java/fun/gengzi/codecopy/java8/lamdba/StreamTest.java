@@ -1,12 +1,14 @@
 package fun.gengzi.codecopy.java8.lamdba;
 
+import org.apache.kafka.common.protocol.types.Field;
 import org.junit.Test;
 
 import javax.naming.PartialResultException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class StreamTest {
 
@@ -41,6 +43,68 @@ public class StreamTest {
         });
 
     }
+
+    @Test
+    public void fun07() {
+//        menu.stream().map(menuinfo -> menuinfo.getName())
+//                .filter(s -> s.startsWith("p"));
+
+//        List<Dish> collect = menu.stream()
+//                .map(info -> {
+//                    System.out.println("map:" + info.getName());
+//                    return new Dish(info.getName(), true, info.getCalories(), info.getType());
+//
+//                })
+//                .filter(info -> {
+//                    System.out.println("filter:" + info.getName());
+//                    return info.getType().equals(Dish.Type.MEAT);
+//                })
+//                .sorted(Comparator.comparing(Dish::getCalories))
+//                .collect(Collectors.toList());
+
+
+        List<Dish> collect1 = menu.stream()
+                .filter(info -> {
+                    System.out.println("filter:" + info.getName());
+                    return info.getType().equals(Dish.Type.MEAT);
+                })
+                .map(info -> {
+                    System.out.println("map:" + info.getName());
+                    return new Dish(info.getName(), true, info.getCalories(), info.getType());
+
+                })
+                .sorted(Comparator.comparing(Dish::getCalories))
+                .collect(Collectors.toList());
+
+        collect1.forEach(info -> System.out.println(info.getName()));
+
+
+    }
+
+
+    @Test
+    public void fun08() {
+
+        List<Dish> collect1 = menu.stream()
+                .filter(info -> {
+                    System.out.println("filter:" + info.getName());
+//                    menu.remove(0);
+                    menu.set(5,new Dish("添加一个",true,22,Dish.Type.FISH));
+//                    menu.add(new Dish("添加一个",true,22,Dish.Type.FISH));
+                    return info.getType().equals(Dish.Type.MEAT);
+                })
+                .map(info -> {
+                    System.out.println("map:" + info.getName());
+                    return new Dish(info.getName(), true, info.getCalories(), info.getType());
+                })
+                .sorted(Comparator.comparing(Dish::getCalories))
+                .collect(Collectors.toList());
+
+        menu.forEach(info -> System.out.print(info.getName()));
+
+        collect1.forEach(info -> System.out.println(info.getName()));
+    }
+
 
     /**
      * 筛选出 不重复的菜单信息
@@ -102,4 +166,28 @@ public class StreamTest {
 //            System.out.println(menuName);
 //        });
     }
+
+
+    @Test
+    public void fun05() {
+
+        // 返回顺序Stream包含的单个元素
+        List<String> strings = Arrays.asList("是", "否");
+        Set<List<String>> collect1 = Stream.of(strings).collect(Collectors.toSet());
+
+        //返回顺序排列流，其元素为指定的值
+        List<String> collect = Stream.of("是", "否").collect(Collectors.toList());
+
+        Arrays.stream(new String[]{"aaaa", "b", "cc"}).sorted().limit(2).collect(Collectors.toList());
+
+
+        IntStream.range(1, 4).forEach(
+            num -> System.out.println(num)
+        );
+
+
+
+    }
+
+
 }
