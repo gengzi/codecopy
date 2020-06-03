@@ -77,7 +77,7 @@ public class MyComparator {
 
 
     /**
-     * 通过身份证设置性别
+     * 通用身份证设置性别
      * <p>
      * supplier 产生一个给定类型的结果  不需要参数
      * <p>
@@ -85,18 +85,43 @@ public class MyComparator {
      */
     private void setSexFromIdCardNo(String idCardNo, Supplier<String> supplier, Consumer<String> consumer) {
         boolean flag = StringUtils.isNoneBlank(idCardNo) && StringUtils.isNoneBlank(supplier.get()) && !"0".equals(supplier.get());
-        if(flag){
+        if (flag) {
             int genderByIdCard = IdcardUtil.getGenderByIdCard(idCardNo);
-            if(genderByIdCard == 1){
+            if (genderByIdCard == 1) {
                 consumer.accept(backInfo("m"));
-            }else if(genderByIdCard == 0){
+            } else if (genderByIdCard == 0) {
                 consumer.accept("F");
             }
         }
     }
 
+    private void setSexInfo(String idcard, Consumer<String> user) {
+        int genderByIdCard = IdcardUtil.getGenderByIdCard(idcard);
+        if (genderByIdCard == 1) {
+            user.accept("M");
+        }
+        user.accept("F");
+    }
 
-    public String backInfo(String info){
+
+    @Test
+    public void fun09(){
+        MyComparator myComparator = new MyComparator();
+       setSexInfo("410327188510154456", myComparator::setSex);
+        setSexInfo("410327188510154456", new Consumer<String>() {
+            @Override
+            public void accept(String s) {
+                myComparator.setSex(s);
+            }
+        });
+
+        setSexInfo("410327188510154456", s -> myComparator.setSex(s));
+
+
+    }
+
+
+    public String backInfo(String info) {
         // 先走这个逻辑，再执行 consumer 实现的接口逻辑
         info = info.toUpperCase();
         System.out.println(info);
@@ -115,11 +140,11 @@ public class MyComparator {
     }
 
     /**
-     *  调用 setSexFromIdCardNo 需要传入两个接口的实现，可以使用匿名内部类实现，也可以使用 lamdba 表达式
-     *  或者使用 :: 双冒号的形式，调用现有的方法，代替两个接口的实现
+     * 调用 setSexFromIdCardNo 需要传入两个接口的实现，可以使用匿名内部类实现，也可以使用 lamdba 表达式
+     * 或者使用 :: 双冒号的形式，调用现有的方法，代替两个接口的实现
      */
     @Test
-    public  void fun03(){
+    public void fun03() {
 //        setSexFromIdCardNo("410327188510154456",()->"hh",s -> System.out.println(s));
 //        setSexFromIdCardNo("410327188510154456", () -> "hh", new Consumer<String>() {
 //            @Override
@@ -128,10 +153,10 @@ public class MyComparator {
 //            }
 //        });
 
-        setSexFromIdCardNo("410327188510154456",()->"hh",s -> s.toLowerCase());
+        setSexFromIdCardNo("410327188510154456", () -> "hh", s -> s.toLowerCase());
 
         MyComparator myComparator = new MyComparator();
-        setSexFromIdCardNo("410327188510154456",myComparator::getSex,myComparator::setSex);
+        setSexFromIdCardNo("410327188510154456", myComparator::getSex, myComparator::setSex);
         System.out.println(myComparator.getSex());  // 打印 M
     }
 
