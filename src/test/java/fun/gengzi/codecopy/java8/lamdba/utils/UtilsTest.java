@@ -56,6 +56,8 @@ public class UtilsTest {
         System.out.println(test1);
 
 
+
+
 //        Predicate<String> predicate1 = new Predicate<String>() {
 //            /**
 //             * Evaluates this predicate on the given argument.
@@ -118,7 +120,7 @@ public class UtilsTest {
         Supplier<String> str = String::new;
         String s = str.get();
         Supplier<Person> str1 = Person::new;
-        // 在执行get 方法时，才会拿到person 对象 ，跟spring beanfactory  在执行 getbean 的时候，采取创建该对象
+        // 在执行get 方法时，才会拿到person 对象 ，跟spring beanfactory  在执行 getbean 的时候，才会创建该对象
         Person person = str1.get();
     }
 
