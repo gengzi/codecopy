@@ -29,6 +29,9 @@ public enum RspCodeEnum {
     // key 描述 value 返回码
     public static final Map<String, Integer> DESC_TO_CODE = Arrays.stream(values()).collect(Collectors.toMap(
             RspCodeEnum::getDesc, RspCodeEnum::getCode, (oldValue, newValue) -> newValue));
+    // key 返回码 value 枚举信息
+    public static final Map<Integer, RspCodeEnum> CODE_TO_RSPCODEENUM = Arrays.stream(values()).collect(
+            Collectors.toMap(RspCodeEnum::getCode, RspCodeEnum -> RspCodeEnum, (oldValue, newValue) -> newValue));
 
     /**
      * 返回码
@@ -58,7 +61,7 @@ public enum RspCodeEnum {
      * 根据code返回RspCodeEnum
      *
      * @param code 返回码
-     * @return
+     * @return {@link RspCodeEnum}
      */
     public static RspCodeEnum getRspCodeEnumBycode(int code) {
         for (RspCodeEnum rspCodeEnum : RspCodeEnum.values()) {
@@ -77,6 +80,16 @@ public enum RspCodeEnum {
      */
     public static String fromCodeToDesc(Integer code) {
         return CODE_TO_DESC.getOrDefault(code, FAILURE.desc);
+    }
+
+    /**
+     * 根据响应码 返回 枚举对象
+     *
+     * @param code 返回码
+     * @return {@link RspCodeEnum}
+     */
+    public static RspCodeEnum fromCode(Integer code) {
+        return CODE_TO_RSPCODEENUM.getOrDefault(code, FAILURE);
     }
 
 
