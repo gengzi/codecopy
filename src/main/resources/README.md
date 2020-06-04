@@ -3,7 +3,7 @@
 
 目的打造一个适用于复制粘贴的组件化的代码工程，把常见业务场景和工具类都提供实现
 
-版本号：1.0.5
+版本号：1.0.6
 
 参考的开源工程代码：
 [从0到1构建分布式秒杀系统，脱离案例讲架构都是耍流氓](https://gitee.com/52itstyle/spring-boot-seckill)
@@ -37,6 +37,7 @@ RspCodeEnum 响应code枚举类
 没有把所有的controller 都放在一个包下，不好区分不同业务
 
 增加短链接生成服务
+增加接口权限校验服务
 
 
 ### fun.gengzi.codecopy.vo 全局vo
@@ -45,6 +46,7 @@ ReturnData 响应实体
 ### fun.gengzi.codecopy.aop 切面(aspectj)
 LimitAspect 限流 AOP ，通过@ServiceLimit注解修饰于方法，限制ip每秒最多访问五次被 @ServiceLimit 的方法
 LockAspect 同步锁 AOP
+BusinessAuthentication token 校验aop
 
 ### fun.gengzi.codecopy.exception 异常处理
 

@@ -2,6 +2,7 @@ package fun.gengzi.codecopy.java8.lamdba;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import fun.gengzi.codecopy.java8.lamdba.utils.Person;
 import org.apache.kafka.common.protocol.types.Field;
 import org.junit.Test;
 
@@ -92,7 +93,7 @@ public class StreamTest {
                 .filter(info -> {
                     System.out.println("filter:" + info.getName());
 //                    menu.remove(0);
-                    menu.set(5,new Dish("添加一个",true,22,Dish.Type.FISH));
+                    menu.set(5, new Dish("添加一个", true, 22, Dish.Type.FISH));
 //                    menu.add(new Dish("添加一个",true,22,Dish.Type.FISH));
                     return info.getType().equals(Dish.Type.MEAT);
                 })
@@ -185,15 +186,14 @@ public class StreamTest {
 
 
         IntStream.range(1, 4).forEach(
-            num -> System.out.println(num)
+                num -> System.out.println(num)
         );
-
 
 
     }
 
     @Test
-    public void fun09(){
+    public void fun09() {
         Stream<Object> objectStream = Stream.of(null);
         ArrayList<String> arrayList = Lists.newArrayList();
         Stream<String> stream = arrayList.stream();
@@ -204,7 +204,99 @@ public class StreamTest {
 
         Set<String> strings = objectObjectConcurrentMap.keySet();
         Stream<Map.Entry<String, String>> stream3 = objectObjectConcurrentMap.entrySet().stream();
+    }
 
+
+    /**
+     * 分组
+     */
+    @Test
+    public void fun10() {
+        List<Person> persons =
+                Arrays.asList(
+                        new Person(18, "Max"),
+                        new Person(23, "Peter"),
+                        new Person(23, "Pamela"),
+                        new Person(12, "Pamela"));
+
+        // 根据名称 进行分组
+        Map<String, List<Person>> collect = persons.stream()
+                .collect(Collectors.groupingBy(person -> person.getName()));
+
+
+        collect.forEach((key, value) -> {
+            System.out.println(key);
+            value.forEach(person -> System.out.println(person.toString()));
+        });
+
+
+        // 计算平均数
+        Double collect1 = persons.stream()
+                .collect(Collectors.averagingInt(person -> person.getId()));
+        System.out.println(collect1);
+
+
+        // 内置的概要统计对象
+        IntSummaryStatistics collect2 = persons.stream()
+                .collect(Collectors.summarizingInt(person -> person.getId()));
+        System.out.println(collect2.getSum());
+        System.out.println(collect2.getAverage());
+
+        //
+
+        String collect3 = persons.stream()
+                .map(person -> person.getName())
+                .distinct()
+//                .collect(Collectors.joining(","));
+                // 拼接， 第一个参数是中间拼接的内容， 第二个字段是前缀，第三个字段是 后缀
+                .collect(Collectors.joining(",", "名字：", " 输出啦"));
+        System.out.println(collect3);
+
+
+        Integer reduce = persons.stream()
+                .map(person -> person.getId())
+                // 第一个参数 初始化的值  第二个参数 BinaryOperator 将两个元素结合起来变成一个新值
+                // 在执行流中， p1 作为计算的第一个参数 0 ，从流中获取数据，作为 p2 的参数值，进行计算，然后再从流中获取数据，进行累加
+                .reduce(0, (p1, p2) -> {
+                    return p1 + p2;
+                });
+        System.out.println(reduce);
+
+        Person person = persons.stream()
+                // p1 是 new person 的第一个对象，p2 是从流中获取的
+                // 关于 id 的累加，结果是 76 ，我们把 id 改为 1 ，结果应该变成 77
+                .reduce(new Person(1, "person"), (p1, p2) -> {
+                    p1.setId(p1.getId() + p2.getId());
+                    p1.setName(p1.getName() + p2.getName());
+                    return p1;
+                });
+        System.out.println(person.toString());
+
+
+        Integer reduce1 = persons.stream()
+                .map(person1 -> person1.getId())
+                // Integer 的 内部，完成了 retur a+b 的操作
+                .reduce(0, Integer::sum);
+
+        Optional<Integer> reduce2 = persons.stream()
+                .map(person1 -> person1.getId())
+                // 计算最大值，因为没有提供初始化的参数，所以返回了一个 Optional 对象
+                .reduce(Integer::max);
+        // 如果存在
+        reduce2.ifPresent(integer -> System.out.println(integer));
+        Integer integer1 = reduce2.filter(integer -> integer > 0).orElse(0);
+        System.out.println(integer1);
+
+        persons.stream()
+                //三个参数，第一个是初始化参数，第二个参数 每次都会拿 初始化参数 0 进行相加，第三个参数，会把得到的 sum 值，进行相加
+                .reduce(0, (sum, person1) -> {
+                    sum += person1.getId();
+                    return sum;
+                }, (sum1, sum2) -> {
+                    return sum1 + sum2;
+                });
+
+        // reduce 是并行化的
 
 
     }

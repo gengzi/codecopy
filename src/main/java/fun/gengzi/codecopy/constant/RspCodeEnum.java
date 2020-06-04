@@ -18,7 +18,8 @@ public enum RspCodeEnum {
     //【推荐】如果变量值仅在一个固定范围内变化用 enum 类型来定义。
     SUCCESS(200, "success"),
     ERROR(0, "error"),
-    FAILURE(1000, "failure");
+    FAILURE(1000, "failure"),
+    NOTOKEN(5000, "no token");
     // 重复的值
 //    FAILURE_NEW(1000, "failure255");
 

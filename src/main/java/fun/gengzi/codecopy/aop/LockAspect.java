@@ -38,9 +38,9 @@ public class LockAspect {
 	}
 	
     @Around("lockAspect()")
-    public  Object around(ProceedingJoinPoint joinPoint) { 
-    	lock.lock();
+    public  Object around(ProceedingJoinPoint joinPoint) {
     	Object obj = null;
+		lock.lock();
 		try {
 			obj = joinPoint.proceed();
 		} catch (Throwable e) {
