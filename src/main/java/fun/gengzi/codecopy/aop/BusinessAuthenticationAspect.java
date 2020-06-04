@@ -58,6 +58,17 @@ public class BusinessAuthenticationAspect {
         }
 
         // 调用鉴权服务，进行 token 校验，并返回该用户信息
+        // 先定义 aes 秘钥，定义 rsa 的公钥和秘钥
+        // 使用 aes 秘钥对 组装后的参数加密，再base64 转码 生成一个签名
+        // 调用服务端， token 设置在请求头，请求体是 签名 ， 其他固定的几个参数
+
+        // 服务端校验 token， 解析请求体参数，将签名 使用 base64 解开，然后 aes 解密
+        // 解密完成，比较 参数是否一致，一致说明，参数没有在传递时发生更改。
+        // 服务端鉴权完毕，响应数据，将数据使用 rsa 私钥加密，使用base64 转码
+
+        // 客户端获取响应数据，对应字段使用base64 转码，使用 rsa 公钥解密，解密完成，正式成功
+
+
 
         int callNumber = businessAuthentication.callNumber();
         String[] ipLimit = businessAuthentication.IPLimit();
