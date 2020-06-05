@@ -28,6 +28,11 @@ spring:
 shorturl:
   pre: http://localhost:8089/u/
 
+token:
+  # aes密钥
+  aeskey: f24fea293ac8bd5a6439f3ca3df746ae
+  url:
+    validToken:  http://localhost:8089/api/v1/validToken
 
 
 redis:

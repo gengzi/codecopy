@@ -23,12 +23,12 @@ public @interface BusinessAuthentication {
      */
     int callNumber() default -1;
 
-    /**
-     * ip 限定，限定指定范围的ip地址，访问该接口
-     *
-     * @return
-     */
-    String[] IPLimit() default {};
+//    /**
+//     * ip 限定，限定指定范围的ip地址，访问该接口
+//     *
+//     * @return
+//     */
+//    String[] IPLimit() default {};
 
 
 

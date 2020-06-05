@@ -30,7 +30,7 @@ import java.util.Optional;
 public class ShortUrlGeneratorController {
 
 
-    private Logger logger = LoggerFactory.getLogger(PaymentActionController.class);
+    private Logger logger = LoggerFactory.getLogger(ShortUrlGeneratorController.class);
 
     // 使用一般发号器实现
     @Autowired

@@ -1,14 +1,24 @@
 package fun.gengzi.codecopy.aop;
 
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import fun.gengzi.codecopy.business.authentication.constant.AuthenticationConstans;
+import fun.gengzi.codecopy.business.authentication.entity.RequestParamEntity;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.exception.RrException;
+import fun.gengzi.codecopy.utils.AESUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,13 +26,22 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *  接口权限校验 aop
+ * 接口权限校验 aop
  */
 @Aspect
 @Configuration
 public class BusinessAuthenticationAspect {
+
+    @Value("${token.url.validToken}")
+    private String validToken;
+
+    @Value("${token.aeskey}")
+    private String aeskey;
 
     //切入点
     @Pointcut("@annotation(fun.gengzi.codecopy.aop.BusinessAuthentication)")
@@ -31,7 +50,7 @@ public class BusinessAuthenticationAspect {
     }
 
     @Around("BusinessAuthenticationAspect()")
-    public  Object around(ProceedingJoinPoint joinPoint) {
+    public Object around(ProceedingJoinPoint joinPoint) {
         // 根据controller 配置的注解，执行该方法
         // 获取请求信息中的 token 校验，存在，执行 token 校验，不存在，阻断
         // 校验 token ，失败，阻断
@@ -49,13 +68,38 @@ public class BusinessAuthenticationAspect {
         HttpServletRequest request = attributes.getRequest();
 
         // 校验token 是否有效
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         // 获取controller 方法名称
-        String name = method.getName();
+        final String name = method.getName();
         // 如果没有 token，进行记录并抛出异常，响应前台
-        if(StringUtils.isNoneBlank(token)){
+        if (StringUtils.isNoneBlank(token)) {
             throw new RrException("无权限", RspCodeEnum.NOTOKEN.getCode());
         }
+        // 组拼http 请求
+        final int callNumber = businessAuthentication.callNumber();
+        ConcurrentHashMap<String, String> concurrentHashMap = new ConcurrentHashMap<>();
+        String reqNum = IdUtil.randomUUID();
+        concurrentHashMap.put(AuthenticationConstans.REQNUM, reqNum);
+        StringBuilder signBuilder = new StringBuilder();
+        if (callNumber > 0) {
+            concurrentHashMap.put(AuthenticationConstans.REQNUM, String.valueOf(callNumber));
+        }
+        concurrentHashMap.forEach((key, value) -> {
+            signBuilder.append(key).append("=").append(value).append("&");
+        });
+        String signStr = AESUtils.encrypt(signBuilder.toString(), aeskey)
+                .orElseThrow(() -> new RrException("error", RspCodeEnum.FAILURE.getCode()));
+
+        RequestParamEntity requestParamEntity = new RequestParamEntity();
+        requestParamEntity.setReqNum(reqNum);
+        requestParamEntity.setSign(signStr);
+
+        String jsonBody = JSONUtil.parseObj(requestParamEntity, false).toStringPretty();
+
+        HttpRequest.post(validToken)
+                .header(Header.AUTHORIZATION, token)
+                .body(jsonBody).execute().body();
+
 
         // 调用鉴权服务，进行 token 校验，并返回该用户信息
         // 先定义 aes 秘钥，定义 rsa 的公钥和秘钥
@@ -69,19 +113,13 @@ public class BusinessAuthenticationAspect {
         // 客户端获取响应数据，对应字段使用base64 转码，使用 rsa 公钥解密，解密完成，正式成功
 
 
-
-        int callNumber = businessAuthentication.callNumber();
-        String[] ipLimit = businessAuthentication.IPLimit();
-
-
-
         Object obj;
         try {
             // 非阻塞的获取令牌 可以实时返回结果
             Boolean flag = true;
-            if(flag){
+            if (flag) {
                 obj = joinPoint.proceed();
-            }else{
+            } else {
                 throw new RrException("无权限");
             }
         } catch (Throwable e) {
