@@ -74,7 +74,7 @@ public class RSAUtils {
             RSA rsa = new RSA(null, rsakey);
             byte[] infobyte = rsa.decrypt(decode, KeyType.PublicKey);
             String infostr = StrUtil.str(infobyte, CharsetUtil.CHARSET_UTF_8);
-            Optional.ofNullable(infostr);
+            return Optional.ofNullable(infostr);
         } catch (Exception e) {
             logger.error("RSA 解密失败！", e.getMessage());
         }

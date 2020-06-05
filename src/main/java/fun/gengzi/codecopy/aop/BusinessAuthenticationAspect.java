@@ -4,13 +4,17 @@ package fun.gengzi.codecopy.aop;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import fun.gengzi.codecopy.business.authentication.constant.AuthenticationConstans;
 import fun.gengzi.codecopy.business.authentication.entity.RequestParamEntity;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.exception.RrException;
 import fun.gengzi.codecopy.utils.AESUtils;
+import fun.gengzi.codecopy.utils.RSAUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
+import fun.gengzi.codecopy.vo.TokenUserInfoResp;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -47,6 +51,10 @@ public class BusinessAuthenticationAspect {
     // AES 密钥
     @Value("${token.aeskey}")
     private String aeskey;
+
+    // RSA 的密钥
+    @Value("${token.publickey}")
+    private String publickey;
 
     //切入点
     @Pointcut("@annotation(fun.gengzi.codecopy.aop.BusinessAuthentication)")
@@ -145,7 +153,16 @@ public class BusinessAuthenticationAspect {
 
         Boolean flag = false;
         if (RspCodeEnum.SUCCESS.getCode() == returnData.getStatus()) {
-            flag = true;
+            Object info = returnData.getInfo();
+            if(info instanceof JSONObject){
+                TokenUserInfoResp.UserinfoData userinfoData = JSONUtil.toBean((JSONObject) info, TokenUserInfoResp.UserinfoData.class);
+                String certificateNo = userinfoData.getCertificateNo();
+                // RSA 解密
+                String certificateNoDecrpt = RSAUtils.decrypt(certificateNo, publickey).orElseThrow(() -> new RrException("error"));
+                if (callNumber == -1 || callNumber >=  Integer.valueOf(certificateNoDecrpt) ){
+                    flag = true;
+                }
+            }
         }
         return flag;
     }

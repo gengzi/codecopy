@@ -2,15 +2,19 @@ package fun.gengzi.codecopy.business.authentication.controller;
 
 import fun.gengzi.codecopy.business.authentication.entity.RequestParamEntity;
 import fun.gengzi.codecopy.business.authentication.service.AuthenticationService;
+import fun.gengzi.codecopy.utils.RSAUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
+import fun.gengzi.codecopy.vo.TokenUserInfoResp;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 /**
  * <h1>接口鉴权controller</h1>
@@ -23,6 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/v1")
 public class AuthenticationController {
     private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
+    // RSA 的密钥
+    @Value("${token.secretkey}")
+    private String secretkey;
+
+
 
     private final AuthenticationService authenticationService;
 
@@ -51,7 +61,14 @@ public class AuthenticationController {
             // 校验签名
             Boolean validSign = authenticationService.isValidSign(requestParamEntity);
             if(validSign){
+                // 根据token 获取用户信息，响应
+                // TODO 默认响应一个，该用户调用的次数，写死 10
+                TokenUserInfoResp.UserinfoData userinfoData = new TokenUserInfoResp.UserinfoData();
+                // 将返回字段都进行 rsa 加密
+                String numNo = RSAUtils.encrypt("1", secretkey).orElse("");
+                userinfoData.setCertificateNo(numNo);
                 ret.setSuccess();
+                ret.setInfo(userinfoData);
                 ret.setMessage("success");
                 return ret;
             }

@@ -169,7 +169,7 @@ public class ShortUrlGeneratorController {
             "\t}\n")})
     @PostMapping("/getShortUrlByTest")
     @ResponseBody
-    @BusinessAuthentication(callNumber = 5)
+    @BusinessAuthentication(callNumber = 5000000)
     public ReturnData testgeneratorShortUrl(@RequestParam("longurl") String longurl) {
         logger.info("getShortUrl start {} ", System.currentTimeMillis());
         String shortUrl = shortUrlGeneratorService.generatorShortUrl(longurl);
