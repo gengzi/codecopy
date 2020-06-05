@@ -36,6 +36,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /**
      * 判断签名 是否被篡改
      *
+     * 防止请求重放
+     *  //TODO 可以将 sign 在redis 中存储，比如reids 中，如果遇到 一致的 sign ，表示 同一个请求，请求了两次，可以拒绝
+     *
+     *
+     *
      * @param requestParamEntity 请求参数实体包含 随机码 和 签名sign
      * @return 无 true 有 false
      */
