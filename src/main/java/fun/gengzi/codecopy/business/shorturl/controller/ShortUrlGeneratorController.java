@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.shorturl.controller;
 
+import fun.gengzi.codecopy.aop.BusinessAuthentication;
 import fun.gengzi.codecopy.business.payment.controller.PaymentActionController;
 import fun.gengzi.codecopy.business.shorturl.entity.Shorturl;
 import fun.gengzi.codecopy.business.shorturl.service.PrescriptionShortUrlGeneratorService;
@@ -148,6 +149,33 @@ public class ShortUrlGeneratorController {
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(shorturl);
+        return ret;
+    }
+
+
+    /**
+     * 测试接口鉴权
+     * @param longurl
+     * @return
+     */
+    @ApiOperation(value = "长链接转短链接-测试接口鉴权", notes = "长链接转短链接-测试接口鉴权")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "longurl", value = "长链接", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n"	+
+            "\t    \"message\": \"短链接\",\n" +
+            "\t}\n")})
+    @PostMapping("/getShortUrlByTest")
+    @ResponseBody
+    @BusinessAuthentication(callNumber = 5)
+    public ReturnData testgeneratorShortUrl(@RequestParam("longurl") String longurl) {
+        logger.info("getShortUrl start {} ", System.currentTimeMillis());
+        String shortUrl = shortUrlGeneratorService.generatorShortUrl(longurl);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(shortUrl);
         return ret;
     }
 

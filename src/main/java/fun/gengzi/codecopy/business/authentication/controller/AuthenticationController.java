@@ -62,14 +62,14 @@ public class AuthenticationController {
         final String reqNum = requestParamEntity.getReqNum();
         final String sign = requestParamEntity.getSign();
 
-        final String reqParams = AESUtils.decrypt(reqNum, aeskey)
+        final String reqParams = AESUtils.decrypt(sign, aeskey)
                 .orElseThrow(() -> new RrException("认证失败", RspCodeEnum.FAILURE.getCode()));
 
         String[] split = reqParams.split("&");
         final HashMap<String, String> paramKeyValue = new HashMap<>();
         Arrays.asList(split).forEach(s -> {
             String[] keyvalue = s.split("=");
-            paramKeyValue.put(keyvalue[1],keyvalue[2]);
+            paramKeyValue.put(keyvalue[0],keyvalue[1]);
         });
 
         paramKeyValue.get(AuthenticationConstans.CALLNUMBER);

@@ -29,8 +29,12 @@ shorturl:
   pre: http://localhost:8089/u/
 
 token:
-  # aes密钥
+  # aes 密钥
   aeskey: f24fea293ac8bd5a6439f3ca3df746ae
+  # rsa 公钥
+  publickey: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbcdLKOtTKOjalffv/LLLOqfyh8Ep4XHjvOivMU3Nb1N0puG4+NTrXBS8GDczgsZ+7J6D7FTcH8JInMKpz85LMCAwEAAQ==
+  # rsa 密钥
+  secretkey: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAttx0so61Mo6NqV9+/8sss6p/KHwSnhceO86K8xTc1vU3Sm4bj41OtcFLwYNzOCxn7snoPsVNwfwkicwqnPzkswIDAQABAkBGw9Xda+Cvaf9kdnJdZzErbmW7Mxi5WVT37BxVqdM01BTjudKSADlLn53fEeWl7pmfMkMuXZ7uPNdqmLWVLMNxAiEA6LXvDTKtEZNyTvjXs4nDJweiIT9kZtZmYD3hVcQueJUCIQDJKV+PcdKehVw8U+hdeE4/NZDFCHRzaGM4Zs5YRRbuJwIgSG0fSn9EKB04zWVbVNCCgWo5xplBOVRvJnL758KYKAUCIDdpmzZDb3ZVXCwOHRMqYbuNwNxV0OY9mh9eSncMSR2/AiEApSModT03Kr+nHxhgzAyOvzLcKE0IPMJ+ny3mjdyBjWc=
   url:
     validToken:  http://localhost:8089/api/v1/validToken
 
