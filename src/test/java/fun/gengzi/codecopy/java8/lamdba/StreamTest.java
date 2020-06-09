@@ -41,10 +41,12 @@ public class StreamTest {
                 .map(menuinfo -> menuinfo.getName())
                 .collect(Collectors.toList());
 
-
         menuNames.forEach(menuName -> {
             System.out.println(menuName);
         });
+
+        Stream<Dish> dishStream = menu.stream()
+                .filter(n -> n.getCalories() > 350);
 
     }
 
@@ -77,7 +79,7 @@ public class StreamTest {
                     return new Dish(info.getName(), true, info.getCalories(), info.getType());
 
                 })
-                .sorted(Comparator.comparing(Dish::getCalories))
+                .sorted(Comparator.comparing(Dish::getCalories).reversed())
                 .collect(Collectors.toList());
 
         collect1.forEach(info -> System.err.println(info.getName()+":"+info.getCalories()));
@@ -297,6 +299,9 @@ public class StreamTest {
                 });
 
         // reduce 是并行化的
+
+
+        IntStream.range(1,4).forEach(n -> System.out.println(n));
 
 
     }
