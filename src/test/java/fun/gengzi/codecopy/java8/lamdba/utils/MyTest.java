@@ -1,12 +1,11 @@
 package fun.gengzi.codecopy.java8.lamdba.utils;
 
+import com.google.common.collect.Maps;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -162,6 +161,83 @@ public class MyTest {
         BigDecimal decimal = BigDecimal.ZERO;
         BigDecimal add = decimal.add(BigDecimal.valueOf(5));
         System.out.println(add.toString());
+    }
+
+
+    /**
+     * 查找出分组： 各年的信息
+     */
+    @Test
+    public void fun09(){
+
+        // groupingBy 返回  Map<K, List<T>>, k 就是分组的条件，值是通过 tolist 转化的 list 对象
+        Map<Integer, List<Transaction>> collect = transactions.stream()
+                .collect(Collectors.groupingBy(transaction -> transaction.getYear()));
+
+        collect.forEach((integer, transactions) -> {
+            System.out.println(integer);
+            transactions.forEach(s-> System.out.println(s.toString()));
+        });
+    }
+
+
+    /**
+     * flatMap 流的扁平化
+         flatmap方法让你把一个流中的每个值都换成另一个流，然后把所有的流连接
+         起来成为一个流
+     *
+     *
+     */
+    @Test
+    public void fun10(){
+
+        // groupingBy 返回  Map<K, List<T>>, k 就是分组的条件，值是通过 tolist 转化的 list 对象
+        Map<Integer, List<Transaction>> collect = transactions.stream()
+                .collect(Collectors.groupingBy(transaction -> transaction.getYear()));
+
+
+        // 按照年份倒叙排序
+//        TreeMap<Integer, List<Transaction>> integerObjectTreeMap = Maps.newTreeMap((o1, o2) -> -1);
+
+        // 反向排序
+        TreeMap<Transaction,Integer> integerObjectTreeMap = Maps.newTreeMap(Comparator.comparingInt(Transaction::getYear).reversed());
+
+        HashMap<Transaction, Integer> transactionStringHashMap = new HashMap<>();
+
+        AtomicInteger i = new AtomicInteger();
+
+        transactions.forEach(transaction -> {
+            i.addAndGet(1);
+            int i1 = i.get();
+            System.out.println(i1);
+            transactionStringHashMap.put(transaction, transaction.getYear());
+        });
+
+
+
+//        TreeMap<Integer, Object> integerObjectTreeMap1 = Maps.newTreeMap(Comparator.comparingInt(Integer::intValue));
+
+
+
+//        integerObjectTreeMap.putAll(collect);
+//
+//
+//        integerObjectTreeMap.forEach((i,tr)->{
+//            System.out.println(i);
+//           tr.forEach(transaction -> System.out.println(transaction.toString()));
+//        });
+
+
+//
+//        Stream<List<Transaction>> stream = collect.values().stream();
+//
+//        Stream<Stream<Transaction>> streamStream = stream.map(transactions1 -> transactions1.stream());
+//
+//        Stream<Transaction> transactionStream = stream.flatMap(transactions1 -> transactions1.stream());
+//        List<Transaction> collect1 = transactionStream.collect(Collectors.toList());
+
+
+
     }
 
 

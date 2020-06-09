@@ -80,7 +80,7 @@ public class StreamTest {
                 .sorted(Comparator.comparing(Dish::getCalories))
                 .collect(Collectors.toList());
 
-        collect1.forEach(info -> System.out.println(info.getName()));
+        collect1.forEach(info -> System.err.println(info.getName()+":"+info.getCalories()));
 
 
     }
