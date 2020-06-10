@@ -14,14 +14,14 @@ import java.util.Map;
  *
  */
 public class CheckMapUtils {
-	static final List<String> paramsList = new ArrayList<>();
+	static final List<String> PARAMS_LIST = new ArrayList<>();
 	/**
 	 * 添加非负数校验集合单独添加
 	 * 需要校验参数(正整数)
 	 */
 	static {
-		paramsList.add("count");
-		paramsList.add("pageindex");
+		PARAMS_LIST.add("count");
+		PARAMS_LIST.add("pageindex");
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class CheckMapUtils {
 	 * @return
 	 */
 	private static boolean hasNonPositive(String param){
-		return paramsList.contains(param);
+		return PARAMS_LIST.contains(param);
 	}
 
 	/**
@@ -47,8 +47,9 @@ public class CheckMapUtils {
 				return null;
 			}else{
 				for(int i = 0;i<params.length;i++){
-					if (StringUtils.isEmpty(params[i]))
+					if (StringUtils.isEmpty(params[i])) {
 						continue;
+					}
 					if (jsonPara.get(params[i])==null || StringUtils.isBlank(jsonPara.get(params[i]).toString())) {
 						map.put("param", params[i]+"不能为空！");
 						return map;

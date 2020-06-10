@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>RedisUtil 操作工具类</h1>
- *
  */
 @Component
 public class RedisUtil {
@@ -65,6 +64,7 @@ public class RedisUtil {
 
     /**
      * 单一发号器
+     *
      * @return
      */
     public long getRedisSequence() {
@@ -91,7 +91,7 @@ public class RedisUtil {
      * #        107  108  109
      * # 但是，这样做局限性太大，一旦要增加新的实例，之前发号器生成的数字就重复了。
      * # 所以，在初始化阶段，就大概预设实例数，比如增加到20 个实例，步长是 20
-     *
+     * <p>
      * 细节：
      * 当前互联网上的网页总数大概是 45亿(参考 短网址_短网址资讯mrw.so)，45亿超过了 2^{32}=4294967296232=4294967296，但远远小于64位整数的上限值，
      * 那么用一个64位整数足够了。微博的短网址服务用的是长度为7的字符串，这个字符串可以看做是62进制的数，那么最大能表示{62}^7=3521614606208627=3521614606208
@@ -100,13 +100,11 @@ public class RedisUtil {
      * 因为 62^7=3521614606208627=3521614606208，这个量级远远超过互联网上的URL总数了，绝对够用了。
      * 现代的web服务器（例如Apache, Nginx）大部分都区分URL里的大小写了，所以用大小写字母来区分不同的URL是没问题的。
      * 因此，正确答案：长度不超过7的字符串，由大小写字母加数字共62个字母组成。
-     *
+     * <p>
      * 作者：武林
      * 链接：https://www.zhihu.com/question/20103344/answer/573638467
      * 来源：知乎
      * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-     *
-     *
      *
      * @return
      */
@@ -123,7 +121,6 @@ public class RedisUtil {
         }
         return sequence;
     }
-
 
 
     // =============================common============================
@@ -518,8 +515,9 @@ public class RedisUtil {
     public long sSetAndTime(String key, long time, Object... values) {
         try {
             Long count = redisTemplate.opsForSet().add(key, values);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return count;
         } catch (Exception e) {
             e.printStackTrace();
@@ -636,8 +634,9 @@ public class RedisUtil {
     public boolean lSet(String key, Object value, long time) {
         try {
             redisTemplate.opsForList().rightPush(key, value);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -673,8 +672,9 @@ public class RedisUtil {
     public boolean lSet(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
-            if (time > 0)
+            if (time > 0) {
                 expire(key, time);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

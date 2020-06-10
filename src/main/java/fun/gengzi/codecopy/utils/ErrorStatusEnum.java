@@ -1,7 +1,13 @@
 package fun.gengzi.codecopy.utils;
 
-//错误状态
+
+
+/**
+ *  //错误状态
+ *
+ */
 public enum ErrorStatusEnum {
+    // 错误状态603
     STATUS_603(603);
     private Integer status;
     ErrorStatusEnum(Integer status){

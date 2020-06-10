@@ -31,7 +31,9 @@ public class TokenRsp<T> {
     @Getter
     @AllArgsConstructor
     public enum TokenResponseEnum {
+        // 成功
         SUCCESS(200, "success"),
+        // 失败
         ERROR(0, "error");
         /**
          * 返回码
