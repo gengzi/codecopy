@@ -1,7 +1,6 @@
 package fun.gengzi.codecopy.java8.lamdba.utils;
 
 import com.google.common.collect.Maps;
-import io.swagger.models.auth.In;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -270,6 +269,18 @@ public class MyTest {
 
 
         System.out.println(reduce);
+        AtomicInteger i = new AtomicInteger();
+
+        integers.stream().forEach( s->{
+            i.getAndIncrement();
+            integers.forEach(
+                    s1->{
+
+                    }
+            );
+
+        });
+
     }
 
 

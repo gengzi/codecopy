@@ -24,10 +24,20 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  # 通过默认配置，配置 cache 相关
+#  cache:
+#    type: caffeine
+#    caffeine:
+#      # 配置缓存,初始缓存容量为10,最大容量为200,过期时间(这里配置写入后过期时间为3秒)
+#      spec: initialCapacity=10,maximumSize=200,expireAfterWrite=3s
 
+
+# 短链接
 shorturl:
+  # 短链接前缀
   pre: http://localhost:8089/u/
 
+# token 认证相关
 token:
   # aes 密钥
   aeskey: f24fea293ac8bd5a6439f3ca3df746ae
@@ -36,11 +46,15 @@ token:
   # rsa 密钥
   secretkey: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAttx0so61Mo6NqV9+/8sss6p/KHwSnhceO86K8xTc1vU3Sm4bj41OtcFLwYNzOCxn7snoPsVNwfwkicwqnPzkswIDAQABAkBGw9Xda+Cvaf9kdnJdZzErbmW7Mxi5WVT37BxVqdM01BTjudKSADlLn53fEeWl7pmfMkMuXZ7uPNdqmLWVLMNxAiEA6LXvDTKtEZNyTvjXs4nDJweiIT9kZtZmYD3hVcQueJUCIQDJKV+PcdKehVw8U+hdeE4/NZDFCHRzaGM4Zs5YRRbuJwIgSG0fSn9EKB04zWVbVNCCgWo5xplBOVRvJnL758KYKAUCIDdpmzZDb3ZVXCwOHRMqYbuNwNxV0OY9mh9eSncMSR2/AiEApSModT03Kr+nHxhgzAyOvzLcKE0IPMJ+ny3mjdyBjWc=
   url:
+    # 远程校验token 的服务地址
     validToken:  http://localhost:8089/api/v1/validToken
 
 
 redis:
   subsection:
+    # 分段发号器的key
     subkey: onenum
+    # 发号器初始化 号码
     initValue: 101
+    # 发号器 增加步长
     step: 20

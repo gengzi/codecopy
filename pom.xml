@@ -235,6 +235,19 @@
             <version>5.3.6</version>
         </dependency>
 
+        <!--引入Spring cache 包-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!--caffeine 高性能缓存 -->
+        <!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.8.4</version>
+        </dependency>
+
 
     </dependencies>
 
