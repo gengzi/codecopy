@@ -175,6 +175,7 @@ public class MyTest {
         Map<Integer, List<Transaction>> collect = transactions.stream()
                 .collect(Collectors.groupingBy(transaction -> transaction.getYear()));
 
+
         collect.forEach((integer, transactions) -> {
             System.out.println(integer);
             transactions.forEach(s-> System.out.println(s.toString()));
