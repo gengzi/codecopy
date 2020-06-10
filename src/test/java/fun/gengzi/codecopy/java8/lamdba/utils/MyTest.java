@@ -1,6 +1,7 @@
 package fun.gengzi.codecopy.java8.lamdba.utils;
 
 import com.google.common.collect.Maps;
+import io.swagger.models.auth.In;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -238,6 +239,36 @@ public class MyTest {
 
 
 
+    }
+
+
+    /**
+     *
+     */
+    @Test
+    public void fun11() {
+        ArrayList<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        integers.add(3);
+        integers.add(4);
+
+
+        int product = integers.stream().reduce(1, (a, b) -> a * b);
+
+        Integer reduce = integers.stream()
+                .reduce(0, (a, b) -> {
+                    return a * b;
+                });
+
+        Integer reduce1 = integers.stream()
+                .reduce(0, Integer::sum);
+        System.out.println(reduce1);
+
+        long count = integers.stream().count();
+
+
+        System.out.println(reduce);
     }
 
 
