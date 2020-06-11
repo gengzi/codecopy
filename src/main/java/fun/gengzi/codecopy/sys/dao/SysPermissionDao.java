@@ -19,12 +19,10 @@ import java.util.List;
 @Repository
 public interface SysPermissionDao extends JpaRepository<SysPermission, Integer> {
 
-    // 如果有缓存，就读缓存，没有就去执行这个方法
-    @Cacheable(cacheManager = "localhostCacheManager", value = "DATADIC_GLOBAL_MENU", key = "#pid")
+
     List<SysPermission> findAllByPid(Integer pid);
 
-    // 如果有缓存，就读缓存，没有就去执行这个方法
-    @CachePut(cacheManager = "localhostCacheManager", value = "DATADIC_GLOBAL_MENU_TYPE_F", key = "#type")
+
     List<SysPermission> findByType(String type);
 
 

@@ -13,29 +13,39 @@ import java.util.List;
 public interface SysPermissionService {
 
     /**
-     * 根据pid 查找pid 下面的菜单项
+     * 根据pid 查找pid 的缓存的菜单项
      *
      * @param pid 菜单父id
      * @return {@link List<SysPermission>}
      */
     List<SysPermission> getAllInfoByPid(Integer pid);
 
+
     /**
-     * 根据type 菜单类型，查找菜单项
+     * 添加一条系统菜单数据，并把这条数据缓存在本地
      *
-     * @param type 菜单父id
-     * @return {@link List<SysPermission>}
+     * @param sysPermission {@link SysPermission}
+     * @return {@link SysPermission}
      */
-    List<SysPermission> getInfoByType(String type);
+    SysPermission addSysPermissionInfo(SysPermission sysPermission);
 
 
     /**
-     * 根据 key 清除根据菜单类型缓存的数据
+     * 根据id 更新菜单名称，并更新到缓存
      *
-     * @param key
+     * @param sysPermission {@link SysPermission}
      * @return
      */
-    boolean clearTypeCache(Integer key);
+    SysPermission updateNameById(SysPermission sysPermission);
+
+
+    /**
+     * 根据id 删除菜单
+     *
+     * @param sysPermission {@link SysPermission}
+     * @return
+     */
+    void removeSysPermissionInfo(SysPermission sysPermission);
 
 
 }
