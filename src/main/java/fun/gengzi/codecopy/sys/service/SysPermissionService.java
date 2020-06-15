@@ -20,6 +20,14 @@ public interface SysPermissionService {
      */
     List<SysPermission> getAllInfoByPid(Integer pid);
 
+    /**
+     * 根据pid 查找pid 的缓存的菜单项
+     *
+     * @param pid 菜单父id
+     * @return {@link List<SysPermission>}
+     */
+    List<SysPermission> getAllInfoByPidToRedis(Integer pid);
+
 
     /**
      * 添加一条系统菜单数据，并把这条数据缓存在本地

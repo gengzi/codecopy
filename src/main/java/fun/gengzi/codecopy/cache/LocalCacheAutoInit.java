@@ -38,7 +38,12 @@ public class LocalCacheAutoInit implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        
+
+        List<SysPermission> allInfoByPidToRedis = sysPermissionService.getAllInfoByPidToRedis(310512);
+        allInfoByPidToRedis = sysPermissionService.getAllInfoByPidToRedis(310512);
+        allInfoByPidToRedis.forEach(sysPermission -> System.out.println(sysPermission.toString()));
+
+
 
 
 //        logger.info("系统本地缓存 SysLocalCacheinit start");

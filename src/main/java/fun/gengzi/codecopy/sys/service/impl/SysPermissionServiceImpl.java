@@ -29,6 +29,21 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         return sysPermissionDao.findAllByPid(pid);
     }
 
+
+
+    /**
+     * 根据pid 查找pid 下面的菜单项
+     *
+     * @param pid 菜单父id
+     * @return {@link List < SysPermission >}
+     */
+    @Cacheable(cacheManager = "localhostRedisCacheManager", value = "DATADIC_GLOBAL_MENU", key = "'result_pid_'+#pid")
+    @Override
+    public List<SysPermission> getAllInfoByPidToRedis(Integer pid) {
+        return sysPermissionDao.findAllByPid(pid);
+    }
+
+
     /**
      * 添加一条系统菜单数据，并把这条数据缓存在本地
      *
