@@ -46,6 +46,10 @@ public class CacheConfig extends CachingConfigurerSupport {
      * caffeineCacheManager 本地缓存
      * 根据 CacheConfigEnum 来初始化缓存项
      *
+     * 注意点：
+     *     @Primary 标识默认实现
+     *     因为在 CacheConfig 中，两个方法都返回了 CacheManager 类型，需要标识一下那个是默认实现，防止
+     *
      * @return
      */
     @Primary
