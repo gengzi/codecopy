@@ -142,7 +142,7 @@ public class CacheConfig extends CachingConfigurerSupport {
         // Redis 缓存默认配置
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
                 .defaultCacheConfig()   // 读取默认的缓存配置
-                .entryTtl(Duration.ofHours(10)) // 过期时间
+                .entryTtl(Duration.ofSeconds(5)) // 过期时间
                 // .disableCachingNullValues()  // 不缓存空值
                 // .disableKeyPrefix()  // 禁用前缀
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))  // 序列化key
