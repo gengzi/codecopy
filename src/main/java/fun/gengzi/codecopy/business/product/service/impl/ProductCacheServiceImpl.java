@@ -32,16 +32,16 @@ import java.util.List;
  * 如果数据很少，在系统启动就加载缓存数据
  * 如果数据多一点，系统上线后，手动在后台页面，加载缓存数据
  * 定时任务，估计时间节点，刷新缓存
- *
- *
+ * <p>
+ * <p>
  * 刷新缓存策略：
  * 先操作数据库，在操作删除，直接删掉缓存数据
- *
- *
- *
- *  数据一致性 ， 最终一致性
- *
- *
+ * <p>
+ * <p>
+ * <p>
+ * 数据一致性 ， 最终一致性
+ * <p>
+ * <p>
  * 更新缓存策略
  * Cache Aside Pattern
  *
@@ -50,11 +50,12 @@ import java.util.List;
  */
 @Service
 public class ProductCacheServiceImpl implements ProductCacheService {
+    // 存放的数量
     private static int size = 1000000;
-    private static BloomFilter<Integer> bloomFilter =BloomFilter.create(Funnels.integerFunnel(), size);
+    private static BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size);
 
 
-        @Autowired
+    @Autowired
     private ProductDao productDao;
 
     /**
@@ -77,7 +78,7 @@ public class ProductCacheServiceImpl implements ProductCacheService {
 
     /**
      * 根据产品id 获取产品信息
-     *
+     * <p>
      * 检查一下，查询一个不存在的 id ，会不会缓存 null 数据
      * 布隆过滤器需要把所有可能的key 都存入，增加复杂度  还不如使用redis，还能持久化
      * 布隆过滤器，能告诉你某样东西一定不存在或者可能存在
@@ -96,12 +97,26 @@ public class ProductCacheServiceImpl implements ProductCacheService {
 //        return productDao.findById(id.longValue()).orElseThrow(() -> {
 //            return new RrException("error ", RspCodeEnum.FAILURE.getCode());
 //        } );
-
-        return productDao.findById(id.longValue()).orElse(null);
+        // 如果存在返回 true ，不存在返回 false
+        boolean isContain = bloomFilter.mightContain(id);
+        if (isContain) {
+//            return productDao.findById(id.longValue()).orElse(null);
+            return productDao.findById(id.longValue()).orElseThrow(() -> new RrException("error ", RspCodeEnum.FAILURE.getCode()));
+        } else {
+            throw new RrException("error ", RspCodeEnum.FAILURE.getCode());
+        }
 
 
         // 会延迟加载  在进行json 转换时会报错 https://blog.csdn.net/ypp91zr/article/details/77707312
 //        return productDao.getOne(id.longValue());
+    }
+
+    @Override
+    public void putBloomKey() {
+        List<Integer> allId = productDao.getAllId();
+        allId.forEach(id -> {
+            bloomFilter.put(id);
+        });
     }
 }
 

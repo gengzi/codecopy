@@ -27,4 +27,11 @@ public interface ProductCacheService {
     Product getOneProductCacheInfo(Integer id);
 
 
+    /**
+     * 将可能的key 都存入布隆过滤器
+     */
+    void putBloomKey();
+
+
+
 }
