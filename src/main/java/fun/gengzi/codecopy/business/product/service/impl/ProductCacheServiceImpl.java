@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy.business.product.service.impl;
 
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
 import fun.gengzi.codecopy.business.product.dao.ProductDao;
 import fun.gengzi.codecopy.business.product.entity.Product;
 import fun.gengzi.codecopy.business.product.service.ProductCacheService;
@@ -48,8 +50,11 @@ import java.util.List;
  */
 @Service
 public class ProductCacheServiceImpl implements ProductCacheService {
+    private static int size = 1000000;
+    private static BloomFilter<Integer> bloomFilter =BloomFilter.create(Funnels.integerFunnel(), size);
 
-    @Autowired
+
+        @Autowired
     private ProductDao productDao;
 
     /**
@@ -73,6 +78,10 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     /**
      * 根据产品id 获取产品信息
      *
+     * 检查一下，查询一个不存在的 id ，会不会缓存 null 数据
+     * 布隆过滤器需要把所有可能的key 都存入，增加复杂度  还不如使用redis，还能持久化
+     * 布隆过滤器，能告诉你某样东西一定不存在或者可能存在
+     *
      * @param id
      * @return
      */
@@ -80,7 +89,17 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     @Override
     public Product getOneProductCacheInfo(Integer id) {
 
-        return productDao.findById(id.longValue()).orElseThrow(() -> new RrException("error ", RspCodeEnum.FAILURE.getCode()));
+        // 先查缓存，如果有，返回
+        // 无，使用布隆过滤器，判断id 是否存布隆过滤器中，有查db 无，阻断，返回null 对象
+
+
+//        return productDao.findById(id.longValue()).orElseThrow(() -> {
+//            return new RrException("error ", RspCodeEnum.FAILURE.getCode());
+//        } );
+
+        return productDao.findById(id.longValue()).orElse(null);
+
+
         // 会延迟加载  在进行json 转换时会报错 https://blog.csdn.net/ypp91zr/article/details/77707312
 //        return productDao.getOne(id.longValue());
     }

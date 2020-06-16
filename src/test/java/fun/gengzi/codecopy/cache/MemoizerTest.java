@@ -22,8 +22,6 @@ class MemoizerTest {
     private Logger logger = LoggerFactory.getLogger(LocalCacheAutoInit.class);
 
 
-
-
     @Autowired
     @Qualifier("localhostCacheManager")
     private CacheManager cacheManager;
@@ -50,7 +48,7 @@ class MemoizerTest {
                 return shorturl;
             }
         });
-        
+
 
         try {
             Shorturl shorturl = memoizer.compute("key");
