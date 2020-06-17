@@ -1,6 +1,5 @@
 package fun.gengzi.codecopy.business.product.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import fun.gengzi.codecopy.business.product.dao.ProductDao;
@@ -8,11 +7,12 @@ import fun.gengzi.codecopy.business.product.entity.Product;
 import fun.gengzi.codecopy.business.product.service.ProductCacheService;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.exception.RrException;
-import io.swagger.models.auth.In;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -133,6 +133,23 @@ public class ProductCacheServiceImpl implements ProductCacheService {
         return getProduct(id);
     }
 
+    /**
+     * 更新产品数据信息
+     * <p>
+     * 先更新数据库数据，移除缓存
+     * beforeInvocation false 在方法执行完毕之后移除缓存
+     *
+     * @param product 产品
+     */
+    @CacheEvict(cacheManager = "loclRedisCacheManagers",
+            cacheNames = {"PRODUCT_INFO_ID_CACHE_AVALANCHE1", "PRODUCT_INFO_ID_CACHE_AVALANCHE2", "PRODUCT_INFO_ID_CACHE_AVALANCHE3",
+                    "PRODUCT_INFO_ID_CACHE_AVALANCHE4"}, key = "#product.id", beforeInvocation = false)
+    @Transactional
+    @Override
+    public void updateProductInfo(Product product) {
+        productDao.save(product);
+    }
+
     @Cacheable(cacheManager = "loclRedisCacheManagers", key = "#id",
             cacheNames = {"PRODUCT_INFO_ID_CACHE_AVALANCHE1"})
     public Product cacheAvalanche1(Integer id) {
@@ -145,12 +162,14 @@ public class ProductCacheServiceImpl implements ProductCacheService {
         // 如果存在返回 true ，不存在返回 false
         return getProduct(id);
     }
+
     @Cacheable(cacheManager = "loclRedisCacheManagers", key = "#id",
             cacheNames = {"PRODUCT_INFO_ID_CACHE_AVALANCHE3"})
     public Product cacheAvalanche3(Integer id) {
         // 如果存在返回 true ，不存在返回 false
         return getProduct(id);
     }
+
     @Cacheable(cacheManager = "loclRedisCacheManagers", key = "#id",
             cacheNames = {"PRODUCT_INFO_ID_CACHE_AVALANCHE4"})
     public Product cacheAvalanche4(Integer id) {
@@ -167,7 +186,6 @@ public class ProductCacheServiceImpl implements ProductCacheService {
             throw new RrException("error ", RspCodeEnum.FAILURE.getCode());
         }
     }
-
 
 
     @Override

@@ -44,6 +44,12 @@ public interface ProductCacheService {
 
 
     /**
+     * 更新产品数据信息
+     * @param product 产品
+     */
+    void updateProductInfo(Product product);
+
+    /**
      * 将可能的key 都存入布隆过滤器
      */
     void putBloomKey();

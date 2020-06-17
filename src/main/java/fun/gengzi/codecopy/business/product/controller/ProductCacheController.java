@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -165,6 +166,25 @@ public class ProductCacheController {
         // https://blog.csdn.net/morendap/article/details/80746996
         Method method = productCacheService.getClass().getMethod(methodName, Integer.class);
         return (Product) method.invoke(productCacheService,id);
+    }
+
+
+    @ApiOperation(value = "缓存更新- Cache-Aside Pattern", notes = "缓存穿透- Cache-Aside Pattern")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Product", value = "请求参数实体", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/updateProductInfo")
+    @ResponseBody
+    public ReturnData updateProductInfo(@RequestBody Product product) {
+        productCacheService.updateProductInfo(product);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        return ret;
     }
 
 }
