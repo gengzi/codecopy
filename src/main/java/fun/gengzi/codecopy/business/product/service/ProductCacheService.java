@@ -20,7 +20,7 @@ public interface ProductCacheService {
 
 
     /**
-     * 根据产品id 获取产品信息
+     * 根据产品id 获取产品信息  - 解决缓存穿透，缓存null 数据
      * @param id
      * @return
      */
@@ -32,6 +32,15 @@ public interface ProductCacheService {
      * @return
      */
     Product getOneProductCacheInfoBloom(Integer id);
+
+
+
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存雪崩,缓存穿透，缓存击穿
+     * @param id
+     * @return
+     */
+    Product getOneProductCacheInfoTest(Integer id);
 
 
     /**

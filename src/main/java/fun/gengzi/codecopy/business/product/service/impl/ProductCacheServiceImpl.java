@@ -22,7 +22,7 @@ import java.util.List;
  * <p>
  * 演示  缓存雪崩（key 在同一时间失效），增加容错时间
  * 缓存穿透（不存在的key，一直被访问）  布隆过滤器解决 问题，如果把可能出现的key ，存入布隆过滤器
- * 缓存击穿 （一个缓存的key，大量请求，在缓存失效的某一刻，大量请求落到底层数据库） 缓存key一直不失效
+ * 缓存击穿 （一个缓存的key，大量请求，在缓存失效的某一刻，大量请求落到底层数据库） 缓存key一直不失效，设置缓存一致存在，使用互斥锁，只有一个线程可以访问数据，其他线程等待
  * <p>
  * 限流  限制同一ip 每秒访问同一接口的次数
  * 降级  服务降级，系统负荷比较高时，将服务降低，执行降级逻辑。
@@ -112,6 +112,26 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     @Cacheable(cacheManager = "loclRedisCacheManagers", value = "PRODUCT_INFO_ID_NOPREFIX", key = "#id", cacheNames = {"PRODUCT_INFO_ID_NOPREFIX"})
     @Override
     public Product getOneProductCacheInfoBloom(Integer id) {
+        // 如果存在返回 true ，不存在返回 false
+        boolean isContain = bloomFilter.mightContain(id);
+        if (isContain) {
+            return productDao.findById(id.longValue()).orElseThrow(() -> new RrException("error ", RspCodeEnum.FAILURE.getCode()));
+        } else {
+            throw new RrException("error ", RspCodeEnum.FAILURE.getCode());
+        }
+    }
+
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存雪崩,缓存穿透，缓存击穿
+     *
+     * @param id
+     * @return
+     */
+    @Cacheable(cacheManager = "loclRedisCacheManagers", key = "#id",
+            cacheNames = {"PRODUCT_INFO_ID_CACHE_AVALANCHE1", "PRODUCT_INFO_ID_CACHE_AVALANCHE2",
+                    "PRODUCT_INFO_ID_CACHE_AVALANCHE3", "PRODUCT_INFO_ID_CACHE_AVALANCHE4"})
+    @Override
+    public Product getOneProductCacheInfoTest(Integer id) {
         // 如果存在返回 true ，不存在返回 false
         boolean isContain = bloomFilter.mightContain(id);
         if (isContain) {

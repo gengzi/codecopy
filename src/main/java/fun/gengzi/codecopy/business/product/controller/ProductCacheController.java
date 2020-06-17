@@ -127,4 +127,23 @@ public class ProductCacheController {
     }
 
 
+    @ApiOperation(value = "缓存雪崩-使用不同的redis过期时间来存储", notes = "缓存穿透-使用不同的redis过期时间来存储")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/findCacheUseRedisTtl")
+    @ResponseBody
+    public ReturnData findCacheUseRedisTtl(@RequestParam("id") Integer id) {
+        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoTest(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(oneProductCacheInfo);
+        return ret;
+    }
+
 }
