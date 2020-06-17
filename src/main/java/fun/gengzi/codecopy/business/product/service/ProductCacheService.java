@@ -26,6 +26,13 @@ public interface ProductCacheService {
      */
     Product getOneProductCacheInfo(Integer id);
 
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存穿透： 布隆过滤器
+     * @param id
+     * @return
+     */
+    Product getOneProductCacheInfoBloom(Integer id);
+
 
     /**
      * 将可能的key 都存入布隆过滤器
