@@ -7,10 +7,8 @@ import fun.gengzi.codecopy.business.product.entity.Product;
 import fun.gengzi.codecopy.business.product.service.ProductCacheService;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.exception.RrException;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,15 +43,11 @@ import java.util.List;
  * <p>
  * 更新缓存策略
  * Cache Aside Pattern
- *
+ * <p>
  * 问题: 本地缓存， 怎么判定那些是热点数据
  * 查询次数？
- *
+ * <p>
  * 当某个key，访问次数越多，就存入本地缓存
- *
- *
- *
- *
  *
  * @author gengzi
  * @date 2020年6月16日11:01:18
@@ -115,7 +109,7 @@ public class ProductCacheServiceImpl implements ProductCacheService {
      * @param id
      * @return
      */
-    @Cacheable(cacheManager = "loclRedisCacheManagers", value = "cache1", key = "#id")
+    @Cacheable(cacheManager = "loclRedisCacheManagers", value = "PRODUCT_INFO_ID_NOPREFIX", key = "#id", cacheNames = {"PRODUCT_INFO_ID_NOPREFIX"})
     @Override
     public Product getOneProductCacheInfoBloom(Integer id) {
         // 如果存在返回 true ，不存在返回 false

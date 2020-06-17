@@ -22,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class CacheConfig extends CachingConfigurerSupport {
                     final Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
                     final long ttl = cacheConfigEnum.getTtl();
                     final long maxSize = cacheConfigEnum.getMaxSize();
-                    if (ttl != -1) {
+                    if (ttl != -1 && ttl > 0) {
                         // 设置过期时间
                         // 设置写入多久之后过期
                         caffeine.expireAfterWrite(cacheConfigEnum.getTtl(), cacheConfigEnum.getTimeUnit());
@@ -159,15 +160,19 @@ public class CacheConfig extends CachingConfigurerSupport {
     }
 
 
+    /**
+     * 自定义redis缓存管理器
+     * <p>
+     * 使用 CacheRedisConfigEnum 来配置多个 redis 缓存
+     *
+     * @param redisConnectionFactory
+     * @return
+     */
     @Bean("loclRedisCacheManagers")
-    public CacheManager redisCacheManagerSimple(RedisConnectionFactory redisConnectionFactory) {
-        logger.info("初始化 -> [{}]", "CacheManger RedisCacheManger Start ----- redisCacheManagerSimple");
-        SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
-
+    public CacheManager loclRedisCacheManagers(RedisConnectionFactory redisConnectionFactory) {
+        logger.info("初始化 -> [{}]", "CacheManger RedisCacheManger Start ----- loclRedisCacheManagers");
         // key 序列化
         RedisSerializer<String> stringRedisSerializer = new StringRedisSerializer();
-        ArrayList<RedisCache> redisCacheManagers = new ArrayList<>(CacheRedisConfigEnum.values().length);
-
         // value 序列化
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         // 解决查询缓存转换异常的问题
@@ -175,39 +180,52 @@ public class CacheConfig extends CachingConfigurerSupport {
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
-        // Redis 缓存默认配置
+        // Redis 缓存默认配置  默认配置的config defaultCacheConfig 使用这个方法创建
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
                 .defaultCacheConfig()   // 读取默认的缓存配置
-                .entryTtl(Duration.ofSeconds(500)) // 过期时间
+                //.entryTtl(Duration.ofSeconds(20)) // 过期时间
                 // .disableCachingNullValues()  // 不缓存空值
                 // .disableKeyPrefix()  // 禁用前缀
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))  // 序列化key
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer));  // 序列化value
 
+        // Redis 缓存自定义配置
+        HashMap<String, RedisCacheConfiguration> redisCacheConfigurationHashMap = new HashMap<>(CacheRedisConfigEnum.values().length);
+        Arrays.stream(CacheRedisConfigEnum.values()).forEach(cacheRedisConfigEnum -> {
+            RedisCacheConfiguration redisCacheConfiguration2 = RedisCacheConfiguration
+                    .defaultCacheConfig()
+                    .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))  // 序列化key
+                    .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer));  // 序列化value
 
+            long ttl = cacheRedisConfigEnum.getTtl();
+            ChronoUnit chronoUnit = cacheRedisConfigEnum.getChronoUnit();
+            boolean cacheNullValues = cacheRedisConfigEnum.isCacheNullValues();
+            boolean useKeyPrefix = cacheRedisConfigEnum.isUseKeyPrefix();
+            // 特别注意：每次设置config，在源码中都重新创建了一个 config，所以要把 对象重新拿到。
+            // 如果不拿新创建的对象，你的 config 都只是第一次创建的，也就是不带额外配置，默认配置的config
+            if (ttl != -1 && ttl > 0) {
+                // 设置过期时间
+                redisCacheConfiguration2 = redisCacheConfiguration2.entryTtl(Duration.of(ttl, chronoUnit));
+            }
+            if (!cacheNullValues) {
+                // 不缓存空值
+                redisCacheConfiguration2 = redisCacheConfiguration2.disableCachingNullValues();
+            }
+            if (!useKeyPrefix) {
+                // 禁用前缀
+                redisCacheConfiguration2 = redisCacheConfiguration2.disableKeyPrefix();
+            }
+            // 追加到Map 中
+            redisCacheConfigurationHashMap.put(cacheRedisConfigEnum.name(), redisCacheConfiguration2);
 
-        RedisCacheConfiguration redisCacheConfiguration2 = RedisCacheConfiguration
-                .defaultCacheConfig()   // 读取默认的缓存配置
-                .entryTtl(Duration.ofSeconds(900)) // 过期时间
-                // .disableCachingNullValues()  // 不缓存空值
-                 .disableKeyPrefix()  // 禁用前缀
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))  // 序列化key
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer));  // 序列化value
-
-//        // 构建redis 的缓存管理器
-//        RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisConnectionFactory)
-//                .cacheDefaults(redisCacheConfiguration) // 缓存配置
-//                .build();
-
-
+        });
+        // redis 的写入策略
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.lockingRedisCacheWriter(redisConnectionFactory);
-
-        HashMap<String, RedisCacheConfiguration> redisCacheConfigurationHashMap = new HashMap<>();
-        redisCacheConfigurationHashMap.put("cache1",redisCacheConfiguration2);
-        RedisCacheManager redisCacheManager1 = new RedisCacheManager(redisCacheWriter,redisCacheConfiguration,redisCacheConfigurationHashMap);
-        redisCacheManager1.initializeCaches();
-
-        return redisCacheManager1;
+        // 创建RedisCacheManager
+        RedisCacheManager redisCacheManager = new RedisCacheManager(redisCacheWriter, redisCacheConfiguration, redisCacheConfigurationHashMap);
+        // 初始化这些caches
+        redisCacheManager.initializeCaches();
+        return redisCacheManager;
     }
 
 }

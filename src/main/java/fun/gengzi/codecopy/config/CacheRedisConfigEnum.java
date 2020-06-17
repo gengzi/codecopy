@@ -3,30 +3,39 @@ package fun.gengzi.codecopy.config;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <h1>本地缓存配置枚举类</h1>
- * 该类配置系统的 缓存策略  缓存名称，缓存保存时间，时间单位，最大条数
+ * <h1>Redis缓存配置枚举类</h1>
+ * 该类配置系统的 缓存策略  缓存名称，过期时间，时间单位，是否允许保存空值，是否禁用前缀
+ *
+ * 还可以更加的自定义的，比如 key value 的序列化策略
+ * RedisCacheWriter 写入策略
+ * 设定key 的前缀是什么
+ *
  *
  * @author gengzi
- * @date 2020年6月11日13:32:15
+ * @date 2020年6月17日13:22:5
  */
 @Getter
 @AllArgsConstructor
 public enum CacheRedisConfigEnum {
 
-    //
-    DATADIC_GLOBAL_MENU(-1, TimeUnit.DAYS, -1),
-    // 服务接口信息  设置缓存策略在4小时未写入，过期缓存
-    DATADIC_SERVER_INFO(4, TimeUnit.HOURS, 100);
+    // 产品信息 测试1
+    PRODUCT_INFO_ID_TEST(-1, ChronoUnit.DAYS, true,true),
+    // 产品信息 测试2
+    PRODUCT_INFO_ID(20, ChronoUnit.SECONDS, true,true),
+    // 产品信息,不使用前缀
+    PRODUCT_INFO_ID_NOPREFIX(500, ChronoUnit.SECONDS, false,false);
 
     // 过期时间 -1 不过期
     private long ttl;
     // 时间单位
-    private TimeUnit timeUnit;
-    // 最大条数  -1 不限制
-    private long maxSize;
-
+    private ChronoUnit chronoUnit;
+    // 是否允许保存空值  true 允许，false 不允许
+    private boolean cacheNullValues;
+    // 是否使用key前缀  true 使用，false 不使用
+    private boolean useKeyPrefix;
 
 }
