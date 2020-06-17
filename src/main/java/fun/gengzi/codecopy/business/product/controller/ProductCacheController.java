@@ -1,9 +1,11 @@
 package fun.gengzi.codecopy.business.product.controller;
 
+import cn.hutool.core.util.RandomUtil;
 import fun.gengzi.codecopy.business.product.entity.Product;
 import fun.gengzi.codecopy.business.product.service.ProductCacheService;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -139,11 +142,29 @@ public class ProductCacheController {
     @PostMapping("/findCacheUseRedisTtl")
     @ResponseBody
     public ReturnData findCacheUseRedisTtl(@RequestParam("id") Integer id) {
-        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoTest(id);
+        Product oneProductCacheInfo = getOneProductCacheInfoTest(id);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(oneProductCacheInfo);
         return ret;
+    }
+
+    /**
+     * 使用反射，根据随机参数调用 service 的方法，将数据存入不同的过期时间内
+     * 不能在service 层调用，会将 @cacheable 注解忽略执行方法
+     *
+     * 目的 解决缓存雪崩问题，但是这种做法，应该是不好的，代码冗余而且繁杂
+     *
+     * @param id
+     * @return
+     */
+    @SneakyThrows
+    public Product getOneProductCacheInfoTest(Integer id) {
+        int i = RandomUtil.randomInt(1, 4);
+        String methodName = "cacheAvalanche"+i;
+        // https://blog.csdn.net/morendap/article/details/80746996
+        Method method = productCacheService.getClass().getMethod(methodName, Integer.class);
+        return (Product) method.invoke(productCacheService,id);
     }
 
 }
