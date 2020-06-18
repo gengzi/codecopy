@@ -130,6 +130,41 @@ public class ProductCacheController {
         return ret;
     }
 
+    @ApiOperation(value = "缓存穿透-使用布隆过滤器（Redis）", notes = "缓存穿透-使用布隆过滤器（Redis）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/findCacheUseRedisBloomByErrorId")
+    @ResponseBody
+    public ReturnData findCacheUseRedisBloomByErrorId(@RequestParam("id") Integer id) {
+        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoRedisBloom(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(oneProductCacheInfo);
+        return ret;
+    }
+
+    @ApiOperation(value = "将key存入Redis布隆过滤器", notes = "将key存入Redis布隆过滤器")
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/putRedisBloomKey")
+    @ResponseBody
+    public ReturnData putRedisBloomKey() {
+        productCacheService.putRedisBloomKey();
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        return ret;
+    }
+
 
     @ApiOperation(value = "缓存雪崩-使用不同的redis过期时间来存储", notes = "缓存穿透-使用不同的redis过期时间来存储")
     @ApiImplicitParams({

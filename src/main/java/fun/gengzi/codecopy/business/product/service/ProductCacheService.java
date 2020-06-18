@@ -34,6 +34,15 @@ public interface ProductCacheService {
     Product getOneProductCacheInfoBloom(Integer id);
 
 
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存穿透： Redis布隆过滤器
+     * @param id
+     * @return
+     */
+    Product getOneProductCacheInfoRedisBloom(Integer id);
+
+
+
 
     /**
      * 根据产品id 获取产品信息  -  解决缓存雪崩,缓存穿透，缓存击穿
@@ -60,6 +69,11 @@ public interface ProductCacheService {
      * 将可能的key 都存入布隆过滤器
      */
     void putBloomKey();
+
+    /**
+     * 将可能的key 都存入Redis布隆过滤器
+     */
+    void putRedisBloomKey();
 
 
 

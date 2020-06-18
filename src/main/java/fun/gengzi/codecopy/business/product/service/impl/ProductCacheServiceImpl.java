@@ -1,11 +1,16 @@
 package fun.gengzi.codecopy.business.product.service.impl;
 
+import com.google.common.base.Charsets;
 import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnel;
 import com.google.common.hash.Funnels;
+import fun.gengzi.codecopy.business.product.constant.ProductConstants;
 import fun.gengzi.codecopy.business.product.dao.ProductDao;
 import fun.gengzi.codecopy.business.product.entity.Product;
 import fun.gengzi.codecopy.business.product.service.ProductCacheService;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
+import fun.gengzi.codecopy.dao.BloomFilterHelper;
+import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.exception.RrException;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +74,12 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     // 存放的数量
     private static int size = 1000000;
     // 创建布隆过滤器
-    private static BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size);
+    private static final BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size);
+
+    private static final BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>(
+            (Funnel<String>) (from, into) ->
+                    into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8),
+            1500000, 0.00001);
 
 
     @Autowired
@@ -78,6 +88,9 @@ public class ProductCacheServiceImpl implements ProductCacheService {
 
     @Autowired
     private ProductDao productDao;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 根据类型获取产品信息
@@ -133,6 +146,23 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     }
 
     /**
+     * 根据产品id 获取产品信息  -  解决缓存穿透： Redis布隆过滤器
+     *
+     * @param id
+     * @return
+     */
+    @Cacheable(cacheManager = "loclRedisCacheManagers", value = "PRODUCT_INFO_ID_NOPREFIX", key = "#id", cacheNames = {"PRODUCT_INFO_ID_NOPREFIX"})
+    @Override
+    public Product getOneProductCacheInfoRedisBloom(Integer id) {
+        boolean isContain = redisUtil.includeByBloomFilter(myBloomFilterHelper, ProductConstants.PRODUCT_ID, id + "");
+        if (isContain) {
+            return productDao.findById(id.longValue()).orElseThrow(() -> new RrException("error ", RspCodeEnum.FAILURE.getCode()));
+        } else {
+            throw new RrException("error ", RspCodeEnum.FAILURE.getCode());
+        }
+    }
+
+    /**
      * 根据产品id 获取产品信息  -  解决缓存雪崩,缓存穿透，缓存击穿
      *
      * @param id
@@ -147,13 +177,10 @@ public class ProductCacheServiceImpl implements ProductCacheService {
 
     /**
      * 根据产品id 获取产品信息  -  解决缓存雪崩 增加内存缓存，避免缓存在同一时刻，全部失效
-     *
+     * <p>
      * 优先使用redis 获取缓存数据，如果获取不到，从内存缓存中获取
      * 内存缓存依然获取不到，从数据库查找
      * 再次存入 内存缓存 和 redis 缓存
-     *
-     *
-     *
      *
      * @param id
      * @return
@@ -243,6 +270,17 @@ public class ProductCacheServiceImpl implements ProductCacheService {
         List<Integer> allId = productDao.getAllId();
         allId.forEach(id -> {
             bloomFilter.put(id);
+        });
+    }
+
+    /**
+     * 将可能的key 都存入Redis布隆过滤器
+     */
+    @Override
+    public void putRedisBloomKey() {
+        List<Integer> allId = productDao.getAllId();
+        allId.forEach(id -> {
+            redisUtil.addByBloomFilter(myBloomFilterHelper, ProductConstants.PRODUCT_ID, id + "");
         });
     }
 }
