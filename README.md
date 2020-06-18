@@ -41,6 +41,7 @@ RspCodeEnum 响应code枚举类
 
 增加短链接生成服务   shorturl
 增加接口权限校验服务 authentication
+增加产品信息缓存演示服务 
 
 
 ### fun.gengzi.codecopy.vo 全局vo
