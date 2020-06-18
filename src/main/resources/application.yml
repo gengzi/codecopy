@@ -67,3 +67,4 @@ management:
       exposure:
         # 开放所有的端点
         include: "*"
+
