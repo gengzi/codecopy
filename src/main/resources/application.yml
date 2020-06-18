@@ -32,6 +32,7 @@ spring:
 #      spec: initialCapacity=10,maximumSize=200,expireAfterWrite=3s
 
 
+
 # 短链接
 shorturl:
   # 短链接前缀
@@ -58,3 +59,11 @@ redis:
     initValue: 101
     # 发号器 增加步长
     step: 20
+
+# springboot actuator 监控
+management:
+  endpoints:
+    web:
+      exposure:
+        # 开放所有的端点
+        include: "*"
