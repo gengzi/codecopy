@@ -29,15 +29,15 @@ spring:
     datasource:
       names: ds0,ds1
       ds0:
-        type: org.apache.commons.dbcp2.BasicDataSource
+        type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://localhost:3306/ds0
         username: root
         password: 111
       ds1:
-        type: org.apache.commons.dbcp2.BasicDataSource
+        type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/ds0
+        url: jdbc:mysql://localhost:3306/ds1
         username: root
         password: 111
     sharding:
