@@ -8,13 +8,20 @@ import fun.gengzi.codecopy.business.product.service.ProductCacheService;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.exception.RrException;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +31,7 @@ import java.util.List;
  * 来降低 高并发下，获取产品信息将网卡流量打满，系统负载饱和。
  * redis 可以看做一个近似单点的缓存服务，对于多个实例的服务，如果使用内存作为缓存的地方，会在每个服务实例，缓存一份数据，数据是冗余的，并且不好保证数据一致性
  * <p>
- * 演示  缓存雪崩（key 在同一时间失效），增加容错时间
+ * 演示  缓存雪崩（key 在同一时间失效，缓存服务器宕机），增加容错时间, 增加多级缓存
  * 缓存穿透（不存在的key，一直被访问）  布隆过滤器解决 问题，如果把可能出现的key ，存入布隆过滤器
  * 缓存击穿 （一个缓存的key，大量请求，在缓存失效的某一刻，大量请求落到底层数据库） 缓存key一直不失效，设置缓存一致存在，使用互斥锁，只有一个线程可以访问数据，其他线程等待
  * <p>
@@ -58,11 +65,16 @@ import java.util.List;
  */
 @Service
 public class ProductCacheServiceImpl implements ProductCacheService {
+    private Logger logger = LoggerFactory.getLogger(ProductCacheServiceImpl.class);
     // 存放的数量
     private static int size = 1000000;
     // 创建布隆过滤器
     private static BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size);
 
+
+    @Autowired
+    @Qualifier("localhostCacheManager")
+    private CacheManager localhostCacheManager;
 
     @Autowired
     private ProductDao productDao;
@@ -131,6 +143,44 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     public Product getOneProductCacheInfoTest(Integer id) {
         // 如果存在返回 true ，不存在返回 false
         return getProduct(id);
+    }
+
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存雪崩 增加内存缓存，避免缓存在同一时刻，全部失效
+     *
+     * 优先使用redis 获取缓存数据，如果获取不到，从内存缓存中获取
+     * 内存缓存依然获取不到，从数据库查找
+     * 再次存入 内存缓存 和 redis 缓存
+     *
+     *
+     *
+     *
+     * @param id
+     * @return
+     */
+    @Cacheable(cacheManager = "loclRedisCacheManagers", key = "#id",
+            cacheNames = {"PRODUCT_INFO_ID_CACHE_AVALANCHE1"})
+    @Override
+    public Product getOneProductCacheInfoTest2(Integer id) {
+        // 先从redis 缓存获取，获取不到，从内存缓存中获取
+        Cache cache = localhostCacheManager.getCache("PRODUCT_INFO_ID_CACHE_AVALANCHE");
+        Cache.ValueWrapper valueWrapper = cache.get(id);
+        Product product = null;
+        if (valueWrapper != null) {
+            Object object = valueWrapper.get();
+            if (object instanceof Product) {
+                product = (Product) object;
+                logger.info("获取信息: {} ", product.toString());
+            }
+            if (product != null && StringUtils.isNoneBlank(product.getId() + "")) {
+                return product;
+            }
+        }
+        // 如果内存中数据也为
+        product = productDao.findById(id.longValue()).orElse(null);
+        // 将数据缓存到本地一份
+        cache.put(id, product);
+        return product;
     }
 
     /**

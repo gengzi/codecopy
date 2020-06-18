@@ -42,6 +42,13 @@ public interface ProductCacheService {
      */
     Product getOneProductCacheInfoTest(Integer id);
 
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存雪崩 增加内存缓存，避免缓存在同一时刻，全部失效
+     * @param id
+     * @return
+     */
+    Product getOneProductCacheInfoTest2(Integer id);
+
 
     /**
      * 更新产品数据信息

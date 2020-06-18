@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.checkerframework.checker.units.qual.A;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,7 +25,9 @@ public enum CacheConfigEnum {
     // 菜单项信息类型为O的
     DATADIC_GLOBAL_MENU_TYPE_O(200, TimeUnit.SECONDS, 100),
     // 服务接口信息  设置缓存策略在4小时未写入，过期缓存
-    DATADIC_SERVER_INFO(4, TimeUnit.HOURS, 100);
+    DATADIC_SERVER_INFO(4, TimeUnit.HOURS, 100),
+    // 产品信息 设置最大缓存10000 条
+    PRODUCT_INFO_ID_CACHE_AVALANCHE(50,TimeUnit.SECONDS, 1000);
 
     // 过期时间 -1 不过期
     private long ttl;

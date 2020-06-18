@@ -150,6 +150,27 @@ public class ProductCacheController {
         return ret;
     }
 
+
+    @ApiOperation(value = "缓存雪崩-使用多级缓存（一级，内存缓存，二级，redis缓存）一级缓存只缓存比较热点的数据", notes = "缓存雪崩-使用多级缓存（一级，内存缓存，二级，redis缓存）一级缓存只缓存比较热点的数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/findCacheUseRedisAndLocalCache")
+    @ResponseBody
+    public ReturnData findCacheUseRedisAndLocalCache(@RequestParam("id") Integer id) {
+        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoTest2(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(oneProductCacheInfo);
+        return ret;
+    }
+
+
     /**
      * 使用反射，根据随机参数调用 service 的方法，将数据存入不同的过期时间内
      * 不能在service 层调用，会将 @cacheable 注解忽略执行方法
