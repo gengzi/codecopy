@@ -25,39 +25,39 @@ spring:
       ddl-auto: none
     show-sql: true
   # 通过默认配置，配置 cache 相关
-  shardingsphere:
-    datasource:
-      names: ds0,ds1
-      ds0:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/ds0
-        username: root
-        password: 111
-      ds1:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/ds1
-        username: root
-        password: 111
-    sharding:
-      default-database-strategy:
-        inline:
-          sharding-column: user_id
-          algorithm-expression: ds$->{user_id % 2}
-      tables:
-        t_order:
-          actual-data-nodes: ds$->{0..1}.t_order$->{0..1}
-          table-strategy:
-            inline:
-              sharding-column: order_id
-              algorithm-expression: t_order$->{order_id % 2}
-        t_order_item:
-          actual-data-nodes: ds$->{0..1}.t_order_item$->{0..1}
-          table-strategy:
-            inline:
-              sharding-column: order_id
-              algorithm-expression: t_order_item$->{order_id % 2}
+#  shardingsphere:
+#    datasource:
+#      names: ds0,ds1
+#      ds0:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        url: jdbc:mysql://localhost:3306/ds0
+#        username: root
+#        password: 111
+#      ds1:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        url: jdbc:mysql://localhost:3306/ds1
+#        username: root
+#        password: 111
+#    sharding:
+#      default-database-strategy:
+#        inline:
+#          sharding-column: user_id
+#          algorithm-expression: ds$->{user_id % 2}
+#      tables:
+#        t_order:
+#          actual-data-nodes: ds$->{0..1}.t_order$->{0..1}
+#          table-strategy:
+#            inline:
+#              sharding-column: order_id
+#              algorithm-expression: t_order$->{order_id % 2}
+#        t_order_item:
+#          actual-data-nodes: ds$->{0..1}.t_order_item$->{0..1}
+#          table-strategy:
+#            inline:
+#              sharding-column: order_id
+#              algorithm-expression: t_order_item$->{order_id % 2}
 
 
 #  cache:
