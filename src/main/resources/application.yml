@@ -57,38 +57,38 @@ spring:
       default-database-strategy:
         inline:
           # 数据分片的列
-          sharding-column: user_id
+          sharding-column: ID
           # 分片算法  算法根据 userid 除以2 来区分
-          algorithm-expression: ds$->{user_id % 2}
+          algorithm-expression: ds$->{ID % 2}
       # 表配置
       tables:
-        # 订单表
-        t_order:
+        # 业务表
+        oh_enterprise_info:
           # 主键生成策略
           key-generate-strategy:
             # 列
-            column: order_id
+            column: ID
             # 生成算法
             key-generator-name: snowflake
           # 实际数据节点
-          actual-data-nodes: ds$->{0..1}.t_order$->{0..1}
+          actual-data-nodes: ds$->{0..1}.oh_enterprise_info$->{0..1}
           # 表策略
           table-strategy:
             inline:
               # 分片列
-              sharding-column: order_id
+              sharding-column: ID
               # 分片算法
-              algorithm-expression: t_order$->{order_id % 2}
-        # 订单项
-        t_order_item:
+              algorithm-expression: oh_enterprise_info$->{ID % 2}
+        # 用户表
+        sys_users:
           key-generate-strategy:
-            column: order_id
+            column: ID
             key-generator-name: snowflake
-          actual-data-nodes: ds$->{0..1}.t_order_item$->{0..1}
+          actual-data-nodes: ds$->{0..1}.sys_users$->{0..1}
           table-strategy:
             inline:
-              sharding-column: order_id
-              algorithm-expression: t_order_item$->{order_id % 2}
+              sharding-column: ID
+              algorithm-expression: sys_users$->{ID % 2}
 
 
 
