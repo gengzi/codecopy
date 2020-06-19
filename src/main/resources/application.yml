@@ -67,7 +67,7 @@ spring:
           # 主键生成策略
           key-generate-strategy:
             # 列
-            column: ID
+            column: ENTERPRISE_INFO_ID
             # 生成算法
             key-generator-name: snowflake
           # 实际数据节点
@@ -76,9 +76,9 @@ spring:
           table-strategy:
             inline:
               # 分片列
-              sharding-column: ID
+              sharding-column: ENTERPRISE_INFO_ID
               # 分片算法
-              algorithm-expression: oh_enterprise_info$->{ID % 2}
+              algorithm-expression: oh_enterprise_info$->{ENTERPRISE_INFO_ID % 2}
         # 用户表
         sys_users:
           key-generate-strategy:
