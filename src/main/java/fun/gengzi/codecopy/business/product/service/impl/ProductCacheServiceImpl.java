@@ -75,7 +75,7 @@ public class ProductCacheServiceImpl implements ProductCacheService {
     private static int size = 1000000;
     // 创建布隆过滤器
     private static final BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size);
-
+    // 创建Redis布隆过滤器
     private static final BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>(
             (Funnel<String>) (from, into) ->
                     into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8),
