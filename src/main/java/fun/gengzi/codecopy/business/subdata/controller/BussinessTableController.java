@@ -1,6 +1,7 @@
 package fun.gengzi.codecopy.business.subdata.controller;
 
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDao;
+import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDaoImpl;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
@@ -31,7 +32,6 @@ public class BussinessTableController {
     private BussinessTableDao bussinessTableDao;
 
 
-
     @ApiOperation(value = "查询业务信息", notes = "查询业务信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "filed", value = "字段", required = true)})
@@ -44,10 +44,10 @@ public class BussinessTableController {
     @PostMapping("/queryInfo")
     @ResponseBody
     public ReturnData queryInfo(@RequestParam("filed") String filed) {
-        Optional<BussinessTable> byId = bussinessTableDao.findById(filed);
+//        Optional<BussinessTable> byId = bussinessTableDao.findById(filed);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-        ret.setMessage(byId.orElse(null));
+//        ret.setMessage(byId.orElse(null));
         return ret;
     }
 
@@ -63,9 +63,7 @@ public class BussinessTableController {
     @PostMapping("/insertInfo")
     @ResponseBody
     public ReturnData insertInfo(@RequestBody BussinessTable bussinessTable) {
-        bussinessTableDao.save(bussinessTable);
-
-
+        bussinessTableDao.insert(bussinessTable);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;

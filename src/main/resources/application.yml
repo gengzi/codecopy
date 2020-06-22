@@ -65,11 +65,14 @@ spring:
         # 业务表
         oh_enterprise_info:
           # 主键生成策略
-          key-generate-strategy:
+          key-generator:
             # 列
             column: ENTERPRISE_INFO_ID
             # 生成算法
-            key-generator-name: snowflake
+            type: SNOWFLAKE
+            props:
+              worker:
+                id: 123
           # 实际数据节点
           actual-data-nodes: ds$->{0..1}.oh_enterprise_info$->{0..1}
           # 表策略

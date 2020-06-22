@@ -1,21 +1,27 @@
 package fun.gengzi.codecopy.business.subdata.entity;
+
 import javax.persistence.*;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "oh_enterprise_info")
 public class BussinessTable {
     //主键ID
     @Id
     @Column(name = "ENTERPRISE_INFO_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String enterpriseInfoId;
-    //用人单位名称
     @Column(name = "ENTERPRISE_NAME")
     private String enterpriseName;
-    //统一社会信用代码
     @Column(name = "CREDIT_CODE")
     private String creditCode;
     //所属地区代码
