@@ -30,8 +30,6 @@ public class BussinessTableController {
     @Autowired
     private BussinessTableDao bussinessTableDao;
 
-    @Autowired
-    private EntityManager entityManager;
 
 
     @ApiOperation(value = "查询业务信息", notes = "查询业务信息")
@@ -65,8 +63,7 @@ public class BussinessTableController {
     @PostMapping("/insertInfo")
     @ResponseBody
     public ReturnData insertInfo(@RequestBody BussinessTable bussinessTable) {
-        entityManager.persist(bussinessTable);
-//        bussinessTableDao.save(bussinessTable);
+        bussinessTableDao.save(bussinessTable);
 
 
         ReturnData ret = ReturnData.newInstance();
