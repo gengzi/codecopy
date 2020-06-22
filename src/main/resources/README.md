@@ -3,7 +3,7 @@
 
 目的打造一个适用于复制粘贴的组件化的代码工程，把常见业务场景和工具类都提供实现
 
-版本号：1.0.7
+版本号：1.0.8
 
 参考的开源工程代码：
 [从0到1构建分布式秒杀系统，脱离案例讲架构都是耍流氓](https://gitee.com/52itstyle/spring-boot-seckill)
@@ -41,6 +41,7 @@ RspCodeEnum 响应code枚举类
 
 增加短链接生成服务   shorturl
 增加接口权限校验服务 authentication
+增加sharding jdbc 分库分表服务 subdata
 
 
 ### fun.gengzi.codecopy.vo 全局vo

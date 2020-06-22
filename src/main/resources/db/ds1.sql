@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2020-06-19 14:46:31
+Date: 2020-06-22 16:59:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -6334,11 +6334,11 @@ INSERT INTO `dic_list` VALUES ('84', '职业病种类和名称指标项', 'zybzl
 INSERT INTO `dic_list` VALUES ('85', '执业许可证发证机关级别', 'zyxkzfzjgjb', '');
 
 -- ----------------------------
--- Table structure for oh_enterprise_info
+-- Table structure for oh_enterprise_info0
 -- ----------------------------
-DROP TABLE IF EXISTS `oh_enterprise_info`;
-CREATE TABLE `oh_enterprise_info` (
-  `ENTERPRISE_INFO_ID` varchar(64) NOT NULL COMMENT '主键ID',
+DROP TABLE IF EXISTS `oh_enterprise_info0`;
+CREATE TABLE `oh_enterprise_info0` (
+  `ENTERPRISE_INFO_ID` bigint(20) NOT NULL COMMENT '主键ID',
   `ENTERPRISE_NAME` varchar(64) DEFAULT NULL COMMENT '用人单位名称',
   `CREDIT_CODE` varchar(18) DEFAULT NULL COMMENT '统一社会信用代码',
   `ADDRESS_CODE` varchar(18) DEFAULT NULL COMMENT '所属地区代码',
@@ -6370,8 +6370,91 @@ CREATE TABLE `oh_enterprise_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='01用人单位信息表';
 
 -- ----------------------------
--- Records of oh_enterprise_info
+-- Records of oh_enterprise_info0
 -- ----------------------------
+INSERT INTO `oh_enterprise_info0` VALUES ('481868552732127232', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868727944982528', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868729308131328', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868730654502912', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868731900211200', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868733158502400', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868734488096768', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868735733805056', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868974217736192', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868976235196416', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868977665454080', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868978995048448', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868980957982720', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868982405017600', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868983633948672', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868985638825984', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info0` VALUES ('481868987052306432', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+
+-- ----------------------------
+-- Table structure for oh_enterprise_info1
+-- ----------------------------
+DROP TABLE IF EXISTS `oh_enterprise_info1`;
+CREATE TABLE `oh_enterprise_info1` (
+  `ENTERPRISE_INFO_ID` bigint(20) NOT NULL COMMENT '主键ID',
+  `ENTERPRISE_NAME` varchar(64) DEFAULT NULL COMMENT '用人单位名称',
+  `CREDIT_CODE` varchar(18) DEFAULT NULL COMMENT '统一社会信用代码',
+  `ADDRESS_CODE` varchar(18) DEFAULT NULL COMMENT '所属地区代码',
+  `ECONOMIC_TYPE_CODE` varchar(8) DEFAULT NULL COMMENT '经济类型代码',
+  `ECONOMIC_TYPE_VISION` varchar(4) DEFAULT NULL COMMENT '经济类型代码版本',
+  `INDUSTRY_CATEGORY_CODE` varchar(8) DEFAULT NULL COMMENT '行业类别代码',
+  `INDUSTRY_CATEGORY_VISION` varchar(4) DEFAULT NULL COMMENT '行业类别代码版本',
+  `BUSINESS_SCALE_CODE` varchar(2) DEFAULT NULL COMMENT '企业规模代码',
+  `BUSINESS_SCALE_VISION` varchar(4) DEFAULT NULL COMMENT '企业规模代码版本',
+  `ADDRESS_DETAIL` varchar(128) DEFAULT NULL COMMENT '通讯地址',
+  `ADDRESS_ZIP_CODE` varchar(12) DEFAULT NULL COMMENT '邮政编码',
+  `ENTERPRISE_CONTACT` varchar(50) DEFAULT NULL COMMENT '单位联系人',
+  `CONTACT_TELPHONE` varchar(20) DEFAULT NULL COMMENT '单位联系电话',
+  `CREATE_USER_ACCOUNT` varchar(36) DEFAULT NULL COMMENT '创建人账号',
+  `CREATE_USER_NAME` varchar(64) DEFAULT NULL COMMENT '创建人姓名',
+  `CREATE_DATE` date DEFAULT NULL COMMENT '创建日期',
+  `UPDATE_USER_ACCOUNT` varchar(36) DEFAULT NULL COMMENT '修改人账号',
+  `UPDATE_USER_NAME` varchar(64) DEFAULT NULL COMMENT '修改人姓名',
+  `UPDATE_DATE` date DEFAULT NULL COMMENT '修改日期',
+  `is_del` int(11) DEFAULT '0' COMMENT '是否删除, 0 否 1 是',
+  `guid` varchar(128) DEFAULT NULL COMMENT '日志 ID, 可用作日志的查询',
+  `data_version` int(6) DEFAULT NULL COMMENT '版本号',
+  `USER_PHONE` varchar(32) DEFAULT NULL COMMENT '创建人联系方式',
+  PRIMARY KEY (`ENTERPRISE_INFO_ID`),
+  UNIQUE KEY `credit_code_index` (`CREDIT_CODE`) USING BTREE COMMENT '统一社会信息用代码唯一索引',
+  KEY `create_user_account_index` (`CREATE_USER_ACCOUNT`) USING BTREE,
+  KEY `oenterpisei_index` (`ADDRESS_CODE`) USING BTREE,
+  KEY `ohenin_del_index` (`is_del`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='01用人单位信息表';
+
+-- ----------------------------
+-- Records of oh_enterprise_info1
+-- ----------------------------
+INSERT INTO `oh_enterprise_info1` VALUES ('481862790886699009', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862794531549185', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862795999555585', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862797358510081', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862798629384193', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862799933812737', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862801309544449', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862802668498945', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862803935178753', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481862805289938945', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868728632848385', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868729970831361', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868731254288385', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868732491608065', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868733821202433', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868735100465153', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868736308424705', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868975492804609', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868976948228097', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868978302988289', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868980223979521', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868981746511873', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868982971248641', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868984942571521', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868986347663361', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
+INSERT INTO `oh_enterprise_info1` VALUES ('481868987664674817', 'ff', null, null, null, null, null, null, null, null, null, null, null, null, null, null, '2020-06-22', null, null, null, null, null, '1', null);
 
 -- ----------------------------
 -- Table structure for shorturl
