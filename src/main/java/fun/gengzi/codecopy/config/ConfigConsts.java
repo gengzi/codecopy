@@ -14,7 +14,7 @@ public class ConfigConsts {
     // 项目说明
     public static final String APP_EXPLANATION = "适用于复制粘贴的组件化的代码工程";
     // 项目版本
-    public static final String APP_VERSION = "1.0.0";
+    public static final String APP_VERSION = "1.0.8";
     // swagger-config-全局controller包名
     public static final String SWAGGER_CONTROLLER_PACKAGE = "fun.gengzi.codecopy.business";
 
