@@ -1,8 +1,10 @@
 package fun.gengzi.codecopy.business.subdata.controller;
 
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDao;
+import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDaoExtendsJPA;
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDaoImpl;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
+import fun.gengzi.codecopy.business.subdata.service.SubDataService;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.aspectj.util.FileUtil;
@@ -31,10 +33,16 @@ public class BussinessTableController {
     @Autowired
     private BussinessTableDao bussinessTableDao;
 
+    @Autowired
+    private BussinessTableDaoExtendsJPA bussinessTableDaoExtendsJPA;
 
-    @ApiOperation(value = "查询业务信息", notes = "查询业务信息")
+    @Autowired
+    private SubDataService subDataService;
+
+
+    @ApiOperation(value = "根据主键查询业务信息", notes = "根据主键查询业务信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "filed", value = "字段", required = true)})
+            @ApiImplicitParam(name = "id", value = "主键", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
             "\t    \"status\": 200,\n" +
             "\t    \"info\": {\n" +
@@ -43,14 +51,27 @@ public class BussinessTableController {
             "\t}\n")})
     @PostMapping("/queryInfo")
     @ResponseBody
-    public ReturnData queryInfo(@RequestParam("filed") String filed) {
-//        Optional<BussinessTable> byId = bussinessTableDao.findById(filed);
+    public ReturnData queryInfo(@RequestParam("id") Long id) {
+//        BussinessTable one = BussinessTableDaoExtendsJPA.getOne(filed);
+
+        BussinessTable bussinessTableById = bussinessTableDao.getBussinessTableById(id);
+
+//        BussinessTable bussinessTbaleInfo = subDataService.getBussinessTbaleInfo(id);
+
+        Long enterpriseInfoId = bussinessTableById.getEnterpriseInfoId();
+        logger.info("获取的业务数据id：{}", enterpriseInfoId);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-//        ret.setMessage(byId.orElse(null));
+        ret.setMessage(bussinessTableById);
         return ret;
     }
 
+    /**
+     * 测试数据：
+     * {"enterpriseName":"ff","createDate":"2020-6-22","dataVersion":1}
+     * @param bussinessTable
+     * @return
+     */
     @ApiOperation(value = "插入一条数据", notes = "插入一条数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "bussinessTable", value = "请求实体", required = true)})
@@ -63,9 +84,29 @@ public class BussinessTableController {
     @PostMapping("/insertInfo")
     @ResponseBody
     public ReturnData insertInfo(@RequestBody BussinessTable bussinessTable) {
+
         bussinessTableDao.insert(bussinessTable);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
+        return ret;
+    }
+
+    @ApiOperation(value = "根据名称查询业务信息", notes = "根据名称查询业务信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "name", value = "名称", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/queryInfoByName")
+    @ResponseBody
+    public ReturnData queryInfoByName(@RequestParam("name") String name) {
+        List<BussinessTableDao> byEnterpriseName = bussinessTableDaoExtendsJPA.findByEnterpriseName(name);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(byEnterpriseName);
         return ret;
     }
 

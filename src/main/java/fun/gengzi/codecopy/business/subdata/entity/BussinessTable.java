@@ -4,22 +4,27 @@ import javax.persistence.*;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ApiModel
 @Table(name = "oh_enterprise_info")
 public class BussinessTable {
     //主键ID
+    @ApiModelProperty(value = "主键")
     @Id
     @Column(name = "ENTERPRISE_INFO_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String enterpriseInfoId;
+    private Long enterpriseInfoId;
+
+    @ApiModelProperty(value = "名称")
     @Column(name = "ENTERPRISE_NAME")
     private String enterpriseName;
     @Column(name = "CREDIT_CODE")
@@ -63,7 +68,9 @@ public class BussinessTable {
     //创建人姓名
     @Column(name = "CREATE_USER_NAME")
     private String createUserName;
+
     //创建日期
+    @ApiModelProperty(value = "创建日期")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     @Column(name = "CREATE_DATE")
@@ -75,6 +82,7 @@ public class BussinessTable {
     @Column(name = "UPDATE_USER_NAME")
     private String updateUserName;
     //修改日期
+    @ApiModelProperty(value = "修改日期")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     @Column(name = "UPDATE_DATE")

@@ -11,7 +11,15 @@ public interface BussinessTableDao {
      * @param bussinessTable 业务表数据
      * @return
      */
-    String insert(final BussinessTable bussinessTable);
+    Long insert(final BussinessTable bussinessTable);
+
+    /**
+     * 根据id 获取数据
+     *
+     * @param id 主键
+     * @return
+     */
+    BussinessTable getBussinessTableById(final Long id);
 
 
 }
