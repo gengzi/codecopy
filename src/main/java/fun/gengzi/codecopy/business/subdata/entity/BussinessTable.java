@@ -51,7 +51,7 @@ public class BussinessTable {
     private Date updatedate;
     //是否删除, 0 否 1 是
     @Column(name = "is_del")
-    private short isDel;
+    private Integer isDel;
     //日志 ID, 可用作日志的查询
     @Column(name = "guid")
     private String guid;
