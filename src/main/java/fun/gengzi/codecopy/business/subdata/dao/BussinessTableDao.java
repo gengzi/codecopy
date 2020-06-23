@@ -1,12 +1,25 @@
 package fun.gengzi.codecopy.business.subdata.dao;
 
 import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 
+public interface BussinessTableDao {
 
-@Repository
-public interface BussinessTableDao extends JpaRepository<BussinessTable, String> {
+    /**
+     * 插入数据
+     *
+     * @param bussinessTable 业务表数据
+     * @return
+     */
+    Long insert(final BussinessTable bussinessTable);
+
+    /**
+     * 根据id 获取数据
+     *
+     * @param id 主键
+     * @return
+     */
+    Object getBussinessTableById(final Long id);
+
 
 }

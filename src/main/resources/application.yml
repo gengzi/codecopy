@@ -26,6 +26,10 @@ spring:
     show-sql: true
   # 通过默认配置，配置 cache 相关
   shardingsphere:
+    # 显示sql
+    props:
+      sql:
+        show: true
     datasource:
       # 配置两个数据源
       names: ds0,ds1
@@ -44,51 +48,63 @@ spring:
         username: root
         password: 111
 
+    ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
+    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
+    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
+    ## 需要设置为 integer 类型
+    ###
     sharding:
+      # 默认的数据源名称
+      default-data-source-name: ds0
       # 主键生成策略
       key-generators:
         snowflake:
           type: SNOWFLAKE
       # 绑定表
-      binding-tables: sys_users,oh_enterprise_info
+      binding-tables: t_bussiness
       # 广播表 配置为广播表，会在执行插入 更新时，都每个数据库都执行
       broadcast-tables: shorturl,area_info,dic_data,dic_list,sys_permission
       # 默认的数据库策略
-      default-database-strategy:
+      default-database-strategy:   # 分库策略
         inline:
           # 数据分片的列
-          sharding-column: ID
+          sharding-column: data_version
           # 分片算法  算法根据 userid 除以2 来区分
-          algorithm-expression: ds$->{ID % 2}
+          algorithm-expression: ds$->{data_version % 2}
       # 表配置
-      tables:
+      tables:   # 分表策略
         # 业务表
-        oh_enterprise_info:
+        t_bussiness:
           # 主键生成策略
-          key-generate-strategy:
+          key-generator:
             # 列
-            column: ENTERPRISE_INFO_ID
+            column: id
             # 生成算法
-            key-generator-name: snowflake
+            type: SNOWFLAKE
+            props:
+              worker:
+                id: 123
           # 实际数据节点
-          actual-data-nodes: ds$->{0..1}.oh_enterprise_info$->{0..1}
+          actual-data-nodes: ds$->{0..1}.t_bussiness$->{0..1}
           # 表策略
           table-strategy:
             inline:
               # 分片列
-              sharding-column: ENTERPRISE_INFO_ID
+              sharding-column: id
               # 分片算法
-              algorithm-expression: oh_enterprise_info$->{ENTERPRISE_INFO_ID % 2}
-        # 用户表
-        sys_users:
-          key-generate-strategy:
-            column: ID
-            key-generator-name: snowflake
-          actual-data-nodes: ds$->{0..1}.sys_users$->{0..1}
-          table-strategy:
-            inline:
-              sharding-column: ID
-              algorithm-expression: sys_users$->{ID % 2}
+              algorithm-expression: t_bussiness$->{id % 2}
+
+      #        # 用户表
+
+      #        sys_users:
+#          key-generate-strategy:
+#            column: ID
+#            key-generator-name: snowflake
+#          actual-data-nodes: ds$->{0..1}.sys_users$->{0..1}
+#          table-strategy:
+#            inline:
+#              sharding-column: ID
+#              algorithm-expression: sys_users$->{ID % 2}
 
 
 
@@ -97,35 +113,6 @@ spring:
 #    caffeine:
 #      # 配置缓存,初始缓存容量为10,最大容量为200,过期时间(这里配置写入后过期时间为3秒)
 #      spec: initialCapacity=10,maximumSize=200,expireAfterWrite=3s
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # 短链接
 shorturl:

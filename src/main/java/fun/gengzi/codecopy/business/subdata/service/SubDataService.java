@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy.business.subdata.service;
 
+import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
+
 /**
  * <h1>分库分表</h1>
  *
@@ -20,6 +22,13 @@ package fun.gengzi.codecopy.business.subdata.service;
  *
  */
 public interface SubDataService {
+
+    /**
+     * 根据id 获取业务表信息
+     * @param id
+     * @return
+     */
+    BussinessTable getBussinessTbaleInfo(Long id);
 
 
 
