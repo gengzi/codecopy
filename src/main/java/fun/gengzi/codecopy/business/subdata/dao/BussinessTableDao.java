@@ -19,7 +19,7 @@ public interface BussinessTableDao {
      * @param id 主键
      * @return
      */
-    BussinessTable getBussinessTableById(final Long id);
+    Object getBussinessTableById(final Long id);
 
 
 }

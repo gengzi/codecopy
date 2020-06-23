@@ -36,7 +36,7 @@ public class BussinessTableDaoImpl implements BussinessTableDao {
     @Override
     public Long insert(final BussinessTable bussinessTable) {
         entityManager.persist(bussinessTable);
-        return bussinessTable.getEnterpriseInfoId();
+        return bussinessTable.getId();
     }
 
     /**
@@ -46,10 +46,10 @@ public class BussinessTableDaoImpl implements BussinessTableDao {
      * @return
      */
     @Override
-    public BussinessTable getBussinessTableById(Long id) {
-        Query query = entityManager.createQuery("SELECT enterpriseInfoId FROM BussinessTable WHERE enterpriseInfoId = ?1 ");
+    public Object getBussinessTableById(Long id) {
+        Query query = entityManager.createQuery("SELECT id,name FROM BussinessTable WHERE id = ?1 ");
         query.setParameter(1, id);
-        return (BussinessTable) query.getSingleResult();
+        return query.getSingleResult();
 //        return entityManager.find(BussinessTable.class, id);
     }
 }

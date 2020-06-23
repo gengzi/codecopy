@@ -54,21 +54,21 @@ public class BussinessTableController {
     public ReturnData queryInfo(@RequestParam("id") Long id) {
 //        BussinessTable one = BussinessTableDaoExtendsJPA.getOne(filed);
 
-        BussinessTable bussinessTableById = bussinessTableDao.getBussinessTableById(id);
+//        Object bussinessTableById = bussinessTableDao.getBussinessTableById(id);
 
-//        BussinessTable bussinessTbaleInfo = subDataService.getBussinessTbaleInfo(id);
+        BussinessTable bussinessTbaleInfo = subDataService.getBussinessTbaleInfo(id);
 
-        Long enterpriseInfoId = bussinessTableById.getEnterpriseInfoId();
+        Long enterpriseInfoId = bussinessTbaleInfo.getId();
         logger.info("获取的业务数据id：{}", enterpriseInfoId);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-        ret.setMessage(bussinessTableById);
+        ret.setMessage(bussinessTbaleInfo);
         return ret;
     }
 
     /**
      * 测试数据：
-     * {"enterpriseName":"ff","createDate":"2020-6-22","dataVersion":1}
+     * {"name":"ff","createdate":"2020-6-23 10:40:50","dataVersion":1}
      * @param bussinessTable
      * @return
      */
@@ -103,7 +103,7 @@ public class BussinessTableController {
     @PostMapping("/queryInfoByName")
     @ResponseBody
     public ReturnData queryInfoByName(@RequestParam("name") String name) {
-        List<BussinessTableDao> byEnterpriseName = bussinessTableDaoExtendsJPA.findByEnterpriseName(name);
+        List<BussinessTable> byEnterpriseName = bussinessTableDaoExtendsJPA.findByName(name);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(byEnterpriseName);

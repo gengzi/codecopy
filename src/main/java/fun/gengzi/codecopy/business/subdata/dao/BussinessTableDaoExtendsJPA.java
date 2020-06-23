@@ -18,7 +18,7 @@ public interface BussinessTableDaoExtendsJPA extends JpaRepository<BussinessTabl
      * @param name 名称
      * @return
      */
-    List<BussinessTableDao> findByEnterpriseName(String name);
+    List<BussinessTable> findByName(String name);
 
 
 }
