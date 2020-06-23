@@ -29,7 +29,7 @@ CREATE TABLE `t_bussiness` (
   `updatedate` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_del` tinyint(4) DEFAULT NULL COMMENT '是否删除',
   `guid` varchar(64) DEFAULT NULL,
-  `data_version` varchar(12) DEFAULT NULL COMMENT '版本',
+  `data_version` int(11) DEFAULT NULL COMMENT '版本',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

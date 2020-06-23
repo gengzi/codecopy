@@ -17,10 +17,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 
@@ -73,6 +69,19 @@ public class BussinessTableController {
     /**
      * 测试数据：
      * {"name":"ff","createdate":"2020-6-23 10:40:50","dataVersion":1}
+     *
+     *
+     * {
+     *   "addresscode": "xx",
+     *   "code": "xx",
+     *   "createdate": "2020-06-23 08:10:26",
+     *   "dataVersion": 1,
+     *   "diccode": "xx",
+     *   "guid": "xx",
+     *   "isDel": 0,
+     *   "name": "xx",
+     *   "updatedate": "2020-06-23 08:10:26"
+     * }
      *
      * @param bussinessTable
      * @return

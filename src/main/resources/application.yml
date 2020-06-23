@@ -48,6 +48,11 @@ spring:
         username: root
         password: 111
 
+    ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
+    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
+    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
+    ## 需要设置为 integer 类型
+    ###
     sharding:
       # 默认的数据源名称
       default-data-source-name: ds0
@@ -108,35 +113,6 @@ spring:
 #    caffeine:
 #      # 配置缓存,初始缓存容量为10,最大容量为200,过期时间(这里配置写入后过期时间为3秒)
 #      spec: initialCapacity=10,maximumSize=200,expireAfterWrite=3s
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # 短链接
 shorturl:

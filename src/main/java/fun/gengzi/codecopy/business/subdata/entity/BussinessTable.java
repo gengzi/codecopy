@@ -51,13 +51,14 @@ public class BussinessTable {
     private Date updatedate;
     //是否删除, 0 否 1 是
     @Column(name = "is_del")
-    private Integer isDel;
+    private short isDel;
     //日志 ID, 可用作日志的查询
     @Column(name = "guid")
     private String guid;
     //版本号
+    // 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
     @Column(name = "data_version")
-    private String dataVersion;
+    private Integer dataVersion;
 
 
 }
