@@ -124,6 +124,19 @@ public class BussinessTableController {
         return ret;
     }
 
+
+    /**
+     * 数据迁移策略：
+     * 在分库分表之前，数据库表已经包含了大量数据，在服务不停机的前提下，需要实现 双写方案，
+     * 业务前期，双写，还是使用旧的服务和数据
+     * 业务中期，双写，使用新的服务和数据
+     * 业务后期，单写，使用新的服务和数据
+     *
+     * 数据迁移程序，读旧库，走新服务，插入新库
+     *
+     * @param bussinessTable
+     * @return
+     */
     @ApiOperation(value = "更新一条数据", notes = "更新一条数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "BussinessTable", value = "请求实体", required = true)})
@@ -157,6 +170,18 @@ public class BussinessTableController {
         return ret;
     }
 
+    /**
+     * 分页查询 往往伴随着，根据某些字段的查询或者模糊查询
+     * 考虑到分库分表之后，不是根据分片字段的查询，都会走全量查询，也就是会查询所有分库分表的表
+     * 为了避免这种全量查询，考虑将分页和模糊查询，都是用es 来实现
+     * 对于，需要关联表查询的sql（left join），尽量把 left join 消除，需要业务来确定。 在某些场景下，不展示某些数据信息
+     * 对于，无法避免关联查询的sql ，需要重新规划sql，将sql 查询结果，在内存中拼接处理
+     *
+     * 为了使得分库分表的顺利进行，需要将 触发器，存储过程 什么的消除。
+     *
+     * @param bussinessTableVo
+     * @return
+     */
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "BussinessTableVo", value = "业务数据查询vo", required = true)})
