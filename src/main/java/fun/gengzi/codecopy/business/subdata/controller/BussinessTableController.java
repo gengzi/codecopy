@@ -2,8 +2,12 @@ package fun.gengzi.codecopy.business.subdata.controller;
 
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDao;
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDaoExtendsJPA;
+import fun.gengzi.codecopy.business.subdata.dao.DicListDao;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
+import fun.gengzi.codecopy.business.subdata.entity.DicList;
+import fun.gengzi.codecopy.business.subdata.service.DicListService;
 import fun.gengzi.codecopy.business.subdata.service.SubDataService;
+import fun.gengzi.codecopy.business.subdata.vo.BussinessTableToDicVo;
 import fun.gengzi.codecopy.business.subdata.vo.BussinessTableVo;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
@@ -41,6 +45,12 @@ public class BussinessTableController {
     @Autowired
     private SubDataService subDataService;
 
+    @Autowired
+    private DicListDao dicListDao;
+
+    @Autowired
+    private DicListService dicListService;
+
 
     @ApiOperation(value = "根据主键查询业务信息", notes = "根据主键查询业务信息")
     @ApiImplicitParams({
@@ -69,18 +79,18 @@ public class BussinessTableController {
     /**
      * 测试数据：
      * {"name":"ff","createdate":"2020-6-23 10:40:50","dataVersion":1}
-     *
-     *
+     * <p>
+     * <p>
      * {
-     *   "addresscode": "xx",
-     *   "code": "xx",
-     *   "createdate": "2020-06-23 08:10:26",
-     *   "dataVersion": 1,
-     *   "diccode": "xx",
-     *   "guid": "xx",
-     *   "isDel": 0,
-     *   "name": "xx",
-     *   "updatedate": "2020-06-23 08:10:26"
+     * "addresscode": "xx",
+     * "code": "xx",
+     * "createdate": "2020-06-23 08:10:26",
+     * "dataVersion": 1,
+     * "diccode": "xx",
+     * "guid": "xx",
+     * "isDel": 0,
+     * "name": "xx",
+     * "updatedate": "2020-06-23 08:10:26"
      * }
      *
      * @param bussinessTable
@@ -131,7 +141,7 @@ public class BussinessTableController {
      * 业务前期，双写，还是使用旧的服务和数据
      * 业务中期，双写，使用新的服务和数据
      * 业务后期，单写，使用新的服务和数据
-     *
+     * <p>
      * 数据迁移程序，读旧库，走新服务，插入新库
      *
      * @param bussinessTable
@@ -176,7 +186,7 @@ public class BussinessTableController {
      * 为了避免这种全量查询，考虑将分页和模糊查询，都是用es 来实现
      * 对于，需要关联表查询的sql（left join），尽量把 left join 消除，需要业务来确定。 在某些场景下，不展示某些数据信息
      * 对于，无法避免关联查询的sql ，需要重新规划sql，将sql 查询结果，在内存中拼接处理
-     *
+     * <p>
      * 为了使得分库分表的顺利进行，需要将 触发器，存储过程 什么的消除。
      *
      * @param bussinessTableVo
@@ -208,6 +218,70 @@ public class BussinessTableController {
         ret.setMessage(all);
         return ret;
     }
+
+
+    @ApiOperation(value = "全局表-插入一条数据", notes = "全局表-插入一条数据-验证配置的全局表，" +
+            "插入一条数据，能否在所有库中都插入，答案是可以的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "dic_vo", value = "dic请求实体", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/saveDiclist")
+    @ResponseBody
+    public ReturnData saveDiclist(@RequestBody DicList dicList) {
+//        DicList save = dicListDao.save(dicList);
+        DicList dicList1 = dicListService.insertDicList(dicList);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(dicList1);
+        return ret;
+    }
+
+
+    @ApiOperation(value = "全局表-删除一条数据", notes = "全局表-删除一条数据-验证配置的全局表，" +
+            "删除一条数据，能否在所有库中都删除，答案是可以的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "主键", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/delDicListInfo/{id}")
+    @ResponseBody
+    public ReturnData saveDiclist(@PathVariable("id") Integer id) {
+        dicListDao.deleteById(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        return ret;
+    }
+
+
+    @ApiOperation(value = "全局表-业务表-查询", notes = "全局表-业务表-查询，" +
+            "将业务表中的字典code，都转换为字典的对应中文")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "业务表id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfo/{id}")
+    @ResponseBody
+    public ReturnData qryBussinessInfo(@PathVariable("id") Long id) {
+        List<Map<String,Object>> bussinessInfoAndDicInfo = subDataService.getBussinessInfoAndDicInfo(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(bussinessInfoAndDicInfo);
+        return ret;
+    }
+
 
 
 }
