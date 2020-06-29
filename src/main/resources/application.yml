@@ -12,11 +12,11 @@ spring:
 #    password: 111
 #    type: com.alibaba.druid.pool.DruidDataSource
     # redis 配置
-  redis:
-    host: localhost
-    port: 6379
-    jedis.pool.max-wait: -1ms
-    timeout: 2000ms
+#  redis:
+#    host: localhost
+#    port: 6379
+#    jedis.pool.max-wait: -1ms
+#    timeout: 2000ms
   jpa: #jpa配置
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
@@ -172,3 +172,7 @@ management:
       exposure:
         # 开放所有的端点
         include: "*"
+
+# 由于一个 yml 里面配置过多，将一些配置，配置在自定义的yml 中，使用java config 加载到spring 容器
+yml-include:
+  names: redis.yml,application-pro.yml
