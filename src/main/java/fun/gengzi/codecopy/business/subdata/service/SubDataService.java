@@ -42,4 +42,15 @@ public interface SubDataService {
     List<Map<String,Object>> getBussinessInfoAndDicInfo(Long id);
 
 
+    /**
+     * 根据id 获取业务表信息,并将字典code 转化为 字典名称
+     *
+     * 原生sql 查询
+     *
+     * @param id 业务表id
+     * @return
+     */
+    List<Map<String,Object>> getBussinessInfoAndDicInfoBySql(Long id);
+
+
 }

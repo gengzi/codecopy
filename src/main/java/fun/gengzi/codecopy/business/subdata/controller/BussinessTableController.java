@@ -7,7 +7,6 @@ import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
 import fun.gengzi.codecopy.business.subdata.entity.DicList;
 import fun.gengzi.codecopy.business.subdata.service.DicListService;
 import fun.gengzi.codecopy.business.subdata.service.SubDataService;
-import fun.gengzi.codecopy.business.subdata.vo.BussinessTableToDicVo;
 import fun.gengzi.codecopy.business.subdata.vo.BussinessTableVo;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
@@ -21,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.*;
 
 
@@ -276,9 +276,53 @@ public class BussinessTableController {
     @ResponseBody
     public ReturnData qryBussinessInfo(@PathVariable("id") Long id) {
         List<Map<String,Object>> bussinessInfoAndDicInfo = subDataService.getBussinessInfoAndDicInfo(id);
+        bussinessInfoAndDicInfo.forEach(map->{
+            String code = (String) map.get("code");
+            String name = (String) map.get("name");
+            logger.info("code value : {}",code);
+            logger.info("name value : {}",name);
+        });
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(bussinessInfoAndDicInfo);
+        return ret;
+    }
+
+
+    @ApiOperation(value = "全局表-业务表-查询-原生sql", notes = "全局表-业务表-查询-原生sql，" +
+            "将业务表中的字典code，都转换为字典的对应中文")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "业务表id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfoBySql/{id}")
+    @ResponseBody
+    public ReturnData qryBussinessInfoBySql(@PathVariable("id") Long id) {
+        List<Map<String,Object>> bussinessInfoAndDicInfo = subDataService.getBussinessInfoAndDicInfoBySql(id);
+        logger.error("注意，由于id使用了雪花算法生成。拿到的结果集中的id类型是 biginteger，这个类型响应前端后，会出现精度丢失。");
+        // 将其id 转换为 String 类型，返回给前端
+        final List<Map> maps = new ArrayList<>(bussinessInfoAndDicInfo.size());
+        bussinessInfoAndDicInfo.forEach(map->{
+            final HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+            stringObjectHashMap.putAll(map);
+            Object id1 = map.get("id");
+            if(id1 instanceof BigInteger){
+                id1 = (BigInteger)id1;
+                // 转换为10进制数
+                final String idStr = new BigInteger(id1.toString(), 10).toString();
+                logger.info("id value : {}",idStr);
+                stringObjectHashMap.put("id",idStr);
+            }
+            maps.add(stringObjectHashMap);
+        });
+
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(maps);
         return ret;
     }
 

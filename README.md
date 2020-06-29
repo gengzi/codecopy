@@ -33,6 +33,8 @@ SpringContextUtils spring上下文工具类
 
 ### fun.gengzi.codecopy.generator 生成器
 mysql 版本的 entity 的生成器
+postman:
+http://localhost:8089/codeBuildNew?tablename=dic_data
 
 ### fun.gengzi.codecopy.constant 全局常量
 Constants 全局常量类
