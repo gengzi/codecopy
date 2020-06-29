@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface BussinessTableDaoExtendsJPA extends JpaRepository<BussinessTable, Long>, JpaSpecificationExecutor<BussinessTable> {
@@ -30,7 +31,7 @@ public interface BussinessTableDaoExtendsJPA extends JpaRepository<BussinessTabl
      * @return
      */
     @Query(value = "SELECT t1.*, t2.`name` AS codename FROM t_bussiness0 t1 LEFT JOIN ( SELECT CODE, NAME FROM dic_data WHERE DIC_LIST_ID = 31 ) t2 ON t1.`code` = t2.`code` WHERE t1.id = :id", nativeQuery = true)
-    BussinessTableToDicVo qryBussinessTableToDic(Long id);
+    List<Map<String,Object>> qryBussinessTableToDic(Long id);
 
 
 }
