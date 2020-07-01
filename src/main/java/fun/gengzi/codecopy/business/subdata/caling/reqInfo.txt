@@ -1,0 +1,147 @@
+{
+   "ruleConfiguration": {
+      "sourceDatasource": "ds_0: !!YamlDataSourceConfiguration\n  dataSourceClassName: com.zaxxer.hikari.HikariDataSource\n  properties:\n    jdbcUrl: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC&useSSL=false\n    username: root\n    password: '123456'\n    connectionTimeout: 30000\n    idleTimeout: 60000\n    maxLifetime: 1800000\n    maxPoolSize: 50\n    minPoolSize: 1\n    maintenanceIntervalMilliseconds: 30000\n    readOnly: false\n",
+      "sourceRule": "defaultDatabaseStrategy:\n  inline:\n    algorithmExpression: ds_${user_id % 2}\n    shardingColumn: user_id\ntables:\n  t1:\n    actualDataNodes: ds_0.t1\n    keyGenerator:\n      column: order_id\n      type: SNOWFLAKE\n    logicTable: t1\n    tableStrategy:\n      inline:\n        algorithmExpression: t1\n        shardingColumn: order_id\n  t2:\n    actualDataNodes: ds_0.t2\n    keyGenerator:\n      column: order_item_id\n      type: SNOWFLAKE\n    logicTable: t2\n    tableStrategy:\n      inline:\n        algorithmExpression: t2\n        shardingColumn: order_id\n",
+      "destinationDataSources": {
+         "name": "dt_0",
+         "password": "123456",
+         "url": "jdbc:mysql://127.0.0.1:3306/test2?serverTimezone=UTC&useSSL=false",
+         "username": "root"
+      }
+   },
+   "jobConfiguration": {
+      "concurrency": 3
+   }
+}
+
+
+# 	源端sharding sphere数据源相关配置
+ "sourceDatasource":
+ "ds_0: !!YamlDataSourceConfiguration\n
+ dataSourceClassName: com.zaxxer.hikari.HikariDataSource\n
+ properties:\n
+ jdbcUrl: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC&useSSL=false\n
+ username: root\n
+ password: '123456'\n
+ connectionTimeout: 30000\n
+ idleTimeout: 60000\n
+ maxLifetime: 1800000\n
+ maxPoolSize: 50\n
+ minPoolSize: 1\n
+ maintenanceIntervalMilliseconds: 30000\n
+ readOnly: false\n",
+
+
+源端sharding sphere表规则相关配置
+ "sourceRule":
+ "defaultDatabaseStrategy:\n
+ inline:\n
+ algorithmExpression: ds_${user_id % 2}\n
+ shardingColumn: user_id\n
+ tables:\n
+ t1:\n
+ actualDataNodes: ds_0.t1\n
+ keyGenerator:\n
+ column: order_id\n
+ type: SNOWFLAKE\n
+ logicTable: t1\n
+ tableStrategy:\n
+ inline:\n
+ algorithmExpression: t1\n
+ shardingColumn: order_id\n
+ t2:\n
+ actualDataNodes: ds_0.t2\n
+ keyGenerator:\n
+ column: order_item_id\n
+ type: SNOWFLAKE\n
+ logicTable: t2\n
+ tableStrategy:\n
+ inline:\n
+ algorithmExpression: t2\n
+ shardingColumn: order_id\n",
+
+
+
+
+
+ "sourceDatasource":
+ "ds_0: !!org.apache.shardingsphere.orchestration.core.configuration.YamlDataSourceConfiguration\n
+ dataSourceClassName: com.zaxxer.hikari.HikariDataSource\n  properties:\n
+ jdbcUrl: jdbc:mysql://10.0.0.99:3306/order?serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=convertToNull\n
+ driverClassName: com.mysql.jdbc.Driver\n
+  username: sharding_slave\n
+    password: 123456\n
+     connectionTimeout: 30000\n
+      idleTimeout: 60000\n
+       maxLifetime: 1800000\n
+       maxPoolSize: 100\n
+       minPoolSize: 10\n
+       maintenanceIntervalMilliseconds: 30000\n
+       readOnly: false\n",
+
+
+       "sourceRule":
+        "tables:\n
+        t_order:\n
+        actualDataNodes: ds_0.t_order\n
+        keyGenerator:\n
+        column: order_id\n
+        type: SNOWFLAKE",
+
+
+
+{
+   "ruleConfiguration": {
+      "sourceDatasource": "ds_0: !!YamlDataSourceConfiguration\n  dataSourceClassName: com.zaxxer.hikari.HikariDataSource\n  properties:\n    jdbcUrl: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=UTC&useSSL=false\n    username: root\n    password: '123456'\n    connectionTimeout: 30000\n    idleTimeout: 60000\n    maxLifetime: 1800000\n    maxPoolSize: 50\n    minPoolSize: 1\n    maintenanceIntervalMilliseconds: 30000\n    readOnly: false\n",
+      "sourceRule": "defaultDatabaseStrategy:\n  inline:\n    algorithmExpression: ds_${user_id % 2}\n    shardingColumn: user_id\ntables:\n  t1:\n    actualDataNodes: ds_0.t1\n    keyGenerator:\n      column: order_id\n      type: SNOWFLAKE\n    logicTable: t1\n    tableStrategy:\n      inline:\n        algorithmExpression: t1\n        shardingColumn: order_id\n  t2:\n    actualDataNodes: ds_0.t2\n    keyGenerator:\n      column: order_item_id\n      type: SNOWFLAKE\n    logicTable: t2\n    tableStrategy:\n      inline:\n        algorithmExpression: t2\n        shardingColumn: order_id\n",
+      "destinationDataSources": {
+         "name": "dt_0",
+         "password": "123456",
+         "url": "jdbc:mysql://127.0.0.1:3306/test2?serverTimezone=UTC&useSSL=false",
+         "username": "root"
+      }
+   },
+   "jobConfiguration": {
+      "concurrency": 3
+   }
+}
+
+
+
+
+{
+    "ruleConfiguration": {
+        "sourceDatasource": "ds_0: !!org.apache.shardingsphere.orchestration.core.configuration.YamlDataSourceConfiguration\n  dataSourceClassName: com.zaxxer.hikari.HikariDataSource\n  properties:\n    jdbcUrl: jdbc:mysql://localhost:3306/ds_data?serverTimezone=Asia/Shanghai&useSSL=false\n    username: root\n    password: '111'\n    connectionTimeout: 30000\n    idleTimeout: 60000\n    maxLifetime: 1800000\n    maxPoolSize: 50\n    minPoolSize: 1\n    maintenanceIntervalMilliseconds: 30000\n    readOnly: false\n",
+        "sourceRule": "tables:\n  t_bussiness_test:\n    actualDataNodes: ds_0.t_bussiness_test\n    keyGenerator:\n      column: id\n      type: SNOWFLAKE",
+        "destinationDataSources": {
+            "name": "sharding_db",
+            "password": "",
+            "url": "jdbc:mysql://127.0.0.1:3308/sharding_db?serverTimezone=Asia/Shanghai&useSSL=false",
+            "username": "root"
+        }
+    },
+    "jobConfiguration": {
+        "concurrency": 1
+    }
+}
+
+
+{
+    "ruleConfiguration": {
+        "sourceDatasource": "ds_0: !!org.apache.shardingsphere.orchestration.core.configuration.YamlDataSourceConfiguration\n  dataSourceClassName: com.zaxxer.hikari.HikariDataSource\n  properties:\n    jdbcUrl: jdbc:mysql://127.0.0.1:3306/ds_data?serverTimezone=Asia/Shanghai&useSSL=false\n    username: root\n    password: '111'\n    connectionTimeout: 30000\n    idleTimeout: 60000\n    maxLifetime: 1800000\n    maxPoolSize: 50\n    minPoolSize: 1\n    maintenanceIntervalMilliseconds: 30000\n    readOnly: false\n",
+        "sourceRule": "tables:\n  t_bussiness:\n    actualDataNodes: ds_0.t_bussiness\n    keyGenerator:\n      column: id\n      type: SNOWFLAKE",
+        "destinationDataSources": {
+            "name": "sharding_db",
+            "password": "111",
+            "url": "jdbc:mysql://127.0.0.1:3308/sharding_db?serverTimezone=Asia/Shanghai&useSSL=false",
+            "username": "root"
+        }
+    },
+    "jobConfiguration": {
+        "concurrency": 1
+    }
+}
+
+
+
+
