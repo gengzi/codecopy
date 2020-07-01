@@ -186,4 +186,11 @@ public class MyTest {
     }
 
 
+    @Test
+    public void fun05(){
+        int i = Integer.parseInt("01");
+        System.out.println(i);
+    }
+
+
 }
