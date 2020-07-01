@@ -1,6 +1,0 @@
-spring:
-  redis:
-    host: localhost
-    port: 6379
-    jedis.pool.max-wait: -1ms
-    timeout: 2000ms

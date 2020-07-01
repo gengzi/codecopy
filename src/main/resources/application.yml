@@ -4,7 +4,8 @@ spring:
   application:
     name: codecopy
   profiles:
-    active: dev
+    # 可以配置多个。逗号分隔
+    active: dev,devsharding
 #  datasource:
 #    # 注意mysql 时区 字符集编码
 #    url: jdbc:mysql://127.0.0.1:3306/sqltest?autoReconnect=true&serverTimezone=Asia/Shanghai
