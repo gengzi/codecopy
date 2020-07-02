@@ -40,13 +40,15 @@ public class BussinessDateTable {
     //创建日期
     @ApiModelProperty(value = "创建日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    // 时分秒需要设置为 TIMESTAMP
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdate")
     private Date createdate;
     //修改日期
     @ApiModelProperty(value = "修改日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    // 时分秒需要设置为 TIMESTAMP
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatedate")
     private Date updatedate;
     //是否删除, 0 否 1 是

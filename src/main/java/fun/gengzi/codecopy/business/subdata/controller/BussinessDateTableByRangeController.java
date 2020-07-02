@@ -1,45 +1,34 @@
 package fun.gengzi.codecopy.business.subdata.controller;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import fun.gengzi.codecopy.business.subdata.dao.BussinessDateTableDaoExtendsJPA;
-import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDao;
-import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDaoExtendsJPA;
-import fun.gengzi.codecopy.business.subdata.dao.DicListDao;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessDateTable;
-import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
-import fun.gengzi.codecopy.business.subdata.entity.DicList;
-import fun.gengzi.codecopy.business.subdata.service.DicListService;
-import fun.gengzi.codecopy.business.subdata.service.SubDataService;
-import fun.gengzi.codecopy.business.subdata.vo.BussinessTableVo;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * sharding jdbc 测试接口
+ * <h1>sharding jdbc 测试接口-自定义分片算法-范围分片</h1>
  *
  * @author gengzi
- * @date 2020年6月23日13:49:42
+ * @date 2020年7月2日16:17:22
  */
-@Api(value = "sharding jdbc 测试接口-自定义分片算法", tags = {"sharding jdbc 测试接口-自定义分片算法-按照创建时间分片"})
+@Api(value = "sharding jdbc 测试接口-自定义分片算法-范围分片", tags = {"sharding jdbc 测试接口-自定义分片算法-范围分片-按照创建时间分片"})
 @Controller
-public class BussinessDateTableController {
+@RequestMapping("/range")
+public class BussinessDateTableByRangeController {
 
-    private Logger logger = LoggerFactory.getLogger(BussinessDateTableController.class);
+    private Logger logger = LoggerFactory.getLogger(BussinessDateTableByRangeController.class);
 
     @Autowired
     private BussinessDateTableDaoExtendsJPA bussinessTableDao;
@@ -84,6 +73,29 @@ public class BussinessDateTableController {
         return ret;
     }
 
+
+    @ApiOperation(value = "全局表-业务表-查询", notes = "全局表-业务表-查询，" +
+            "between and")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startdateStr", value = "开始时间", required = true),
+            @ApiImplicitParam(name = "enddateStr", value = "结束时间", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfoByDate/{startdateStr}/{enddateStr}")
+    @ResponseBody
+    public ReturnData qryBussinessInfoByDate(@PathVariable("startdateStr") String startdateStr, @PathVariable("enddateStr") String enddateStr) {
+        Date startdate = DateUtil.parse(startdateStr);
+        Date enddate = DateUtil.parse(enddateStr);
+        List<BussinessDateTable> infobyDate = bussinessTableDao.getInfobyDate(startdate,enddate);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(infobyDate);
+        return ret;
+    }
 
 
 }

@@ -30,7 +30,7 @@ import java.util.*;
  * @author gengzi
  * @date 2020年6月23日13:49:42
  */
-@Api(value = "sharding jdbc 测试接口", tags = {"sharding jdbc 测试接口"})
+@Api(value = "sharding jdbc 测试接口-使用行表达式分片", tags = {"sharding jdbc 测试接口-使用行表达式分片-按照主键id分表和version分库"})
 @Controller
 public class BussinessTableController {
 

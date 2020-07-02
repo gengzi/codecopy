@@ -45,8 +45,11 @@ spring:
         standard:
           # 数据分片的列
           sharding-column: createdate
-          # 分片算法  算法根据 userid 除以2 来区分
-          precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.precise.InDateShardingStrategyConfiguration
+          # 分片算法
+          #precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.precise.InDateShardingStrategyConfiguration
+          range-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.range.InDateDataBaseRangeShardingConfiguration
+          # 分片算法 这个算法是，必须选择的，如果不填写，会导致系统启动失败
+          precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.range.InDateDataBaseRangeShardingConfiguration
       # 表配置
       tables:   # 分表策略
         # 业务表
@@ -69,3 +72,4 @@ spring:
               sharding-column: createdate
               # 分片算法
               precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.precise.InMonthShardingStrategyConfiguration
+              range-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.range.InMonthDataBaseRangeShardingConfiguration

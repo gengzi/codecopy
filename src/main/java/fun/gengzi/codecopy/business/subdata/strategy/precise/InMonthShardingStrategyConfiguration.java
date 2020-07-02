@@ -1,4 +1,4 @@
-package fun.gengzi.codecopy.business.subdata.strategy;
+package fun.gengzi.codecopy.business.subdata.strategy.precise;
 
 import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -16,11 +16,11 @@ import java.util.Date;
  * @author gengzi
  * @date 2020年7月1日15:56:32
  */
-public class InDateShardingStrategyConfiguration implements PreciseShardingAlgorithm<Date> {
-    private Logger logger = LoggerFactory.getLogger(InDateShardingStrategyConfiguration.class);
+public class InMonthShardingStrategyConfiguration implements PreciseShardingAlgorithm<Date> {
+    private Logger logger = LoggerFactory.getLogger(InMonthShardingStrategyConfiguration.class);
 
-    public InDateShardingStrategyConfiguration() {
-        logger.info("InDateShardingStrategyConfiguration 根据日期精确分片算法-启用");
+    public InMonthShardingStrategyConfiguration() {
+        logger.info("初始化 -> [{}]", "InMonthShardingStrategyConfiguration ----- 根据日期精确分片算法-启用");
     }
 
     /**
@@ -44,17 +44,17 @@ public class InDateShardingStrategyConfiguration implements PreciseShardingAlgor
         String timeColumn = shardingValue.getColumnName();
         //需要分库的逻辑表
         String tableName = shardingValue.getLogicTableName();
-        logger.info("分片值 : {} , 分片列: {} , 逻辑表: {} ", timeValue, timeColumn, tableName);
-
+        logger.info("分表策略： 分片值 : {} , 分片列: {} , 逻辑表: {} ", time, timeColumn, tableName);
+        availableTargetNames.forEach(name->{
+            logger.info("availableTargetName ：{} ", name);
+        });
         //按年路由
         for (String each : availableTargetNames) {
-            String value = StringUtils.substring(time, 0, 4); //获取到年份
-            if (each.endsWith(value)) {
+            String value = StringUtils.substring(time, 5, 7);
+            if (each.endsWith(Integer.parseInt(value)+"")) {
                 return each;
             }
         }
         throw new UnsupportedOperationException();
     }
-
-
 }
