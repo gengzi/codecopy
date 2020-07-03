@@ -50,6 +50,5 @@ public class BussinessTableDaoImpl implements BussinessTableDao {
         Query query = entityManager.createQuery("SELECT id,name FROM BussinessTable WHERE id = ?1 ");
         query.setParameter(1, id);
         return query.getSingleResult();
-//        return entityManager.find(BussinessTable.class, id);
     }
 }

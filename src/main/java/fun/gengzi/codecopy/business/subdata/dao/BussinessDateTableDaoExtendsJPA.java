@@ -11,11 +11,25 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * <h1>范围分片dao</h1>
+ *
+ * @author gengzi
+ * @date 2020年7月3日09:34:19
+ */
 @Repository
 @Transactional
 public interface BussinessDateTableDaoExtendsJPA extends JpaRepository<BussinessDateTable, Long>, JpaSpecificationExecutor<BussinessDateTable> {
 
+
+    /**
+     * 查询开始时间到结束时间范围内的数据
+     *
+     * @param startDate 起始时间
+     * @param endDate   结束时间
+     * @return {@link List<BussinessDateTable> }
+     */
     @Query(value = "select t from BussinessDateTable t where createdate between ?1 and ?2 ")
-    List<BussinessDateTable> getInfobyDate(Date startDate , Date endDate);
+    List<BussinessDateTable> getInfobyDate(Date startDate, Date endDate);
 
 }

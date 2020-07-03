@@ -28,8 +28,8 @@ public interface BussinessTableDaoExtendsJPA extends JpaRepository<BussinessTabl
      * @param id 业务表id
      * @return
      */
-//    @Query(value = "SELECT t1.*, t2.`name` AS codename FROM t_bussiness0 t1 LEFT JOIN ( SELECT CODE, NAME FROM dic_data WHERE DIC_LIST_ID = 31 ) t2 ON t1.`code` = t2.`code` WHERE t1.id = :id", nativeQuery = true)
-//    List<Map<String,Object>> qryBussinessTableToDic(Long id);
+    //@Query(value = "SELECT t1.*, t2.`name` AS codename FROM t_bussiness0 t1 LEFT JOIN ( SELECT CODE, NAME FROM dic_data WHERE DIC_LIST_ID = 31 ) t2 ON t1.`code` = t2.`code` WHERE t1.id = :id", nativeQuery = true)
+    //List<Map<String,Object>> qryBussinessTableToDic(Long id);
 
     /**
      * 根据业务表id，查询业务表数据（将字典code转为字典名称）
