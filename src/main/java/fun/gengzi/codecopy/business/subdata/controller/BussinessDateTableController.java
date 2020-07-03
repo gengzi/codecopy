@@ -35,7 +35,7 @@ import java.util.Map;
  * @author gengzi
  * @date 2020年6月23日13:49:42
  */
-@Api(value = "sharding jdbc 测试接口-自定义分片算法", tags = {"sharding jdbc 测试接口-自定义分片算法-按照创建时间分片"})
+@Api(value = "sharding jdbc 测试接口-自定义分片算法-精确分片", tags = {"sharding jdbc 测试接口-自定义分片算法-精确分片-按照创建时间分片"})
 @Controller
 public class BussinessDateTableController {
 

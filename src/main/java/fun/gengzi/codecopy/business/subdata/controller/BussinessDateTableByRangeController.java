@@ -74,8 +74,8 @@ public class BussinessDateTableByRangeController {
     }
 
 
-    @ApiOperation(value = "全局表-业务表-查询", notes = "全局表-业务表-查询，" +
-            "between and")
+    @ApiOperation(value = "业务表-查询(针对 between and sql语法)", notes = "业务表-查询(针对 between and sql语法)" +
+            "测试是否执行范围分片的算法，答案是肯定的")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startdateStr", value = "开始时间", required = true),
             @ApiImplicitParam(name = "enddateStr", value = "结束时间", required = true)})

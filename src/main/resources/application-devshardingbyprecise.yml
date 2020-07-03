@@ -1,4 +1,7 @@
-# 专门配置分片规则
+# 范围分片配置
+# 库按照 年 yyyy 分
+# 表按照 月 MM 分
+
 # 按年度分库，按月度分表
 spring:
   shardingsphere:

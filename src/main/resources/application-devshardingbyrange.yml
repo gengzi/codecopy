@@ -1,5 +1,7 @@
-# 专门配置分片规则
-# 按年度分库，按月度分表
+# 精确分片配置
+# 库按照 年 yyyy 分
+# 表按照 月 MM 分
+
 spring:
   shardingsphere:
     # 显示sql
