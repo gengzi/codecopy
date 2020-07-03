@@ -19,6 +19,7 @@ public enum RspCodeEnum {
     SUCCESS(200, "success"),
     ERROR(0, "error"),
     FAILURE(1000, "failure"),
+    SHARDING_FAILURE(7000, "sharding jdbc 分库失败"),
     NOTOKEN(5000, "no token");
     // 重复的值
 //    FAILURE_NEW(1000, "failure255");
