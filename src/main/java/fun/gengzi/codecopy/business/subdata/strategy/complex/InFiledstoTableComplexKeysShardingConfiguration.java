@@ -1,16 +1,18 @@
 package fun.gengzi.codecopy.business.subdata.strategy.complex;
 
 
+import cn.hutool.core.date.DateUtil;
+import fun.gengzi.codecopy.constant.RspCodeEnum;
+import fun.gengzi.codecopy.exception.RrException;
 import lombok.Getter;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shardingsphere.api.sharding.complex.ComplexKeysShardingAlgorithm;
 import org.apache.shardingsphere.api.sharding.complex.ComplexKeysShardingValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <h1>复合分片算法</h1>
@@ -23,6 +25,8 @@ import java.util.Optional;
 public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexKeysShardingAlgorithm {
 
     private Logger logger = LoggerFactory.getLogger(InFiledstoTableComplexKeysShardingConfiguration.class);
+
+    final List<String> addressAll = Arrays.asList("west", "est");
 
     @Getter
     enum ShardingColumnsEnum {
@@ -57,6 +61,8 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
      */
     @Override
     public Collection<String> doSharding(Collection availableTargetNames, ComplexKeysShardingValue shardingValue) {
+        final Collection<String> resultByAddress = new LinkedHashSet<>(availableTargetNames.size());
+        final Collection<String> resultByDate = new LinkedHashSet<>(availableTargetNames.size());
         // 列名称和范围分片的值
         Map columnNameAndRangeValuesMap = shardingValue.getColumnNameAndRangeValuesMap();
         // 列名称和精确分片的值
@@ -66,13 +72,36 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
 
         Collection<Date> createdateList = (Collection<Date>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.createdate.getKey());
         Collection<String> addresscodeList = (Collection<String>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.addresscode.getKey());
+        Optional<Date> optionalDate = createdateList.stream().findFirst();
+        Optional<String> optionalAddress = addresscodeList.stream().findFirst();
 
-        Optional<Date> createdate = createdateList.stream().findFirst();
-        Optional<String> addresscode = addresscodeList.stream().findFirst();
+        Date date = optionalDate.orElseThrow(() -> new RrException("error createdate ", RspCodeEnum.SHARDING_TABLE_FAILURE.getCode()));
+        String addresscode = optionalAddress.orElseThrow(() -> new RrException("error addresscode ", RspCodeEnum.SHARDING_TABLE_FAILURE.getCode()));
+        logger.info("createdate : {}", date);
+        logger.info("addresscode : {}", addresscode);
+        Collection<String> stravailableTargetNames = availableTargetNames;
 
+        stravailableTargetNames.forEach(each -> {
+            String[] split = each.split("_");
+            String tableName = split[split.length - 1];
+            if (tableName.startsWith(addresscode)) {
+                resultByAddress.add(each);
+            }
+        });
 
-
-
-        return null;
+        String time = DateUtil.formatDate(date);
+        //按月份路由
+        for (String each : stravailableTargetNames) {
+            String value = StringUtils.substring(time, 5, 7);
+            if (each.endsWith(Integer.parseInt(value) + "")) {
+                resultByDate.add(each);
+            }
+        }
+        // 取两个集合的交集，确定要执行sql 对应表
+        Collection<String> intersection = CollectionUtils.intersection(resultByAddress, resultByDate);
+        if(intersection.size() == 0){
+            throw new  RrException("error", RspCodeEnum.SHARDING_ROUTE_FAILURE.getCode());
+        }
+        return intersection;
     }
 }

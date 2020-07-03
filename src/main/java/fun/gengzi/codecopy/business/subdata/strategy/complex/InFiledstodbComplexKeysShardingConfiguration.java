@@ -59,9 +59,7 @@ public class InFiledstodbComplexKeysShardingConfiguration implements ComplexKeys
      */
     @Override
     public Collection<String> doSharding(Collection availableTargetNames, ComplexKeysShardingValue shardingValue) {
-        String address = "";
         final Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
-
         // 列名称和范围分片的值
         Map columnNameAndRangeValuesMap = shardingValue.getColumnNameAndRangeValuesMap();
         // 列名称和精确分片的值
@@ -70,16 +68,10 @@ public class InFiledstodbComplexKeysShardingConfiguration implements ComplexKeys
         String logicTableName = shardingValue.getLogicTableName();
 
         Collection<Date> createdate = (Collection<Date>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.createdate.getKey());
-//        Object addresscode = columnNameAndShardingValuesMap.get(ShardingColumnsEnum.addresscode.getKey());
         Optional<Date> optionalDate = createdate.stream().findFirst();
 
 
-//        if (addresscode instanceof String) {
-//            address = (String) addresscode;
-//            logger.info("addresscode : {}", address);
-//        }
-
-        Date date = optionalDate.orElseThrow(() -> new RrException("error", RspCodeEnum.SHARDING_FAILURE.getCode()));
+        Date date = optionalDate.orElseThrow(() -> new RrException("error createdate", RspCodeEnum.SHARDING_DB_FAILURE.getCode()));
         logger.info("createdate : {}", date);
 
         String time = DateUtil.formatDate(date);

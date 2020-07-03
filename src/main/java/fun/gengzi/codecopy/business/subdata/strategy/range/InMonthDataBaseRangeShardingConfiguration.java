@@ -91,7 +91,7 @@ public class InMonthDataBaseRangeShardingConfiguration implements PreciseShardin
         availableTargetNames.forEach(name->{
             logger.info("availableTargetName ：{} ", name);
         });
-        //按年路由
+        //按月份路由
         for (String each : availableTargetNames) {
             String value = StringUtils.substring(time, 5, 7);
             if (each.endsWith(Integer.parseInt(value)+"")) {

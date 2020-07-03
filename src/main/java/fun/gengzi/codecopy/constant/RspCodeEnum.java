@@ -19,7 +19,9 @@ public enum RspCodeEnum {
     SUCCESS(200, "success"),
     ERROR(0, "error"),
     FAILURE(1000, "failure"),
-    SHARDING_FAILURE(7000, "sharding jdbc 分库失败"),
+    SHARDING_DB_FAILURE(7000, "sharding jdbc ：分库键值无效，请检查是否提交该参数"),
+    SHARDING_TABLE_FAILURE(7001, "sharding jdbc ： 分表键值无效，请检查是否提交该参数"),
+    SHARDING_ROUTE_FAILURE(7002, "sharding jdbc ：no table route info ，请检查是否提交该参数"),
     NOTOKEN(5000, "no token");
     // 重复的值
 //    FAILURE_NEW(1000, "failure255");
