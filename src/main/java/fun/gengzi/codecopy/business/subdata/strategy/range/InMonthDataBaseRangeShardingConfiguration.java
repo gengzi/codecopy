@@ -18,6 +18,9 @@ import java.util.LinkedHashSet;
 /**
  * <h1>范围值控制分库分表</h1>
  *
+ * 目的在于，根据范围来选择操作那个库，那个表，来执行sql
+ *
+ *
  * @author gengzi
  * @date 2020年7月2日11:07:15
  */
@@ -38,19 +41,23 @@ public class InMonthDataBaseRangeShardingConfiguration implements PreciseShardin
      */
     @Override
     public Collection<String> doSharding(Collection<String> availableTargetNames, RangeShardingValue<Date> shardingValue) {
+        // 限定月份的范围 1到12月
+        Integer low = 1;
+        Integer upper = 12;
         Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
         Range<Date> range = shardingValue.getValueRange();
-
-        Date lowerDate = range.lowerEndpoint();
-        Date upperDate = range.upperEndpoint();
-
-        logger.info("lowerDate : {} ", DateUtil.formatDateTime(lowerDate));
-        logger.info("upperDate : {} ", DateUtil.formatDateTime(upperDate));
-
-        Integer low = Integer.valueOf(DateUtil.format(lowerDate, "MM"));
-        Integer upper = Integer.valueOf(DateUtil.format(upperDate, "MM"));
-
-
+        // 判断是否存在下界
+        if (range.hasLowerBound()) {
+            Date lowerDate = range.lowerEndpoint();
+            logger.info("lowerDate : {} ", DateUtil.formatDateTime(lowerDate));
+            low = Integer.valueOf(DateUtil.format(lowerDate, "MM"));
+        }
+        // 判断是否存在上节
+        if (range.hasUpperBound()) {
+            Date upperDate = range.upperEndpoint();
+            logger.info("upperDate : {} ", DateUtil.formatDateTime(upperDate));
+            upper = Integer.valueOf(DateUtil.format(upperDate, "MM"));
+        }
         for (int i = low; i <= upper; i++) {
             for (String each : availableTargetNames) {
                 if (each.endsWith(i + "")) {

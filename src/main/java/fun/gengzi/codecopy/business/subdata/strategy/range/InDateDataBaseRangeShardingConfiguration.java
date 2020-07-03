@@ -31,6 +31,9 @@ public class InDateDataBaseRangeShardingConfiguration implements PreciseSharding
 
     /**
      * Sharding.
+     * <p>
+     * 注意 RangeShardingAlgorithm 的实现方法，valueRange 返回的值，是一个 Range<T> 类型
+     * 这个类型，存在值的上界和下界，也就是存在范围。
      *
      * @param availableTargetNames available data sources or tables's names
      * @param shardingValue        sharding value
@@ -38,18 +41,23 @@ public class InDateDataBaseRangeShardingConfiguration implements PreciseSharding
      */
     @Override
     public Collection<String> doSharding(Collection<String> availableTargetNames, RangeShardingValue<Date> shardingValue) {
-        Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
+        // 预设范围，防止参数传递过来，并没有范围 ，表示从 1900年-5000年
+        Integer low = 1900;
+        Integer upper = 5000;
+        final Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
         Range<Date> range = shardingValue.getValueRange();
-
-        Date lowerDate = range.lowerEndpoint();
-        Date upperDate = range.upperEndpoint();
-
-        logger.info("lowerDate : {} ", DateUtil.formatDateTime(lowerDate));
-        logger.info("upperDate : {} ", DateUtil.formatDateTime(upperDate));
-
-        Integer low = Integer.valueOf(DateUtil.format(lowerDate, "yyyy"));
-        Integer upper = Integer.valueOf(DateUtil.format(upperDate, "yyyy"));
-
+        // 判断是否存在下界
+        if (range.hasLowerBound()) {
+            Date lowerDate = range.lowerEndpoint();
+            logger.info("lowerDate : {} ", DateUtil.formatDateTime(lowerDate));
+            low = Integer.valueOf(DateUtil.format(lowerDate, "yyyy"));
+        }
+        // 判断是否存在上节
+        if (range.hasUpperBound()) {
+            Date upperDate = range.upperEndpoint();
+            logger.info("upperDate : {} ", DateUtil.formatDateTime(upperDate));
+            upper = Integer.valueOf(DateUtil.format(upperDate, "yyyy"));
+        }
 
         for (int i = low; i <= upper; i++) {
             for (String each : availableTargetNames) {

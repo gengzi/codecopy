@@ -32,4 +32,13 @@ public interface BussinessDateTableDaoExtendsJPA extends JpaRepository<Bussiness
     @Query(value = "select t from BussinessDateTable t where createdate between ?1 and ?2 ")
     List<BussinessDateTable> getInfobyDate(Date startDate, Date endDate);
 
+    /**
+     * 查询当前时间之前的数据
+     *
+     * @param endDate   时间
+     * @return {@link List<BussinessDateTable> }
+     */
+    @Query(value = "select t from BussinessDateTable t where createdate <= ?1 ")
+    List<BussinessDateTable> getInfobyDateList(Date endDate);
+
 }

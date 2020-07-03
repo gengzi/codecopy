@@ -1,6 +1,9 @@
 package fun.gengzi.codecopy.hutool;
 
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.asymmetric.Sign;
+import cn.hutool.crypto.asymmetric.SignAlgorithm;
 import fun.gengzi.codecopy.java8.lamdba.utils.Trader;
 import org.junit.Test;
 
@@ -8,6 +11,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.security.Signature;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MyTest {
 
 
-
     // xml 转 bean ， 将 xml 标签，转成 bean 属性  完成
     // xml 内容替换为  #标签#  ，再手动替换固定字段  完成
     // 生成表单项 ，根据 实体
@@ -29,8 +32,6 @@ public class MyTest {
 
     // 电子化影像 替换字段
     // 提交接口， 参数校验，参数封装
-
-
 
 
     final String xml = "<root>\n" +
@@ -66,8 +67,6 @@ public class MyTest {
             "</root>";
 
 
-
-
     @Test
     public void fun03() {
         String s = "NameBean";
@@ -84,6 +83,7 @@ public class MyTest {
 
     /**
      * xml 转 实体属性字段
+     *
      * @param xml
      */
     public static void soutBean(String xml) {
@@ -95,13 +95,13 @@ public class MyTest {
                     String regStrByDesc = "<" + s + ">(((?!<).)*)</" + s + ">";
                     List<String> temp = ReUtil.findAll(regStrByDesc, xml, 1, new ArrayList<String>());
                     if (temp != null && !temp.isEmpty()) {
-                        filedAndDesc.put(s,temp.get(0));
+                        filedAndDesc.put(s, temp.get(0));
                     }
                 }
         );
-        filedAndDesc.forEach((key,value)->{
+        filedAndDesc.forEach((key, value) -> {
             String newKey = String.valueOf(key.charAt(0)).toLowerCase() + key.substring(1);
-            System.out.println("// "+value);
+            System.out.println("// " + value);
             System.out.println("private String " + newKey + ";");
         });
     }
@@ -109,6 +109,7 @@ public class MyTest {
 
     /**
      * javabean 转 map
+     *
      * @param bean
      * @return
      * @throws Exception
@@ -153,6 +154,7 @@ public class MyTest {
 
     /**
      * xml转属性字段拼接为  <A>#a#</A>
+     *
      * @param xml
      */
     public static void xmlToNewXml(String xml) {
@@ -165,12 +167,12 @@ public class MyTest {
                     String regStrByDesc = "<" + s + ">(((?!<).)*)</" + s + ">";
                     List<String> temp = ReUtil.findAll(regStrByDesc, xml, 0, new ArrayList<String>());
                     if (temp != null && !temp.isEmpty()) {
-                        filedAndDesc.put(s,temp.get(0));
+                        filedAndDesc.put(s, temp.get(0));
                     }
                 }
         );
         newxml.set(xml);
-        filedAndDesc.forEach((key,value)->{
+        filedAndDesc.forEach((key, value) -> {
             System.out.println(value);
 //            String regStrByDesc = "<(.*?)>"+value+"</(.*?)>";
             String newKey = String.valueOf(key.charAt(0)).toLowerCase() + key.substring(1);
@@ -187,9 +189,21 @@ public class MyTest {
 
 
     @Test
-    public void fun05(){
+    public void fun05() {
         int i = Integer.parseInt("01");
         System.out.println(i);
+    }
+
+
+    @Test
+    public void fun06() {
+        byte[] data = "我是一段测试字符串".getBytes();
+        Sign sign = SecureUtil.sign(SignAlgorithm.MD5withRSA);
+        //签名
+        byte[] signed = sign.sign(data);
+        //验证签名
+        boolean verify = sign.verify(data, signed);
+        System.out.println(verify);
     }
 
 
