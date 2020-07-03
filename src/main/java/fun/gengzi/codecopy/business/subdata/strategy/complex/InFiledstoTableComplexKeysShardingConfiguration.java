@@ -61,8 +61,6 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
      */
     @Override
     public Collection<String> doSharding(Collection availableTargetNames, ComplexKeysShardingValue shardingValue) {
-        final Collection<String> resultByAddress = new LinkedHashSet<>(availableTargetNames.size());
-        final Collection<String> resultByDate = new LinkedHashSet<>(availableTargetNames.size());
         // 列名称和范围分片的值
         Map columnNameAndRangeValuesMap = shardingValue.getColumnNameAndRangeValuesMap();
         // 列名称和精确分片的值
@@ -70,6 +68,21 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
         // 逻辑表名称
         String logicTableName = shardingValue.getLogicTableName();
 
+        //TODO 如果精确分片和范围分片 都支持，这个策略是什么
+        Collection<String> intersection = getShardingTargetNames(availableTargetNames, columnNameAndShardingValuesMap);
+
+        return intersection;
+    }
+
+    /**
+     * 支持 in = 的sql 执行
+     * @param availableTargetNames 可用的目标表
+     * @param columnNameAndShardingValuesMap 列名称和分片值映射
+     * @return {@link Collection<String>} in = sql 需要执行的目标表
+     */
+    private Collection<String> getShardingTargetNames(Collection availableTargetNames, Map columnNameAndShardingValuesMap) {
+        final Collection<String> resultByAddress = new LinkedHashSet<>(availableTargetNames.size());
+        final Collection<String> resultByDate = new LinkedHashSet<>(availableTargetNames.size());
         Collection<Date> createdateList = (Collection<Date>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.createdate.getKey());
         Collection<String> addresscodeList = (Collection<String>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.addresscode.getKey());
         Optional<Date> optionalDate = createdateList.stream().findFirst();

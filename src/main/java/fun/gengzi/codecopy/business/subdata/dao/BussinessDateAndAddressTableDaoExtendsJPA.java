@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -18,5 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface BussinessDateAndAddressTableDaoExtendsJPA extends JpaRepository<BussinessDateAndAddressTable, Long>, JpaSpecificationExecutor<BussinessDateAndAddressTable> {
 
+
+    /**
+     * 查询根据 createDate 和  address ，验证复合分片算法是否可用
+     * @param createDate 时间
+     * @param address 地区
+     * @return {@link  List<BussinessDateAndAddressTable>}
+     */
+    List<BussinessDateAndAddressTable> findByCreatedateAndAddresscode(Date createDate, String address);
 
 }

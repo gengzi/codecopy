@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.subdata.controller;
 
+import cn.hutool.core.date.DateUtil;
 import fun.gengzi.codecopy.business.subdata.dao.BussinessDateAndAddressTableDaoExtendsJPA;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessDateAndAddressTable;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessDateTable;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -66,6 +69,37 @@ public class BussinessDateTableByComplexKeysController {
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(save);
+        return ret;
+    }
+
+
+    /**
+     * 测试数据
+     * {
+     * "addresscode": "west",
+     * "createdate": "2020-01-23 08:10:26"
+     * }
+     *
+     * @param bussinessTable
+     * @return
+     */
+    @ApiOperation(value = "业务表-查询(针对 in = sql语法)", notes = "业务表-查询(针对  in = sql语法)" +
+            "看是否执行精确分片的算法，答案是肯定的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "BussinessDateAndAddressTable", value = "BussinessDateAndAddressTable", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfo")
+    @ResponseBody
+    public ReturnData qryBussinessInfoByDateAndAddress(@RequestBody BussinessDateAndAddressTable bussinessTable) {
+        List<BussinessDateAndAddressTable> byCreatedateAndAddresscode = bussinessTableDao.findByCreatedateAndAddresscode(bussinessTable.getCreatedate(), bussinessTable.getAddresscode());
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(byCreatedateAndAddresscode);
         return ret;
     }
 
