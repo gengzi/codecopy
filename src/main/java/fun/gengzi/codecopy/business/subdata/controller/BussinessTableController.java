@@ -2,7 +2,10 @@ package fun.gengzi.codecopy.business.subdata.controller;
 
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDao;
 import fun.gengzi.codecopy.business.subdata.dao.BussinessTableDaoExtendsJPA;
+import fun.gengzi.codecopy.business.subdata.dao.DicListDao;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
+import fun.gengzi.codecopy.business.subdata.entity.DicList;
+import fun.gengzi.codecopy.business.subdata.service.DicListService;
 import fun.gengzi.codecopy.business.subdata.service.SubDataService;
 import fun.gengzi.codecopy.business.subdata.vo.BussinessTableVo;
 import fun.gengzi.codecopy.vo.ReturnData;
@@ -17,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.*;
 
 
@@ -26,7 +30,7 @@ import java.util.*;
  * @author gengzi
  * @date 2020年6月23日13:49:42
  */
-@Api(value = "sharding jdbc 测试接口", tags = {"sharding jdbc 测试接口"})
+@Api(value = "sharding jdbc 测试接口-使用行表达式分片", tags = {"sharding jdbc 测试接口-使用行表达式分片-按照主键id分表和version分库"})
 @Controller
 public class BussinessTableController {
 
@@ -40,6 +44,12 @@ public class BussinessTableController {
 
     @Autowired
     private SubDataService subDataService;
+
+    @Autowired
+    private DicListDao dicListDao;
+
+    @Autowired
+    private DicListService dicListService;
 
 
     @ApiOperation(value = "根据主键查询业务信息", notes = "根据主键查询业务信息")
@@ -69,18 +79,18 @@ public class BussinessTableController {
     /**
      * 测试数据：
      * {"name":"ff","createdate":"2020-6-23 10:40:50","dataVersion":1}
-     *
-     *
+     * <p>
+     * <p>
      * {
-     *   "addresscode": "xx",
-     *   "code": "xx",
-     *   "createdate": "2020-06-23 08:10:26",
-     *   "dataVersion": 1,
-     *   "diccode": "xx",
-     *   "guid": "xx",
-     *   "isDel": 0,
-     *   "name": "xx",
-     *   "updatedate": "2020-06-23 08:10:26"
+     * "addresscode": "xx",
+     * "code": "xx",
+     * "createdate": "2020-06-23 08:10:26",
+     * "dataVersion": 1,
+     * "diccode": "xx",
+     * "guid": "xx",
+     * "isDel": 0,
+     * "name": "xx",
+     * "updatedate": "2020-06-23 08:10:26"
      * }
      *
      * @param bussinessTable
@@ -124,6 +134,19 @@ public class BussinessTableController {
         return ret;
     }
 
+
+    /**
+     * 数据迁移策略：
+     * 在分库分表之前，数据库表已经包含了大量数据，在服务不停机的前提下，需要实现 双写方案，
+     * 业务前期，双写，还是使用旧的服务和数据
+     * 业务中期，双写，使用新的服务和数据
+     * 业务后期，单写，使用新的服务和数据
+     * <p>
+     * 数据迁移程序，读旧库，走新服务，插入新库
+     *
+     * @param bussinessTable
+     * @return
+     */
     @ApiOperation(value = "更新一条数据", notes = "更新一条数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "BussinessTable", value = "请求实体", required = true)})
@@ -157,6 +180,18 @@ public class BussinessTableController {
         return ret;
     }
 
+    /**
+     * 分页查询 往往伴随着，根据某些字段的查询或者模糊查询
+     * 考虑到分库分表之后，不是根据分片字段的查询，都会走全量查询，也就是会查询所有分库分表的表
+     * 为了避免这种全量查询，考虑将分页和模糊查询，都是用es 来实现
+     * 对于，需要关联表查询的sql（left join），尽量把 left join 消除，需要业务来确定。 在某些场景下，不展示某些数据信息
+     * 对于，无法避免关联查询的sql ，需要重新规划sql，将sql 查询结果，在内存中拼接处理
+     * <p>
+     * 为了使得分库分表的顺利进行，需要将 触发器，存储过程 什么的消除。
+     *
+     * @param bussinessTableVo
+     * @return
+     */
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "BussinessTableVo", value = "业务数据查询vo", required = true)})
@@ -183,6 +218,114 @@ public class BussinessTableController {
         ret.setMessage(all);
         return ret;
     }
+
+
+    @ApiOperation(value = "全局表-插入一条数据", notes = "全局表-插入一条数据-验证配置的全局表，" +
+            "插入一条数据，能否在所有库中都插入，答案是可以的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "dic_vo", value = "dic请求实体", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/saveDiclist")
+    @ResponseBody
+    public ReturnData saveDiclist(@RequestBody DicList dicList) {
+//        DicList save = dicListDao.save(dicList);
+        DicList dicList1 = dicListService.insertDicList(dicList);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(dicList1);
+        return ret;
+    }
+
+
+    @ApiOperation(value = "全局表-删除一条数据", notes = "全局表-删除一条数据-验证配置的全局表，" +
+            "删除一条数据，能否在所有库中都删除，答案是可以的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "主键", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/delDicListInfo/{id}")
+    @ResponseBody
+    public ReturnData saveDiclist(@PathVariable("id") Integer id) {
+        dicListDao.deleteById(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        return ret;
+    }
+
+
+    @ApiOperation(value = "全局表-业务表-查询", notes = "全局表-业务表-查询，" +
+            "将业务表中的字典code，都转换为字典的对应中文")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "业务表id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfo/{id}")
+    @ResponseBody
+    public ReturnData qryBussinessInfo(@PathVariable("id") Long id) {
+        List<Map<String,Object>> bussinessInfoAndDicInfo = subDataService.getBussinessInfoAndDicInfo(id);
+        bussinessInfoAndDicInfo.forEach(map->{
+            String code = (String) map.get("code");
+            String name = (String) map.get("name");
+            logger.info("code value : {}",code);
+            logger.info("name value : {}",name);
+        });
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(bussinessInfoAndDicInfo);
+        return ret;
+    }
+
+
+    @ApiOperation(value = "全局表-业务表-查询-原生sql", notes = "全局表-业务表-查询-原生sql，" +
+            "将业务表中的字典code，都转换为字典的对应中文")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "业务表id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfoBySql/{id}")
+    @ResponseBody
+    public ReturnData qryBussinessInfoBySql(@PathVariable("id") Long id) {
+        List<Map<String,Object>> bussinessInfoAndDicInfo = subDataService.getBussinessInfoAndDicInfoBySql(id);
+        logger.error("注意，由于id使用了雪花算法生成。拿到的结果集中的id类型是 biginteger，这个类型响应前端后，会出现精度丢失。");
+        // 将其id 转换为 String 类型，返回给前端
+        final List<Map> maps = new ArrayList<>(bussinessInfoAndDicInfo.size());
+        bussinessInfoAndDicInfo.forEach(map->{
+            final HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+            stringObjectHashMap.putAll(map);
+            Object id1 = map.get("id");
+            if(id1 instanceof BigInteger){
+                id1 = (BigInteger)id1;
+                // 转换为10进制数
+                final String idStr = new BigInteger(id1.toString(), 10).toString();
+                logger.info("id value : {}",idStr);
+                stringObjectHashMap.put("id",idStr);
+            }
+            maps.add(stringObjectHashMap);
+        });
+
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(maps);
+        return ret;
+    }
+
 
 
 }

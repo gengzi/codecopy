@@ -4,7 +4,8 @@ spring:
   application:
     name: codecopy
   profiles:
-    active: dev
+    # 可以配置多个。逗号分隔
+    active: dev,devshardingbycomplexkeys
 #  datasource:
 #    # 注意mysql 时区 字符集编码
 #    url: jdbc:mysql://127.0.0.1:3306/sqltest?autoReconnect=true&serverTimezone=Asia/Shanghai
@@ -25,74 +26,96 @@ spring:
       ddl-auto: none
     show-sql: true
   # 通过默认配置，配置 cache 相关
-  shardingsphere:
-    # 显示sql
-    props:
-      sql:
-        show: true
-    datasource:
-      # 配置两个数据源
-      names: ds0,ds1
-      # ds0 数据源
-      ds0:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/ds0?autoReconnect=true&serverTimezone=Asia/Shanghai
-        username: root
-        password: 111
-      # ds1 数据源
-      ds1:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://127.0.0.1:3306/ds1?autoReconnect=true&serverTimezone=Asia/Shanghai
-        username: root
-        password: 111
-
-    ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
-    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
-    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
-    ## 需要设置为 integer 类型
-    ###
-    sharding:
-      # 默认的数据源名称
-      default-data-source-name: ds0
-      # 主键生成策略
-      key-generators:
-        snowflake:
-          type: SNOWFLAKE
-      # 绑定表
-      binding-tables: t_bussiness
-      # 广播表 配置为广播表，会在执行插入 更新时，都每个数据库都执行
-      broadcast-tables: shorturl,area_info,dic_data,dic_list,sys_permission
-      # 默认的数据库策略
-      default-database-strategy:   # 分库策略
-        inline:
-          # 数据分片的列
-          sharding-column: data_version
-          # 分片算法  算法根据 userid 除以2 来区分
-          algorithm-expression: ds$->{data_version % 2}
-      # 表配置
-      tables:   # 分表策略
-        # 业务表
-        t_bussiness:
-          # 主键生成策略
-          key-generator:
-            # 列
-            column: id
-            # 生成算法
-            type: SNOWFLAKE
-            props:
-              worker:
-                id: 123
-          # 实际数据节点
-          actual-data-nodes: ds$->{0..1}.t_bussiness$->{0..1}
-          # 表策略
-          table-strategy:
-            inline:
-              # 分片列
-              sharding-column: id
-              # 分片算法
-              algorithm-expression: t_bussiness$->{id % 2}
+#  shardingsphere:
+#    # 显示sql
+#    props:
+#      sql:
+#        show: true
+#
+#    datasource:
+#      # 配置两个数据源
+#      names: ds0,ds1,slaveds0,slaveds1
+#      # ds0 数据源
+#      ds0:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        url: jdbc:mysql://127.0.0.1:3306/ds0?autoReconnect=true&serverTimezone=Asia/Shanghai
+#        username: root
+#        password: 111
+#      # ds1 数据源
+#      ds1:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        url: jdbc:mysql://127.0.0.1:3306/ds1?autoReconnect=true&serverTimezone=Asia/Shanghai
+#        username: root
+#        password: 111
+#      slaveds0:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        url: jdbc:mysql://127.0.0.1:3307/ds0?autoReconnect=true&serverTimezone=Asia/Shanghai
+#        username: root
+#        password:
+#      slaveds1:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        url: jdbc:mysql://127.0.0.1:3307/ds1?autoReconnect=true&serverTimezone=Asia/Shanghai
+#        username: root
+#        password:
+#
+#      ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
+#    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
+#    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
+#    ## 需要设置为 integer 类型
+#    ###
+#    sharding:
+#      # https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/configuration/config-spring-boot/#%E6%95%B0%E6%8D%AE%E5%88%86%E7%89%87--%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB
+#      master-slave-rules:
+#        # master-slave-data-source-name 主从数据库名称
+#        ds0:
+#          master-data-source-name: ds0
+#          slave-data-source-names: slaveds0
+#        ds1:
+#          master-data-source-name: ds1
+#          slave-data-source-names: slaveds1
+#      # 默认的数据源名称
+#      default-data-source-name: ds0
+#      # 主键生成策略
+#      key-generators:
+#        snowflake:
+#          type: SNOWFLAKE
+#      # 绑定表
+#      binding-tables: t_bussiness
+#      # 广播表 配置为广播表，会在执行插入 更新时，都每个数据库都执行
+#      broadcast-tables: shorturl,area_info,dic_data,dic_list,sys_permission
+#      # 默认的数据库策略
+#      default-database-strategy:   # 分库策略
+#        inline:
+#          # 数据分片的列
+#          sharding-column: data_version
+#          # 分片算法  算法根据 userid 除以2 来区分
+#          algorithm-expression: ds$->{data_version % 2}
+#      # 表配置
+#      tables:   # 分表策略
+#        # 业务表
+#        t_bussiness:
+#          # 主键生成策略
+#          key-generator:
+#            # 列
+#            column: id
+#            # 生成算法
+#            type: SNOWFLAKE
+#            props:
+#              worker:
+#                id: 123
+#          # 实际数据节点
+#          actual-data-nodes: ds$->{0..1}.t_bussiness$->{0..1}
+#          # 表策略
+#          table-strategy:
+#            inline:
+#              # 分片列
+#              sharding-column: id
+#              # 分片算法
+#              algorithm-expression: t_bussiness$->{id % 2}
 
       #        # 用户表
 
@@ -105,6 +128,8 @@ spring:
 #            inline:
 #              sharding-column: ID
 #              algorithm-expression: sys_users$->{ID % 2}
+
+
 
 
 
@@ -148,3 +173,7 @@ management:
       exposure:
         # 开放所有的端点
         include: "*"
+
+# 由于一个 yml 里面配置过多，将一些配置，配置在自定义的yml 中，使用java config 加载到spring 容器
+yml-include:
+  names: redis.yml,application-pro.yml

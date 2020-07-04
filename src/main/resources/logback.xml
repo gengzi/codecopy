@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- scan 配置文件如果发生改变，将会被重新加载  scanPeriod 检测间隔时间 BY 科帮网 小柒2012 欢迎关注博客https://blog.52itstyle.com-->
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+<!--                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>-->
+<!--    <property name="CONSOLE_LOG_PATTERN"-->
+<!--              value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) |%highlight(%-5level) |%blue(%thread) |%blue(%file:%line) |%green(%logger) | %msg%n "/>-->
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %logger Line:%-3L - %msg%n "/>
+
     <contextName>spring-boot-seckill</contextName>
     <!--   这个会打印一遍日志-->
     <!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
@@ -61,7 +69,8 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- 日志格式 -->
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>
+<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>-->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             <charset>utf-8</charset>
         </encoder>
         <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
