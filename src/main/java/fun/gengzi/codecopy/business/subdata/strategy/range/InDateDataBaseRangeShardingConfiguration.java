@@ -52,7 +52,7 @@ public class InDateDataBaseRangeShardingConfiguration implements PreciseSharding
             logger.info("lowerDate : {} ", DateUtil.formatDateTime(lowerDate));
             low = Integer.valueOf(DateUtil.format(lowerDate, "yyyy"));
         }
-        // 判断是否存在上节
+        // 判断是否存在上界
         if (range.hasUpperBound()) {
             Date upperDate = range.upperEndpoint();
             logger.info("upperDate : {} ", DateUtil.formatDateTime(upperDate));

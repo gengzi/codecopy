@@ -103,6 +103,37 @@ public class BussinessDateTableByComplexKeysController {
         return ret;
     }
 
+    /**
+     * 测试数据
+     * 2020-1-23 10:40:50
+     * 2020-3-23 10:40:50
+     *
+     * @param startdateStr
+     * @param enddateStr
+     * @return
+     */
+    @ApiOperation(value = "业务表-查询(针对 BETWEEN AND, >, <, >=, <=  sql语法)", notes = "业务表-查询(针对 BETWEEN AND, >, <, >=, <=  sql语法)" +
+            "测试是否执行范围分片的算法，答案是肯定的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startdateStr", value = "开始时间", required = true),
+            @ApiImplicitParam(name = "enddateStr", value = "结束时间", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryBussinessInfoByDate/{startdateStr}/{enddateStr}")
+    @ResponseBody
+    public ReturnData qryBussinessInfoByDate(@PathVariable("startdateStr") String startdateStr, @PathVariable("enddateStr") String enddateStr) {
+        Date startdate = DateUtil.parse(startdateStr);
+        Date enddate = DateUtil.parse(enddateStr);
+        List<BussinessDateAndAddressTable> infobyDate = bussinessTableDao.getInfobyDate(startdate, enddate);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(infobyDate);
+        return ret;
+    }
 
 
 }
