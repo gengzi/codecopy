@@ -24,8 +24,9 @@ public interface BussinessDateAndAddressTableDaoExtendsJPA extends JpaRepository
 
     /**
      * 查询根据 createDate 和  address ，验证复合分片算法是否可用
+     *
      * @param createDate 时间
-     * @param address 地区
+     * @param address    地区
      * @return {@link  List<BussinessDateAndAddressTable>}
      */
     List<BussinessDateAndAddressTable> findByCreatedateAndAddresscode(Date createDate, String address);
@@ -40,6 +41,18 @@ public interface BussinessDateAndAddressTableDaoExtendsJPA extends JpaRepository
      */
     @Query(value = "select t from BussinessDateAndAddressTable t where createdate between ?1 and ?2 ")
     List<BussinessDateAndAddressTable> getInfobyDate(Date startDate, Date endDate);
+
+
+    /**
+     * 查询开始时间到结束时间范围内的数据
+     *
+     * @param startDate   起始时间
+     * @param endDate     结束时间
+     * @param addresscode 地区
+     * @return {@link List<BussinessDateAndAddressTable> }
+     */
+    @Query(value = "select t from BussinessDateAndAddressTable t where addresscode = ?3  and  createdate between ?1 and ?2 ")
+    List<BussinessDateAndAddressTable> getInfobyDateAndAddresscode(Date startDate, Date endDate, String addresscode);
 
 
 }

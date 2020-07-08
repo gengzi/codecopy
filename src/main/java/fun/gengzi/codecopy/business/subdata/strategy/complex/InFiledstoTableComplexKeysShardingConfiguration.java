@@ -72,26 +72,20 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
         // 逻辑表名称
         String logicTableName = shardingValue.getLogicTableName();
 
-
         // 精确分片算法实现
         if (!columnNameAndShardingValuesMap.isEmpty()) {
-            logger.info("复合分片-精确分片算法执行");
-            logger.info("key : {}", columnNameAndShardingValuesMap.keySet().toArray());
-            logger.info("value : {}", columnNameAndShardingValuesMap.values().toArray());
+            logger.info("表-复合分片-精确分片算法执行");
             Collection<String> shardingTargetNamesByShardingValues = getShardingTargetNamesByShardingValues(availableTargetNames, columnNameAndShardingValuesMap);
             dbNamesBySharding.addAll(shardingTargetNamesByShardingValues);
 
         }
         // 范围分片算法实现
         if (!columnNameAndRangeValuesMap.isEmpty()) {
-            logger.info("复合分片-范围分片算法执行");
-            logger.info("key : {}", columnNameAndRangeValuesMap.keySet().toArray());
-            logger.info("value : {}", columnNameAndRangeValuesMap.values().toArray());
+            logger.info("表-复合分片-范围分片算法执行");
             Collection shardingTargetNamesByRangeValues = getShardingTargetNamesByRangeValues(availableTargetNames, columnNameAndRangeValuesMap);
             dbNamesByRange.addAll(shardingTargetNamesByRangeValues);
 
         }
-
 
         // TODO 如果精确分片和范围分片 都支持，这个策略是什么
         // 比如查询 est 东部地区，月份 1到 2 的数据
@@ -103,12 +97,11 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
             }
             result.addAll(intersection);
         } else {
+            // 如果只是单独的一种分片算法，直接加进来就行。 这里有一个应该会为null ，不过没有什么影响
             result.addAll(dbNamesBySharding);
             result.addAll(dbNamesByRange);
         }
 
-
-        logger.info("result 分库结果: {}", result.toArray());
         return result;
     }
 
@@ -188,41 +181,62 @@ public class InFiledstoTableComplexKeysShardingConfiguration implements ComplexK
      * @return {@link Collection<String>} in = sql 需要执行的目标表
      */
     private Collection<String> getShardingTargetNamesByShardingValues(Collection availableTargetNames, Map columnNameAndShardingValuesMap) {
+        final Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
         final Collection<String> resultByAddress = new LinkedHashSet<>(availableTargetNames.size());
         final Collection<String> resultByDate = new LinkedHashSet<>(availableTargetNames.size());
         Collection<Date> createdateList = (Collection<Date>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.createdate.getKey());
         Collection<String> addresscodeList = (Collection<String>) columnNameAndShardingValuesMap.get(ShardingColumnsEnum.addresscode.getKey());
-        Optional<Date> optionalDate = createdateList.stream().findFirst();
-        Optional<String> optionalAddress = addresscodeList.stream().findFirst();
+        Optional<Date> optionalDate = Optional.empty();
+        Optional<String> optionalAddress = Optional.empty();
+        if (createdateList != null && !createdateList.isEmpty()) {
+            optionalDate = createdateList.stream().findFirst();
+        }
+        if (addresscodeList != null && !addresscodeList.isEmpty()) {
+            optionalAddress = addresscodeList.stream().findFirst();
+        }
 
-        Date date = optionalDate.orElseThrow(() -> new RrException("error createdate ", RspCodeEnum.SHARDING_TABLE_FAILURE.getCode()));
-        String addresscode = optionalAddress.orElseThrow(() -> new RrException("error addresscode ", RspCodeEnum.SHARDING_TABLE_FAILURE.getCode()));
-        logger.info("createdate : {}", date);
-        logger.info("addresscode : {}", addresscode);
+        if (!optionalDate.isPresent() && !optionalAddress.isPresent()) {
+            throw new RrException("error createdate and addresscode", RspCodeEnum.SHARDING_TABLE_FAILURE.getCode());
+        }
         Collection<String> stravailableTargetNames = availableTargetNames;
 
-        stravailableTargetNames.forEach(each -> {
-            String[] split = each.split("_");
-            String tableName = split[split.length - 1];
-            if (tableName.startsWith(addresscode)) {
-                resultByAddress.add(each);
+        if (optionalDate.isPresent()) {
+            Date date = optionalDate.get();
+            logger.info("createdate : {}", date);
+            String time = DateUtil.formatDate(date);
+            //按月份路由
+            for (String each : stravailableTargetNames) {
+                String value = StringUtils.substring(time, 5, 7);
+                if (each.endsWith(Integer.parseInt(value) + "")) {
+                    resultByDate.add(each);
+                }
             }
-        });
+        }
+        if (optionalAddress.isPresent()) {
+            String addresscode = optionalAddress.get();
+            logger.info("addresscode : {}", addresscode);
+            stravailableTargetNames.forEach(each -> {
+                String[] split = each.split("_");
+                String tableName = split[split.length - 1];
+                if (tableName.startsWith(addresscode)) {
+                    resultByAddress.add(each);
+                }
+            });
+        }
 
-        String time = DateUtil.formatDate(date);
-        //按月份路由
-        for (String each : stravailableTargetNames) {
-            String value = StringUtils.substring(time, 5, 7);
-            if (each.endsWith(Integer.parseInt(value) + "")) {
-                resultByDate.add(each);
+        // 这里也要区分，只有一个分片键，存在的情况
+        if (!resultByAddress.isEmpty() && !resultByDate.isEmpty()) {
+            Collection<String> intersection = CollectionUtils.intersection(resultByAddress, resultByDate);
+            if (intersection.isEmpty()) {
+                throw new RrException("error", RspCodeEnum.SHARDING_ROUTE_FAILURE.getCode());
             }
+            result.addAll(intersection);
+        } else {
+            // 如果只是单独的一种分片算法，直接加进来就行。 这里有一个应该会为null ，不过没有什么影响
+            result.addAll(resultByAddress);
+            result.addAll(resultByDate);
         }
-        // 取两个集合的交集，确定要执行sql 对应表
-        Collection<String> intersection = CollectionUtils.intersection(resultByAddress, resultByDate);
-        if (intersection.isEmpty()) {
-            throw new RrException("error", RspCodeEnum.SHARDING_ROUTE_FAILURE.getCode());
-        }
-        return intersection;
+        return result;
     }
 
 }

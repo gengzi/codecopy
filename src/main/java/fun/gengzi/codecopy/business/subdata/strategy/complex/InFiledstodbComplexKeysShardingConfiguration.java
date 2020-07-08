@@ -71,21 +71,15 @@ public class InFiledstodbComplexKeysShardingConfiguration implements ComplexKeys
         // 精确分片算法实现
         if (!columnNameAndShardingValuesMap.isEmpty()) {
             logger.info("库- 复合分片-精确分片算法执行");
-            logger.info("key : {}", columnNameAndShardingValuesMap.keySet().toArray());
-            logger.info("value : {}", columnNameAndShardingValuesMap.values().toArray());
             Collection<String> dbNamesBySharding = getShardingTargetNamesByShardingValues(availableTargetNames, columnNameAndShardingValuesMap);
             result.addAll(dbNamesBySharding);
         }
         // 范围分片算法实现
         if (!columnNameAndRangeValuesMap.isEmpty()) {
             logger.info("库- 复合分片-范围分片算法执行");
-            logger.info("key : {}", columnNameAndRangeValuesMap.keySet().toArray());
-            logger.info("value : {}", columnNameAndRangeValuesMap.values().toArray());
             Collection<String> dbNamesByRange = getShardingTargetNamesByRangeValues(availableTargetNames, columnNameAndRangeValuesMap);
             result.addAll(dbNamesByRange);
         }
-        logger.info("result 分库结果: {}", result.toArray());
-
         return result;
     }
 
