@@ -1,7 +1,6 @@
 package fun.gengzi.codecopy.business.subdata.controller;
 
 import fun.gengzi.codecopy.business.subdata.dao.BussinessDateTableAndUseridDaoExtendsJPA;
-import fun.gengzi.codecopy.business.subdata.entity.BussinessDateTable;
 import fun.gengzi.codecopy.business.subdata.entity.BussinessTable;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * sharding jdbc 测试接口
+ *
  *
  * @author gengzi
  * @date 2020年7月10日14:04:37
@@ -50,7 +50,7 @@ public class BussinessDateTableByHintController {
      * @param bussinessTable
      * @return
      */
-    @ApiOperation(value = "插入一条数据", notes = "插入一条数据")
+    @ApiOperation(value = "插入一条数据", notes = "插入一条数据，通过传入的userid 来控制分库分表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "BussinessDateTable", value = "请求实体", required = true),
             @ApiImplicitParam(name = "userid", value = "用户id", required = true)})
@@ -64,6 +64,12 @@ public class BussinessDateTableByHintController {
     @ResponseBody
     public ReturnData insertInfo(@RequestBody BussinessTable bussinessTable, @PathVariable("userid") Integer userid) {
         // 必须使用HintManager，才能设置 hint 分片
+        /**
+         * 通过传入的 userid 来控制，分库分表 的选择
+         * 需要使用 HintManager 来控制分库分表的流程，可以是多个参数
+         *
+         *
+         */
         final HintManager hintManager = HintManager.getInstance();
         hintManager.addDatabaseShardingValue("t_bussiness",userid);
         hintManager.addTableShardingValue("t_bussiness",userid);

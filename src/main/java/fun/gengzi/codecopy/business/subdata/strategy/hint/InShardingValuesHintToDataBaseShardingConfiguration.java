@@ -29,6 +29,9 @@ import java.util.Collection;
  * MASTER_ONLY   仅主数据库
  * hintManager.setMasterRouteOnly();
  *
+ *
+ *  dsh0_hint.sql  使用这个库
+ *
  * @author gengi
  * @date 2020年7月10日13:45:09
  */
