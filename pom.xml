@@ -272,6 +272,25 @@
             <version>${sharding-sphere.version}</version>
         </dependency>
 
+        <!-- Sharding jdbc 编排治理 -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shardingsphere</groupId>-->
+<!--            <artifactId>sharding-jdbc-orchestration-spring-boot-starter</artifactId>-->
+<!--            <version>${sharding-sphere.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.curator</groupId>-->
+<!--                    <artifactId>curator-framework</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;若使用zookeeper, 请加入下面Maven坐标&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shardingsphere</groupId>-->
+<!--            <artifactId>sharding-orchestration-center-zookeeper-curator</artifactId>-->
+<!--            <version>${sharding-sphere.version}</version>-->
+<!--        </dependency>-->
+
 
     </dependencies>
 
