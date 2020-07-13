@@ -262,6 +262,11 @@ public class BussinessTableController {
     }
 
 
+    /**
+     *  对于与业务表对应的广播表，会在每个库中都保持一张广播表，对于广播表的修改，会映射到全部的分库分表中
+     * @param id
+     * @return
+     */
     @ApiOperation(value = "全局表-业务表-查询", notes = "全局表-业务表-查询，" +
             "将业务表中的字典code，都转换为字典的对应中文")
     @ApiImplicitParams({

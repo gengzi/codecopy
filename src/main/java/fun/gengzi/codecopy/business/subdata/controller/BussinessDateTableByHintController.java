@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * sharding jdbc 测试接口
  *
- *
  * @author gengzi
  * @date 2020年7月10日14:04:37
  */
@@ -70,15 +69,22 @@ public class BussinessDateTableByHintController {
          *
          *
          */
-        final HintManager hintManager = HintManager.getInstance();
-        hintManager.addDatabaseShardingValue("t_bussiness",userid);
-        hintManager.addTableShardingValue("t_bussiness",userid);
+        try {
+            // 分片键值保存在ThreadLocal中，所以需要在操作结束时调用hintManager.close()来清除ThreadLocal中的内容
+            // hintManager实现了AutoCloseable接口，可推荐使用try with resource自动关闭。
+            final HintManager hintManager = HintManager.getInstance();
+            hintManager.addDatabaseShardingValue("t_bussiness", userid);
+            hintManager.addTableShardingValue("t_bussiness", userid);
+            BussinessTable save = bussinessTableDao.save(bussinessTable);
+            ReturnData ret = ReturnData.newInstance();
+            ret.setSuccess();
+            ret.setMessage(save);
+            return ret;
+        } catch (Exception e) {
+            // 也可以不写 catch
+            throw new RuntimeException(e.getMessage(), e);
+        }
 
-        BussinessTable save = bussinessTableDao.save(bussinessTable);
-        ReturnData ret = ReturnData.newInstance();
-        ret.setSuccess();
-        ret.setMessage(save);
-        return ret;
     }
 
 
