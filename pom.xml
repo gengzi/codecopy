@@ -272,6 +272,51 @@
             <version>${sharding-sphere.version}</version>
         </dependency>
 
+<!--        &lt;!&ndash;Sharding jdbc 编排治理&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shardingsphere</groupId>-->
+<!--            <artifactId>sharding-jdbc-orchestration-spring-boot-starter</artifactId>-->
+<!--            <version>${sharding-sphere.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.curator</groupId>-->
+<!--                    <artifactId>curator-framework</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;若使用zookeeper, 请加入下面Maven坐标&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.shardingsphere</groupId>-->
+<!--            <artifactId>sharding-orchestration-center-zookeeper-curator</artifactId>-->
+<!--            <version>${sharding-sphere.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.curator</groupId>-->
+<!--                    <artifactId>curator-framework</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.curator</groupId>-->
+<!--                    <artifactId>curator-recipes</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.curator</groupId>-->
+<!--                    <artifactId>curator-client</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.curator</groupId>-->
+<!--            <artifactId>curator-framework</artifactId>-->
+<!--            <version>2.10.0</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.curator</groupId>-->
+<!--            <artifactId>curator-recipes</artifactId>-->
+<!--            <version>2.10.0</version>-->
+<!--        </dependency>-->
+
 
     </dependencies>
 
