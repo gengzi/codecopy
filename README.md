@@ -6,7 +6,7 @@
 系列文章：https://gengzi.github.io/Code-animal/#/
 
 
-版本号：1.0.8
+版本号：1.9.1
 
 参考的开源工程代码：
 [从0到1构建分布式秒杀系统，脱离案例讲架构都是耍流氓](https://gitee.com/52itstyle/spring-boot-seckill)
@@ -20,6 +20,7 @@ ConfigConsts 配置常量类
 SwaggerConfig swagger 配置  swagger 可以升级为 kinfe4j
 增加了 logback 的配置 logback.xml 
 CacheConfig 缓存配置类
+ThreadPoolConfig 线程池配置类
 
 ### fun.gengzi.codecopy.utils 工具类
 常用工具类
@@ -47,6 +48,8 @@ RspCodeEnum 响应code枚举类
 增加短链接生成服务   shorturl
 增加接口权限校验服务 authentication
 增加sharding jdbc 分库分表服务 subdata
+增加分片业务实例，检测在指定ip范围的mysql链接是否成功，成功的插入数据库 connection
+（针对MySQL数据库的勒索病毒预警 https://www.freebuf.com/articles/system/213975.html ）
 
 
 ### fun.gengzi.codecopy.vo 全局vo
