@@ -7,7 +7,7 @@
 <!--              value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) |%highlight(%-5level) |%blue(%thread) |%blue(%file:%line) |%green(%logger) | %msg%n "/>-->
 
     <property name="CONSOLE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %logger Line:%-3L - %msg%n "/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %thread %logger Line:%-3L - %msg%n "/>
 
     <contextName>spring-boot-seckill</contextName>
     <!--   这个会打印一遍日志-->
