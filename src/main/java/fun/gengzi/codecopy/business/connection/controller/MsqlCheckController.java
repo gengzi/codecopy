@@ -32,17 +32,18 @@ public class MsqlCheckController {
 
 
     @ApiOperation(value = "测试", notes = "测试")
-    @ApiImplicitParams({})
+    @ApiImplicitParams({@ApiImplicitParam(name = "startIndex", value = "ipv4对应的long初始值", required = true),
+            @ApiImplicitParam(name = "endIndex", value = "ipv4对应的long结束值", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
             "\t    \"status\": 200,\n" +
             "\t    \"info\": {\n" +
             "\t		}\n" +
             "\t    \"message\": \"信息\",\n" +
             "\t}\n")})
-    @PostMapping("/testCheckInfo")
+    @PostMapping("/testCheckInfo/{startIndex}/{endIndex}")
     @ResponseBody
-    public ReturnData insertInfo() {
-        checkMysqlConnectionService.checkMysqlConnectionIsEnable(new MysqlDTO());
+    public ReturnData testCheckInfo(@PathVariable("startIndex") Long startIndex, @PathVariable("endIndex") Long endIndex) {
+        checkMysqlConnectionService.checkMysqlConnectionIsEnable(startIndex, endIndex);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;

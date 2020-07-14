@@ -7,9 +7,11 @@ public interface CheckMysqlConnectionService {
     /**
      * 检测mysql链接是否有效
      *
-     * @param mysqlDTO
+     * @param startIndex 开始索引
+     * @param endIndex 结束索引
+     *
      * @return
      */
-    MysqlDTO checkMysqlConnectionIsEnable(MysqlDTO mysqlDTO);
+    MysqlDTO checkMysqlConnectionIsEnable(Long startIndex,Long endIndex);
 
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Date;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
@@ -39,15 +40,15 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
      * // 将可以使用的mysql 库信息，存入数据库
      * // 整体迁移表，到另外的数据库
      *
-     * @param mysqlDTO
      * @return
      */
     @Override
-    public MysqlDTO checkMysqlConnectionIsEnable(MysqlDTO mysqlDTO) {
-        for (int i = 2077100544; i < 2077103104; i++) {
+    public MysqlDTO checkMysqlConnectionIsEnable(Long startIndex,Long endIndex) {
+
+        for (long i = startIndex; i < endIndex; i++) {
             String ipv4 = NetUtil.longToIpv4(i);
             logger.info("ip ：{}", ipv4);
-            mysqlDTO.setIp(ipv4);
+//            mysqlDTO.setIp(ipv4);
 //            int activeCount = threadPoolExecutor.getActiveCount();
 //            logger.info("运行的个数 : {}", activeCount);
 //            if (activeCount > 5) {
@@ -57,30 +58,41 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
 //                    e.printStackTrace();
 //                }
 //            }
-            threadPoolExecutor.execute(new CheckConnection(mysqlDTO, this.mysqlDTODaoExtendsJPA));
+            threadPoolExecutor.execute(new CheckConnection(ipv4, this.mysqlDTODaoExtendsJPA));
             logger.info("任务个数: {} ", threadPoolExecutor.getTaskCount());
         }
         return null;
     }
 
 
+    /**
+     * 出现的问题，线程池中的 任务队列，将任务添加到了 队列中，但是每个队列任务中的 对象信息，却都是最后一条的数据，
+     * 现在怀疑是 都拿了最后一次的 对象。现在改为 String 类型 ，看是否可以
+     */
     static class CheckConnection implements Runnable {
         private Logger logger = LoggerFactory.getLogger(CheckMysqlConnectionServiceImpl.class);
         private MysqlDTODaoExtendsJPA mysqlDTODaoExtendsJPA;
-        private MysqlDTO mysqlDTO;
+        private String ip;
         private final static Integer PORT = 3306;
         private final static Integer TIME = 1000;
 
-        public CheckConnection(MysqlDTO mysqlDTO, MysqlDTODaoExtendsJPA mysqlDTODaoExtendsJPA) {
+        public CheckConnection(String ip, MysqlDTODaoExtendsJPA mysqlDTODaoExtendsJPA) {
             this.mysqlDTODaoExtendsJPA = mysqlDTODaoExtendsJPA;
-            this.mysqlDTO = mysqlDTO;
+            this.ip = ip;
         }
 
         @Override
         public void run() {
             logger.info("start");
+            final MysqlDTO mysqlDTO = new MysqlDTO();
+            mysqlDTO.setIp(ip);
             boolean open = NetUtil.isOpen(new InetSocketAddress(mysqlDTO.getIp(), PORT), TIME);
             if (open) {
+                mysqlDTO.setCreatedate(new Date());
+                mysqlDTO.setUpdatedate(new Date());
+                mysqlDTO.setPassword("root");
+                mysqlDTO.setUsername("root");
+                mysqlDTO.setPort("3306");
                 try {
                     Class.forName("com.mysql.cj.jdbc.Driver");
                     Connection connection = DriverManager.getConnection("jdbc:mysql://" + mysqlDTO.getIp() + ":3306?serverTimezone=Asia/Shanghai", "root", "root");
