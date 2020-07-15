@@ -39,7 +39,6 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
      * // 多线程数据库连接 检测
      * // 先 telnet 检测，ip 端口是否可访问，再检测 用户 密码 能否 登陆，创建线程池，模拟连接。
      * // 将可以使用的mysql 库信息，存入数据库
-     * // 整体迁移表，到另外的数据库
      *
      * @return
      */
@@ -49,16 +48,6 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
         for (long i = startIndex; i < endIndex; i++) {
             String ipv4 = NetUtil.longToIpv4(i);
             logger.info("ip ：{}", ipv4);
-//            mysqlDTO.setIp(ipv4);
-//            int activeCount = threadPoolExecutor.getActiveCount();
-//            logger.info("运行的个数 : {}", activeCount);
-//            if (activeCount > 5) {
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
             threadPoolExecutor.execute(new CheckConnection(ipv4, this.mysqlDTODaoExtendsJPA));
             logger.info("任务个数: {} ", threadPoolExecutor.getTaskCount());
         }
@@ -67,8 +56,25 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
 
 
     /**
-     * 出现的问题，线程池中的 任务队列，将任务添加到了 队列中，但是每个队列任务中的 对象信息，却都是最后一条的数据，
+     *
+     *
+     *
+     * 出现的问题：
+     * 线程池中的 任务队列，将任务添加到了 队列中，但是每个队列任务中的 对象信息，却都是最后一条的数据，
      * 现在怀疑是 都拿了最后一次的 对象。现在改为 String 类型 ，看是否可以
+     *
+     * 这里出现对象只有最后的一个原因是，添加到任务队列的任务，携带的都是对象的引用，而引用对象就是 任务队列的最后一个，
+     * 所以在 run 方法中，创建一个新的对象，来存方对应的数据项
+     *
+     * 这里要注意的是，spring 是禁止在多线程下，使用注入的，也就是 如果将 dao 层对象，直接在 多线程下，是拿不到该对象的，
+     * 会报 nullPointException 异常，所以，这里我将 dao 层对象，赋值。
+     *
+     *
+     * 细节：
+     *  内部类可以使用外部类所有的属性和方法
+     *  静态内部类只能使用外部类静态的成员变量和成员方法
+     *
+     *
      */
     static class CheckConnection implements Runnable {
         private Logger logger = LoggerFactory.getLogger(CheckMysqlConnectionServiceImpl.class);
@@ -106,7 +112,7 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
                     this.mysqlDTODaoExtendsJPA.save(mysqlDTO);
                 }
             } else {
-                logger.info("无效ip（未开放 3306） " + mysqlDTO.getIp());
+                logger.info("无效ip（未开放 3306 端口） " + mysqlDTO.getIp());
             }
 
         }
@@ -115,12 +121,7 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
 
     /**
      * 根据ip查询 mysql链接信息
-     *
-     *
      * 在数据库中 password 是加密后，在查询后，会进行解密处理。响应给用户解密后的数据
-     *
-     *
-     *
      *
      * @param ip ipv4 地址
      * @return {@link MysqlDTO}
