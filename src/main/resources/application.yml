@@ -5,7 +5,7 @@ spring:
     name: codecopy
   profiles:
     # 可以配置多个。逗号分隔
-    active: dev,dev_sharding_mysql_inline
+    active: dev,devshardingbyInline_encryption
 #  datasource:
 #    # 注意mysql 时区 字符集编码
 #    url: jdbc:mysql://127.0.0.1:3306/sqltest?autoReconnect=true&serverTimezone=Asia/Shanghai

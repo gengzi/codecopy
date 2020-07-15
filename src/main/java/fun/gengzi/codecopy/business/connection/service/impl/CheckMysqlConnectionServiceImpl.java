@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
@@ -43,7 +44,7 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
      * @return
      */
     @Override
-    public MysqlDTO checkMysqlConnectionIsEnable(Long startIndex,Long endIndex) {
+    public MysqlDTO checkMysqlConnectionIsEnable(Long startIndex, Long endIndex) {
 
         for (long i = startIndex; i < endIndex; i++) {
             String ipv4 = NetUtil.longToIpv4(i);
@@ -109,6 +110,24 @@ public class CheckMysqlConnectionServiceImpl implements CheckMysqlConnectionServ
             }
 
         }
+    }
+
+
+    /**
+     * 根据ip查询 mysql链接信息
+     *
+     *
+     * 在数据库中 password 是加密后，在查询后，会进行解密处理。响应给用户解密后的数据
+     *
+     *
+     *
+     *
+     * @param ip ipv4 地址
+     * @return {@link MysqlDTO}
+     */
+    @Override
+    public List<MysqlDTO> getMysqlDTOInfo(String ip) {
+        return mysqlDTODaoExtendsJPA.findByIp(ip);
     }
 
 

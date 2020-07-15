@@ -31,7 +31,18 @@ public class MsqlCheckController {
     private CheckMysqlConnectionService checkMysqlConnectionService;
 
 
-    @ApiOperation(value = "测试", notes = "测试")
+    /**
+     *
+     * 测试数据
+     * endIndex 2077103104
+     * startIndex 2077101544
+     *
+     *
+     * @param startIndex
+     * @param endIndex
+     * @return
+     */
+    @ApiOperation(value = "插入数据测试", notes = "插入数据测试")
     @ApiImplicitParams({@ApiImplicitParam(name = "startIndex", value = "ipv4对应的long初始值", required = true),
             @ApiImplicitParam(name = "endIndex", value = "ipv4对应的long结束值", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
@@ -46,6 +57,30 @@ public class MsqlCheckController {
         checkMysqlConnectionService.checkMysqlConnectionIsEnable(startIndex, endIndex);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
+        return ret;
+    }
+
+    /**
+     * 测试数据
+     * 123.206.14.49
+     * @param ip
+     * @return
+     */
+    @ApiOperation(value = "查询数据", notes = "查询数据-加密列自动解密后返回")
+    @ApiImplicitParams({@ApiImplicitParam(name = "ip", value = "ipv4", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryMysqlConnectionInfo/{ip}")
+    @ResponseBody
+    public ReturnData qryMysqlConnectionInfo(@PathVariable("ip") String ip) {
+        List<MysqlDTO> mysqlDTOInfo = checkMysqlConnectionService.getMysqlDTOInfo(ip);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(mysqlDTOInfo);
         return ret;
     }
 

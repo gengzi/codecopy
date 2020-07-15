@@ -20,6 +20,7 @@ public class ThreadPoolConfig {
     private static final int CORE_POOL_SIZE = 6;
     // 最大线程数 cpu 核心数 +1
     private static final int MAX_POOL_SIZE = 7;
+    // 队列大小
     private static final int QUEUE_CAPACITY = 10000;
     // 超时时间
     private static final Long KEEP_ALIVE_TIME = 60L;
