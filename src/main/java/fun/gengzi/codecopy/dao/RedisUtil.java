@@ -735,8 +735,14 @@ public class RedisUtil {
         }
     }
 
+
     /**
      * 根据给定的布隆过滤器判断值是否存在
+     * @param bloomFilterHelper bloom布隆过滤器解析类
+     * @param key redis 的key
+     * @param value redis 的value
+     * @param <T> 值的类型
+     * @return 存在 true
      */
     public <T> boolean includeByBloomFilter(BloomFilterHelper<T> bloomFilterHelper, String key, T value) {
         Preconditions.checkArgument(bloomFilterHelper != null, "bloomFilterHelper不能为空");

@@ -4,6 +4,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;
 
+/**
+ * 布隆过滤器工具类
+ *
+ * @param <T>
+ */
 public class BloomFilterHelper<T> {
     private int numHashFunctions;
 
