@@ -2,6 +2,8 @@ package fun.gengzi.codecopy.business.connection.service.impl;
 
 import cn.hutool.core.net.NetUtil;
 import org.junit.Test;
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import static org.junit.Assert.*;
 
@@ -20,6 +22,14 @@ public class CheckMysqlConnectionServiceImplTest {
 //
 //
 //        System.out.println(l);
+    }
+
+
+    @Test
+    public void fun02(){
+        ITextRenderer iTextRenderer = new ITextRenderer();
+        ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
+        iTextRenderer.layout();
     }
 
 }
