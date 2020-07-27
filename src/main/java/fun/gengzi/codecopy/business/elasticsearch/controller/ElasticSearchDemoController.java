@@ -1,6 +1,8 @@
 package fun.gengzi.codecopy.business.elasticsearch.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import fun.gengzi.codecopy.business.elasticsearch.dao.ConferenceRepository;
+import fun.gengzi.codecopy.business.elasticsearch.entity.Conference;
 import fun.gengzi.codecopy.business.elasticsearch.entity.EsSysEntiry;
 import fun.gengzi.codecopy.business.elasticsearch.entity.UserEntity;
 import fun.gengzi.codecopy.vo.ReturnData;
@@ -9,10 +11,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.spring.web.json.Json;
+
+import java.util.Arrays;
 
 
 /**
@@ -35,6 +41,12 @@ public class ElasticSearchDemoController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Autowired
+    private ConferenceRepository conferenceRepository;
 
 
     /**
@@ -139,6 +151,26 @@ public class ElasticSearchDemoController {
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(body);
+        return ret;
+    }
+
+    @ApiOperation(value = "使用spring-data-elasticsearch保存数据到es 中", notes = "使用spring-data-elasticsearch保存数据到es 中")
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t			\"nextStepType\":\"下一步操作\",\n" +
+            "\t			\"nextStepData\":\"下一步操作结构体\"\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"操作成功\",\n" +
+            "\t    \"bzcode\": \"\"\n" +
+            "\t}\n")})
+    @RequestMapping(value = "/svaeOneDocument", method = RequestMethod.POST)
+    public ReturnData svaeOneInfo() {
+        Conference conference = conferenceRepository.save(Conference.builder().date("2014-11-06").name("Spring eXchange 2014 - London")
+                .keywords(Arrays.asList("java", "spring")).location(new GeoPoint(51.500152D, -0.126236D)).build());
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(conference);
         return ret;
     }
 

@@ -18,11 +18,14 @@ import org.springframework.web.client.RestTemplate;
 @EnableCaching
 public class CodecopyApplication {
     public static void main(String[] args) {
+        // 解决es的netty冲突问题
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
         SpringApplication.run(CodecopyApplication.class, args);
     }
 
     /**
      * 网络请求
+     *
      * @return
      */
     @Bean
