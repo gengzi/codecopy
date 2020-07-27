@@ -1,14 +1,15 @@
 package fun.gengzi.codecopy.business.elasticsearch.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import fun.gengzi.codecopy.business.elasticsearch.entity.EsSysEntiry;
+import fun.gengzi.codecopy.business.elasticsearch.entity.UserEntity;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.spring.web.json.Json;
@@ -72,6 +73,25 @@ public class ElasticSearchDemoController {
 
     /**
      * 这里考虑使用 HttpClient okhttp 还有 RestTemplate 来发起http 请求 或者使用其他工具封装好的工具包
+     * <p>
+     * <p>
+     * <p>
+     * {
+     * "documentObj": {
+     * "userName": "name"
+     * <p>
+     * },
+     * "id": "1",
+     * "index": "people",
+     * "type": "info"
+     * }
+     * <p>
+     * 响应信息：
+     * {
+     * "status": 200,
+     * "info": {},
+     * "message": "{\"_index\":\"people\",\"_type\":\"info\",\"_id\":\"1\",\"_version\":1,\"result\":\"created\",\"_shards\":{\"total\":2,\"successful\":1,\"failed\":0},\"_seq_no\":0,\"_primary_term\":1}"
+     * }
      *
      * @param ipAndport ip 和 端口
      * @return
@@ -90,25 +110,35 @@ public class ElasticSearchDemoController {
             "\t    \"bzcode\": \"\"\n" +
             "\t}\n")})
     @RequestMapping(value = "/svaeOneDocument", method = RequestMethod.POST)
-    public ReturnData svaeOneDocument(@RequestParam(value = "ipAndport", required = false) String ipAndport, @RequestBody EsSysEntiry esSysEntiry) {
-
-        String documentJson = esSysEntiry.getDocumentJson();
+    public ReturnData svaeOneDocument(@RequestParam(value = "ipAndport", required = false) String ipAndport, @RequestBody EsSysEntiry<UserEntity> esSysEntiry) {
         // 判断是否为 json 字符串，校验格式 是
         // 转换为实体，写入指定的位置，并将其 java 文件，编译为 class ，动态加载到 spring 容器中
         // 再使用json 串，为动态加载的类赋值
+        final String documentJson = esSysEntiry.getDocumentJson();
+        final UserEntity userEntity = esSysEntiry.getDocumentObj();
         if (StringUtils.isBlank(ipAndport)) {
             ipAndport = "http://localhost:9200";
         }
-        String index = esSysEntiry.getIndex();
+        final String index = esSysEntiry.getIndex();
+        final String type = esSysEntiry.getType();
+        final String id = esSysEntiry.getId();
+        final String url = ipAndport + "/" + index + "/" + type + "/" + id;
 
-        String type = esSysEntiry.getType();
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        String id = esSysEntiry.getId();
-
-        restTemplate.put(ipAndport + "/" + index + "/" + type + "/" + id, documentJson);
-
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        if (StringUtils.isNotBlank(documentJson)) {
+            requestEntity = new HttpEntity<Object>(documentJson, httpHeaders);
+        } else {
+            final String userinfo = JSONObject.toJSONString(userEntity);
+            requestEntity = new HttpEntity<Object>(userinfo, httpHeaders);
+        }
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+        final String body = responseEntity.getBody();
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
+        ret.setMessage(body);
         return ret;
     }
 
