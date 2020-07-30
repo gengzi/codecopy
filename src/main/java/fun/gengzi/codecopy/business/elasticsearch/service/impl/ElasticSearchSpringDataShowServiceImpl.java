@@ -7,6 +7,8 @@ import fun.gengzi.codecopy.business.elasticsearch.service.ElasticSearchSpringDat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ElasticSearchSpringDataShowServiceImpl implements ElasticSearchSpringDataShowService {
 
@@ -21,5 +23,16 @@ public class ElasticSearchSpringDataShowServiceImpl implements ElasticSearchSpri
     @Override
     public UserEntity saveUserInfo(UserEntity userEntity) {
        return userEntityDao.save(userEntity);
+    }
+
+    /**
+     * 全文检索，根据 username 查询
+     *
+     * @param userName 用户名称
+     * @return {@link List <UserEntity>}  返回匹配的用户列表
+     */
+    @Override
+    public List<UserEntity> searchUserInfo(String userName) {
+       return userEntityDao.getByUserName(userName);
     }
 }

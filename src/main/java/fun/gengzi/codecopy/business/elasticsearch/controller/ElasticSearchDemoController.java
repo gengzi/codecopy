@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -180,6 +181,26 @@ public class ElasticSearchDemoController {
     }
 
 
+    /**
+     * 测试数据
+     * <p>
+     * {
+     * "age": 10,
+     * "birthday": "2020-07-30 10:11:33",
+     * "imgs": [
+     * {
+     * "imgUrl": "http://localhost:8089/swagger-ui.html#/ElasticSearch%20RestFul%20api%20%E6%8E%A5%E5%8F%A3%E6%BC%94%E7%A4%BA/saveUserInfoUsingPOST",
+     * "imgid": 2
+     * }
+     * ],
+     * "pinYinName": "lisi",
+     * "uid": 2,
+     * "userName": "李四"
+     * }
+     *
+     * @param userEntity
+     * @return
+     */
     @ApiOperation(value = "UserEntity保存数据到es中", notes = "UserEntity保存数据到es中")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "UserEntity", value = "UserEntity", required = true)})
@@ -195,6 +216,24 @@ public class ElasticSearchDemoController {
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(userInfo);
+        return ret;
+    }
+
+    @ApiOperation(value = "根据用户名称查询匹配用户信息", notes = "根据用户名称查询匹配用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userName", value = "用户名称", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @RequestMapping(value = "/searchUserInfoByUserName", method = RequestMethod.POST)
+    public ReturnData searchUserInfoByUserName(@RequestParam("userName") String userName) {
+        List<UserEntity> userEntities = elasticSearchSpringDataShowService.searchUserInfo(userName);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(userEntities);
         return ret;
     }
 
