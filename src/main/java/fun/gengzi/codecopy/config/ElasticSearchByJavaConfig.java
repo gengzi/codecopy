@@ -24,6 +24,29 @@ import java.util.UUID;
 public class ElasticSearchByJavaConfig extends AbstractElasticsearchConfiguration {
 
 
+    /**
+     * 高级客户端
+     * 作用，用于连接 es 集群
+     * 创建 index 索引，type 类型 document 文档 ，指定文档中，那些字段是什么类型，使用什么分词器 是否参与排序
+     *
+     *
+     * @return
+     */
+    @Override
+    public RestHighLevelClient elasticsearchClient() {
+        final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
+                .connectedTo("localhost:9200")
+                .build();
+        return RestClients.create(clientConfiguration).rest();
+    }
+
+
+
+
+
+
+
+
 //    /**
 //     * es 客户端
 //     * @return
@@ -56,18 +79,6 @@ public class ElasticSearchByJavaConfig extends AbstractElasticsearchConfiguratio
 //    public ElasticsearchTemplate elasticsearchTemplate() throws UnknownHostException {
 //        return new ElasticsearchTemplate(elasticsearchClient());
 //    }
-
-    /**
-     * 高级客户端
-     * @return
-     */
-    @Override
-    public RestHighLevelClient elasticsearchClient() {
-        final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
-                .build();
-        return RestClients.create(clientConfiguration).rest();
-    }
 
 //    @Bean(name = { "elasticsearchOperations", "elasticsearchTemplate" })
 //    public ElasticsearchTemplate elasticsearchTemplate() throws UnknownHostException {

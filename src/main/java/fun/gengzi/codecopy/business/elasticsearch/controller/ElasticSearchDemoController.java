@@ -5,6 +5,7 @@ import fun.gengzi.codecopy.business.elasticsearch.dao.ConferenceRepository;
 import fun.gengzi.codecopy.business.elasticsearch.entity.Conference;
 import fun.gengzi.codecopy.business.elasticsearch.entity.EsSysEntiry;
 import fun.gengzi.codecopy.business.elasticsearch.entity.UserEntity;
+import fun.gengzi.codecopy.business.elasticsearch.service.ElasticSearchSpringDataShowService;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,9 @@ public class ElasticSearchDemoController {
 
     @Autowired
     private ConferenceRepository conferenceRepository;
+
+    @Autowired
+    private ElasticSearchSpringDataShowService elasticSearchSpringDataShowService;
 
 
     /**
@@ -153,7 +157,7 @@ public class ElasticSearchDemoController {
         return ret;
     }
 
-    @ApiOperation(value = "使用spring-data-elasticsearch保存数据到es 中", notes = "使用spring-data-elasticsearch保存数据到es 中")
+    @ApiOperation(value = "测试使用spring-data-elasticsearch保存数据到es 中", notes = "测试使用spring-data-elasticsearch保存数据到es 中")
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
             "\t    \"status\": 200,\n" +
             "\t    \"info\": {\n" +
@@ -165,11 +169,32 @@ public class ElasticSearchDemoController {
             "\t}\n")})
     @RequestMapping(value = "/svaeOneInfo", method = RequestMethod.POST)
     public ReturnData svaeOneInfo() {
+        // 存储一个文档到 es
+        // 使用 builder 方法来构造一个 文档对象
         Conference conference = conferenceRepository.save(Conference.builder().date("2014-11-06").name("Spring eXchange 2014 - London")
                 .keywords(Arrays.asList("java", "spring")).location(new GeoPoint(51.500152D, -0.126236D)).build());
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(conference);
+        return ret;
+    }
+
+
+    @ApiOperation(value = "UserEntity保存数据到es中", notes = "UserEntity保存数据到es中")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "UserEntity", value = "UserEntity", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @RequestMapping(value = "/saveUserInfo", method = RequestMethod.POST)
+    public ReturnData saveUserInfo(@RequestBody UserEntity userEntity) {
+        UserEntity userInfo = elasticSearchSpringDataShowService.saveUserInfo(userEntity);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(userInfo);
         return ret;
     }
 
