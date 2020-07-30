@@ -76,6 +76,13 @@ redis缓存实现
 ```shell script
 对于 pInfo 类似的字段,生成的get 和 set 方法都是 getPInfo setPInfo ,并不是 getpInfo 。
 所以在写字段的时候，就不要写  pInfo 类似的字段
+
+对于redis ，当系统中存储多个key，建议将key 分文件夹，分不同的数据库存储。
+便于使用工具查看
+
+某些业务，知道存在安全问题，不要有侥幸心理，直接在第一次改掉，避免在业务代码推挤太多后，再修改。
+
+
  
 
 

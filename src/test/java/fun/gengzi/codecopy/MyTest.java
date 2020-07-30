@@ -48,5 +48,10 @@ public class MyTest {
     }
 
 
+    public void fun03(){
+
+    }
+
+
 
 }

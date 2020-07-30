@@ -16,7 +16,6 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.Arrays;
 
@@ -42,8 +41,8 @@ public class ElasticSearchDemoController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+//    @Autowired
+//    private ElasticsearchTemplate elasticsearchTemplate;
 
     @Autowired
     private ConferenceRepository conferenceRepository;
@@ -164,7 +163,7 @@ public class ElasticSearchDemoController {
             "\t    \"message\": \"操作成功\",\n" +
             "\t    \"bzcode\": \"\"\n" +
             "\t}\n")})
-    @RequestMapping(value = "/svaeOneDocument", method = RequestMethod.POST)
+    @RequestMapping(value = "/svaeOneInfo", method = RequestMethod.POST)
     public ReturnData svaeOneInfo() {
         Conference conference = conferenceRepository.save(Conference.builder().date("2014-11-06").name("Spring eXchange 2014 - London")
                 .keywords(Arrays.asList("java", "spring")).location(new GeoPoint(51.500152D, -0.126236D)).build());
