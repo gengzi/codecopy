@@ -57,8 +57,8 @@ public class SecurityInterfaceController {
      * <p>
      * // 使用java8 js引擎，执行加密js，将参数加密，提交至后台接口
      * // 后台接口解密，获取真实数据，执行业务
-     *
-     *
+     * <p>
+     * <p>
      * 请求：
      * 1. 服务器端(server)和客户端(client)分别生成自己的密钥对
      * 2. server和client分别交换自己的公钥
@@ -105,22 +105,27 @@ public class SecurityInterfaceController {
 
         String needSignData = ParamFieldEntity.toHttpGetParam(paramFieldEntity);
         logger.info("待加密的data: {}", needSignData);
+
+        String s = securityInterfaceService.encryptJSByClientSecrekeyStr(needSignData, secrekeyStr).orElse("");
+        logger.info("JS加密后的data: {}", s);
+
+
         String sign = RSAUtils.encrypt(needSignData, secrekeyStr).orElseThrow(() -> new RrException("加密失败", RspCodeEnum.RSA_FAULURE.getCode()));
         logger.info("加密后的data: {}", sign);
         paramFieldEntity.setSign(sign);
 
         String jsonData = JSONObject.toJSONString(paramFieldEntity);
-        logger.info("待加密的data: {}",jsonData);
+        logger.info("待加密的data: {}", jsonData);
         String data = AESUtils.encrypt(jsonData, aeSkey).orElseThrow(() -> new RrException("加密失败", RspCodeEnum.AES_FAULURE.getCode()));
-        logger.info("加密后的data: {}",data);
+        logger.info("加密后的data: {}", data);
 
         final Map<String, String> rsaSecretkeyAndPublickeyByServer = securityInterfaceService.getRSASecretkeyAndPublickey();
         final String secrekeyStrByServer = rsaSecretkeyAndPublickeyByServer.getOrDefault("secretkey", secretkey);
         final String publickeyStrByServer = rsaSecretkeyAndPublickeyByServer.getOrDefault("publickey", publickey);
-        logger.info("publickeyStrByServer: {}",publickeyStrByServer);
+        logger.info("publickeyStrByServer: {}", publickeyStrByServer);
         String encryptkey = RSAUtils.encryptByPublic(aeSkey, publickeyStrByServer).orElseThrow(() -> new RrException("加密失败", RspCodeEnum.RSA_FAULURE.getCode()));
 
-        SignEntity signEntity = new SignEntity(encryptkey,data);
+        SignEntity signEntity = new SignEntity(encryptkey, data);
         logger.info(signEntity.toString());
 
         ReturnData ret = ReturnData.newInstance();
