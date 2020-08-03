@@ -69,6 +69,14 @@ public class SecurityInterfaceController {
      * 7. client使用sever的RSA公钥对aesKey进行加密(encryptkey)
      * 8. 分别将data和encryptkey作为参数传输给服务器端
      *
+     *
+     *
+     *
+     *
+     * https://github.com/JetLei/MblogLoginDemo/blob/323a93c7bbe9406946040f99f5e11c77b82cdd7b/encrypt.js
+     *
+     * 可以参考微博的
+     *
      * @return
      */
     @ApiOperation(value = "接口参数加密与解密", notes = "接口参数加密与解密")
