@@ -31,6 +31,17 @@ import java.util.List;
  * <p>
  * 未来： 简单的es 服务实例监控，查看服务实例信息，控制开启服务实例，关闭实例等等
  *
+ *
+ * 启动es 6.8.6 版本 对应 spring boot 2.3 版本
+ *
+ * ./elasticsearch
+ *
+ * 启动es-header 进入目录
+ * grunt server
+ *
+ *
+ *
+ *
  * @author gengzi
  * @date 2020年7月22日22:47:32
  */

@@ -157,6 +157,7 @@ token:
     validToken:  http://localhost:8089/api/v1/validToken
 
 
+# service redis-server restart redis
 redis:
   subsection:
     # 分段发号器的key

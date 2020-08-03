@@ -1,26 +1,28 @@
 package fun.gengzi.codecopy.business.authentication.service.impl;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.crypto.SecureUtil;
 import fun.gengzi.codecopy.business.authentication.service.SecurityInterfaceService;
 import fun.gengzi.codecopy.utils.AESUtils;
 import fun.gengzi.codecopy.utils.RSAUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyPair;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
+
+    private Logger logger = LoggerFactory.getLogger(SecurityInterfaceServiceImpl.class);
+
     /**
      * 生成 RSA 密钥 和 公钥
      *
@@ -43,6 +45,8 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
 
     /**
      * 使用 js rsa 算法私钥，对内容进行加密
+     * <p>
+     * TODO  对于 ClassLoader.getSystemClassLoader().getResource 中的路径分隔符 必须写成  /  如果写成 \\ 或者 \ 路径中将会出现 %5C
      *
      * @param content  数据
      * @param secrekey 私钥
@@ -54,16 +58,27 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
         ScriptEngine nashorn = scriptEngineManager.getEngineByName("nashorn");
         try {
+//            String cryptoPath = "D:\\ideaworkspace\\codecopy\\codecopy\\src\\main\\resources\\js\\crypto-js-4.0.0\\crypto-js.js";
+//            String functionPath = "D:\\ideaworkspace\\codecopy\\codecopy\\src\\main\\resources\\js\\other.js";
+            String basePath = ClassLoader.getSystemClassLoader().getResource("js/base.js").getPath();
+            String cryptoPath = ClassLoader.getSystemClassLoader().getResource("js/jsencrypt/jsencrypt.js").getPath();
+            String functionPath = ClassLoader.getSystemClassLoader().getResource("js/RSAUtils.js").getPath();
 
-            String cryptoPath = "D:\\ideaworkspace\\codecopy\\codecopy\\src\\main\\resources\\js\\crypto-js-4.0.0\\crypto-js.js";
-            String functionPath = "D:\\ideaworkspace\\codecopy\\codecopy\\src\\main\\resources\\js\\other.js";
-//            String cryptoPath = ClassLoader.getSystemClassLoader().getResource("js/crypto-js-4.0.0/crypto-js.js").getPath();
-//            String functionPath = ClassLoader.getSystemClassLoader().getResource("js/other.js").getPath();
-            nashorn.eval(Files.newBufferedReader(Paths.get(cryptoPath)));
-            nashorn.eval(Files.newBufferedReader(Paths.get(functionPath)));
+            logger.info("cryptoPath rsa加密js路径 {}", cryptoPath);
+            logger.info("functionPath 实际执行加密方法的js路径 {}", functionPath);
+            nashorn.eval(Files.newBufferedReader(Paths.get(basePath.substring(1))));
+            nashorn.eval(Files.newBufferedReader(Paths.get(cryptoPath.substring(1))));
+            nashorn.eval(Files.newBufferedReader(Paths.get(functionPath.substring(1))));
+
             Invocable in = (Invocable) nashorn;
             // 调用 js 的function 方法
-            Object o = in.invokeFunction("getRSAString", content, secrekey);
+
+            content = "hello world";
+            secrekey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbcd" +
+                    "LKOtTKOjalffv/LLLOqfyh8Ep4XHjvOivMU3Nb1N0puG4+" +
+                    "NTrXBS8GDczgsZ+7J6D7FTcH8JInMKpz85LMCAwEAAQ==";
+//            https://www.cnblogs.com/wsss/p/11516318.html
+            Object o = in.invokeFunction("encryptRSAByPublicKey", content, secrekey);
             return Optional.of(o.toString());
         } catch (ScriptException | IOException | NoSuchMethodException e) {
             e.printStackTrace();

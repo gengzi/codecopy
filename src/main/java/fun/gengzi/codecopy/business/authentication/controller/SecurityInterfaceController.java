@@ -92,6 +92,11 @@ public class SecurityInterfaceController {
         // 拿着 前端的公钥，对签名字段，进行解密，得到请求参数 ， 对比 json 中的请求参数 ，是否一致。
         // 一致后，表示接口参数未被修改。
 
+
+        // 前端将后台的 rsa 公钥，对请求参数的拼接进行加密，密文 携带请求参数 json 请求接口
+
+        // 后台拿 rsa 密钥，进行解密。解密后对比请求参数是否一致，一致说明 参数没有被修改。
+
         final Map<String, String> rsaSecretkeyAndPublickey = securityInterfaceService.getRSASecretkeyAndPublickey();
         final String aeSkey = securityInterfaceService.getAESkey();
         final String secrekeyStr = rsaSecretkeyAndPublickey.getOrDefault("secretkey", secretkey);
