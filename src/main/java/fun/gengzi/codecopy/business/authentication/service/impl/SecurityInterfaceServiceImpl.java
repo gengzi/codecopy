@@ -1,8 +1,20 @@
 package fun.gengzi.codecopy.business.authentication.service.impl;
 
+
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayTradeWapPayResponse;
+import fun.gengzi.codecopy.business.authentication.constant.SecurityInterfaceConstans;
+import fun.gengzi.codecopy.business.authentication.entity.OrderInfoEntity;
 import fun.gengzi.codecopy.business.authentication.service.SecurityInterfaceService;
+import fun.gengzi.codecopy.exception.RrException;
 import fun.gengzi.codecopy.utils.AESUtils;
 import fun.gengzi.codecopy.utils.RSAUtils;
+import fun.gengzi.codecopy.utils.StreamUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,15 +23,20 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Optional;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.*;
 
 @Service
 public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
+
 
     private Logger logger = LoggerFactory.getLogger(SecurityInterfaceServiceImpl.class);
 
@@ -85,4 +102,180 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         }
         return Optional.empty();
     }
+
+    /**
+     * 将数据和签名发送至支付宝
+     * <p>
+     * <p>
+     * https://openapi.alipay.com/gateway.do?timestamp=2013-01-01 08:08:08&method=alipay.trade.wap.pay&app_id=19186&sign_type=RSA2&sign=ERITJKEIJKJHKKKKKKKHJEREEEEEEEEEEE&version=1.0&charset=GBK&biz_content={"time_expire":"2016-12-31 10:05","extend_params":{"sys_service_provider_id":"2088511833207846","hb_fq_seller_percent":"100","hb_fq_num":"3","industry_reflux_info":"{\\\"scene_code\\\":\\\"metro_tradeorder\\\",\\\"channel\\\":\\\"xxxx\\\",\\\"scene_data\\\":{\\\"asset_name\\\":\\\"ALIPAY\\\"}}","card_type":"S0JP0000"},"settle_info":{"settle_period_time":"7d","settle_detail_infos":[{"amount":0.1,"trans_in":"A0001","settle_entity_type":"SecondMerchant??Store","summary_dimension":"A0001","settle_entity_id":"2088xxxxx;ST_0001","trans_in_type":"cardAliasNo"}]},"subject":"?????","body":"Iphone6 16G","product_code":"QUICK_WAP_WAY","merchant_order_no":"20161008001","sub_merchant":{"merchant_id":"2088000603999128","merchant_type":"alipay: ???????????????????, merchant: ???????????????"},"invoice_info":{"key_info":{"tax_num":"1464888883494","is_support_invoice":true,"invoice_merchant_name":"ABC|003"},"details":"[{\"code\":\"100294400\",\"name\":\"????\",\"num\":\"2\",\"sumPrice\":\"200.00\",\"taxRate\":\"6%\"}]"},"ext_user_info":{"cert_type":"IDENTITY_CARD","cert_no":"362334768769238881","name":"????","mobile":"16587658765","fix_buyer":"F","min_age":"18","need_check_info":"F"},"timeout_express":"90m","disable_pay_channels":"pcredit,moneyFund,debitCardExpress","seller_id":"2088102147948060","royalty_info":{"royalty_type":"ROYALTY","royalty_detail_infos":[{"out_relation_id":"20131124001","amount_percentage":"100","amount":0.1,"batch_no":"123","trans_in":"2088101126708402","trans_out_type":"userId","trans_out":"2088101126765726","serial_no":1,"trans_in_type":"userId","desc":"???????1"}]},"store_id":"NJ_001","quit_url":"http://www.taobao.com/product/113714.html","passback_params":"merchantBizType%3d3C%26merchantBizNo%3d2016010101111","specified_channel":"pcredit","goods_detail":[{"goods_name":"ipad","alipay_goods_id":"20010001","quantity":1,"price":2000,"goods_id":"apple-01","goods_category":"34543238","categories_tree":"124868003|126232002|126252004","body":"??????","show_url":"http://www.alipay.com/xxx.jpg"}],"enable_pay_channels":"pcredit,moneyFund,debitCardExpress","out_trade_no":"70501111111S001111119","total_amount":9.00,"business_params":"{\"data\":\"123\"}","goods_type":"0","auth_token":"appopenBb64d181d0146481ab6a762c00714cC27","promo_params":"{\"storeIdType\":\"1\"}"}
+     *
+     *
+     *  <p>
+     *  筛选并排序
+     *  获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数，
+     *  并按照第一个字符的键值 ASCII 码递增排序（字母升序排序），
+     *  如果遇到相同字符则按照第二个字符的键值 ASCII 码递增排序，以此类推。
+     *  <p>
+     *  拼接
+     *  将排序后的参数与其对应值，组合成“参数=参数值”的格式，并且把这些参数用 & 字符连接起来，此时生成的字符串为待签名字符串。
+     *
+     *  以一下部分代码，参考了支付宝提供的sdk 中的源码
+     *   AlipaySignature.rsaSign
+     *
+     *
+     *
+     *
+     * @param orderInfoEntity {@link OrderInfoEntity} 订单信息
+     * @return
+     */
+    @Override
+    public Optional<String> sendSignAndDataInfoToZFB(OrderInfoEntity orderInfoEntity) {
+//
+//        /**
+//         @param content 待签名字符串
+//         @param privateKey 加签私钥
+//         @param charset 加签字符集
+//         @param sign_type 签名方式
+//         **/
+//        String AlipaySignature.rsaSign(String content, String privateKey, String charset, String sign_
+
+
+//        AlipaySignature.rsaSign();
+//        this.createSign()
+
+
+
+
+        Map<String, String> sortedParams = new TreeMap<String, String>();
+
+
+         getSignContent(sortedParams);
+
+
+
+
+        return Optional.empty();
+    }
+
+
+    /**
+     * @param sortedParams
+     * @return
+     */
+    public static String getSignContent(Map<String, String> sortedParams) {
+        StringBuilder content = new StringBuilder();
+        List<String> keys = new ArrayList<String>(sortedParams.keySet());
+        Collections.sort(keys);
+        int index = 0;
+        for (String key : keys) {
+            String value = sortedParams.get(key);
+            if (areNotEmpty(key, value)) {
+                content.append(index == 0 ? "" : "&").append(key).append("=").append(value);
+                index++;
+            }
+        }
+        return content.toString();
+    }
+
+
+    /**
+     * 检查指定的字符串列表是否不为空。
+     */
+    public static boolean areNotEmpty(String... values) {
+        boolean result = true;
+        if (values == null || values.length == 0) {
+            result = false;
+        } else {
+            for (String value : values) {
+                result &= !isEmpty(value);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 检查指定的字符串是否为空。
+     * <ul>
+     * <li>SysUtils.isEmpty(null) = true</li>
+     * <li>SysUtils.isEmpty("") = true</li>
+     * <li>SysUtils.isEmpty("   ") = true</li>
+     * <li>SysUtils.isEmpty("abc") = false</li>
+     * </ul>
+     *
+     * @param value 待检查的字符串
+     * @return true/false
+     */
+    public static boolean isEmpty(String value) {
+        int strLen;
+        if (value == null || (strLen = value.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if ((Character.isWhitespace(value.charAt(i)) == false)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 生成签名
+     *
+     *
+     * @param content    加签内容
+     * @param privateKey 商户私钥
+     * @param charset    字符集
+     * @return
+     */
+    private String createSign(String content, String privateKey, String charset) {
+        try {
+            if (StringUtils.isEmpty(content)) {
+                throw new RrException("待签名内容不可为空");
+            }
+            if (StringUtils.isEmpty(privateKey)) {
+                throw new RrException("私钥不可为空");
+            }
+            if (StringUtils.isEmpty(charset)) {
+                charset = SecurityInterfaceConstans.DEFAULT_CHARSET;
+            }
+            return doSign(content, charset, privateKey);
+        } catch (Exception e) {
+
+            String errorMessage = "RSA 签名遭遇异常，请检查私钥格式是否正确。" + e.getMessage() +
+                    " content=" + content + "，charset=" + charset + "，privateKeySize=" + privateKey.length();
+            throw new RrException(errorMessage, e);
+        }
+    }
+
+
+    protected String doSign(String content, String charset, String privateKey) throws Exception {
+        PrivateKey priKey = getPrivateKeyFromPKCS8(SecurityInterfaceConstans.SIGN_TYPE_RSA,
+                new ByteArrayInputStream(privateKey.getBytes()));
+        Signature signature = Signature.getInstance(getSignAlgorithm());
+        signature.initSign(priKey);
+        if (StringUtils.isEmpty(charset)) {
+            signature.update(content.getBytes());
+        } else {
+            signature.update(content.getBytes(charset));
+        }
+        byte[] signed = signature.sign();
+        return new String(Base64.encodeBase64(signed));
+    }
+
+    public static PrivateKey getPrivateKeyFromPKCS8(String algorithm,
+                                                    InputStream ins) throws Exception {
+        if (ins == null || StringUtils.isEmpty(algorithm)) {
+            return null;
+        }
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
+        byte[] encodedKey = StreamUtil.readText(ins).getBytes();
+        encodedKey = Base64.decodeBase64(encodedKey);
+        return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encodedKey));
+    }
+
+
+    protected String getSignAlgorithm() {
+        return SecurityInterfaceConstans.SIGN_ALGORITHMS;
+    }
+
 }
