@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy.business.authentication.service;
 
+import fun.gengzi.codecopy.business.authentication.entity.OrderInfoEntity;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +37,15 @@ public interface SecurityInterfaceService {
      * @return 加密后的内容
      */
     Optional<String> encryptJSByClientSecrekeyStr(String content, String secrekey);
+
+
+    /**
+     * 将数据和签名发送至支付宝
+     *
+     * @param orderInfoEntity {@link OrderInfoEntity} 订单信息
+     * @return
+     */
+    Optional<String> sendSignAndDataInfoToZFB(OrderInfoEntity orderInfoEntity);
 
 
 }

@@ -1,12 +1,11 @@
 package fun.gengzi.codecopy.business.authentication.service.impl;
 
 
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.request.AlipayTradeWapPayRequest;
-import com.alipay.api.response.AlipayTradeWapPayResponse;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import fun.gengzi.codecopy.business.authentication.constant.SecurityInterfaceConstans;
+import fun.gengzi.codecopy.business.authentication.entity.MustParamEntity;
 import fun.gengzi.codecopy.business.authentication.entity.OrderInfoEntity;
 import fun.gengzi.codecopy.business.authentication.service.SecurityInterfaceService;
 import fun.gengzi.codecopy.exception.RrException;
@@ -94,7 +93,7 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
             secrekey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbcd" +
                     "LKOtTKOjalffv/LLLOqfyh8Ep4XHjvOivMU3Nb1N0puG4+" +
                     "NTrXBS8GDczgsZ+7J6D7FTcH8JInMKpz85LMCAwEAAQ==";
-//            https://www.cnblogs.com/wsss/p/11516318.html
+            // https://www.cnblogs.com/wsss/p/11516318.html
             Object o = in.invokeFunction("encryptRSAByPublicKey", content, secrekey);
             return Optional.of(o.toString());
         } catch (ScriptException | IOException | NoSuchMethodException e) {
@@ -110,50 +109,58 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
      * https://openapi.alipay.com/gateway.do?timestamp=2013-01-01 08:08:08&method=alipay.trade.wap.pay&app_id=19186&sign_type=RSA2&sign=ERITJKEIJKJHKKKKKKKHJEREEEEEEEEEEE&version=1.0&charset=GBK&biz_content={"time_expire":"2016-12-31 10:05","extend_params":{"sys_service_provider_id":"2088511833207846","hb_fq_seller_percent":"100","hb_fq_num":"3","industry_reflux_info":"{\\\"scene_code\\\":\\\"metro_tradeorder\\\",\\\"channel\\\":\\\"xxxx\\\",\\\"scene_data\\\":{\\\"asset_name\\\":\\\"ALIPAY\\\"}}","card_type":"S0JP0000"},"settle_info":{"settle_period_time":"7d","settle_detail_infos":[{"amount":0.1,"trans_in":"A0001","settle_entity_type":"SecondMerchant??Store","summary_dimension":"A0001","settle_entity_id":"2088xxxxx;ST_0001","trans_in_type":"cardAliasNo"}]},"subject":"?????","body":"Iphone6 16G","product_code":"QUICK_WAP_WAY","merchant_order_no":"20161008001","sub_merchant":{"merchant_id":"2088000603999128","merchant_type":"alipay: ???????????????????, merchant: ???????????????"},"invoice_info":{"key_info":{"tax_num":"1464888883494","is_support_invoice":true,"invoice_merchant_name":"ABC|003"},"details":"[{\"code\":\"100294400\",\"name\":\"????\",\"num\":\"2\",\"sumPrice\":\"200.00\",\"taxRate\":\"6%\"}]"},"ext_user_info":{"cert_type":"IDENTITY_CARD","cert_no":"362334768769238881","name":"????","mobile":"16587658765","fix_buyer":"F","min_age":"18","need_check_info":"F"},"timeout_express":"90m","disable_pay_channels":"pcredit,moneyFund,debitCardExpress","seller_id":"2088102147948060","royalty_info":{"royalty_type":"ROYALTY","royalty_detail_infos":[{"out_relation_id":"20131124001","amount_percentage":"100","amount":0.1,"batch_no":"123","trans_in":"2088101126708402","trans_out_type":"userId","trans_out":"2088101126765726","serial_no":1,"trans_in_type":"userId","desc":"???????1"}]},"store_id":"NJ_001","quit_url":"http://www.taobao.com/product/113714.html","passback_params":"merchantBizType%3d3C%26merchantBizNo%3d2016010101111","specified_channel":"pcredit","goods_detail":[{"goods_name":"ipad","alipay_goods_id":"20010001","quantity":1,"price":2000,"goods_id":"apple-01","goods_category":"34543238","categories_tree":"124868003|126232002|126252004","body":"??????","show_url":"http://www.alipay.com/xxx.jpg"}],"enable_pay_channels":"pcredit,moneyFund,debitCardExpress","out_trade_no":"70501111111S001111119","total_amount":9.00,"business_params":"{\"data\":\"123\"}","goods_type":"0","auth_token":"appopenBb64d181d0146481ab6a762c00714cC27","promo_params":"{\"storeIdType\":\"1\"}"}
      *
      *
-     *  <p>
-     *  筛选并排序
-     *  获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数，
-     *  并按照第一个字符的键值 ASCII 码递增排序（字母升序排序），
-     *  如果遇到相同字符则按照第二个字符的键值 ASCII 码递增排序，以此类推。
-     *  <p>
-     *  拼接
-     *  将排序后的参数与其对应值，组合成“参数=参数值”的格式，并且把这些参数用 & 字符连接起来，此时生成的字符串为待签名字符串。
-     *
-     *  以一下部分代码，参考了支付宝提供的sdk 中的源码
-     *   AlipaySignature.rsaSign
-     *
-     *
-     *
+     * <p>
+     * 筛选并排序
+     * 获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数，
+     * 并按照第一个字符的键值 ASCII 码递增排序（字母升序排序），
+     * 如果遇到相同字符则按照第二个字符的键值 ASCII 码递增排序，以此类推。
+     * <p>
+     * 拼接
+     * 将排序后的参数与其对应值，组合成“参数=参数值”的格式，并且把这些参数用 & 字符连接起来，此时生成的字符串为待签名字符串。
+     * <p>
+     * 以一下部分代码，参考了支付宝提供的sdk 中的源码
+     * AlipaySignature.rsaSign
      *
      * @param orderInfoEntity {@link OrderInfoEntity} 订单信息
      * @return
      */
     @Override
     public Optional<String> sendSignAndDataInfoToZFB(OrderInfoEntity orderInfoEntity) {
-//
-//        /**
-//         @param content 待签名字符串
-//         @param privateKey 加签私钥
-//         @param charset 加签字符集
-//         @param sign_type 签名方式
-//         **/
-//        String AlipaySignature.rsaSign(String content, String privateKey, String charset, String sign_
+        // 整理请求参数
+        // toJSONString 默认情况下属性值为null的字段不会打印
+        String biz_content = JSONObject.toJSONString(orderInfoEntity);
+        logger.info("请求实体 biz_content : {}", biz_content);
+        MustParamEntity mustParamEntity = new MustParamEntity();
+        mustParamEntity.setBiz_content(biz_content);
+        mustParamEntity.setNotify_url("http://localhost:8089/api/v2/payMoneyResponse");
+        mustParamEntity.setTimestamp(String.valueOf(System.currentTimeMillis()));
+        // 获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数
+        // 并排序
+        TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
+        treeMap.forEach((k, v) -> {
+            logger.info("排序后的 key : {} || value {}", k, v);
+        });
 
+        if (!treeMap.isEmpty()) {
+            // 需要签名内容
+            String signContent = getSignContent(treeMap);
+            logger.info("签名内容 signContent : {}", signContent);
+            if (StringUtils.isNotBlank(signContent)) {
+                // 生成签名
+                String sign = createSign(signContent, SecurityInterfaceConstans.MYPRIVATEKEYRSA, SecurityInterfaceConstans.DEFAULT_CHARSET);
+                // 发送请求
+                logger.info("签名 sign : {}", sign);
+                mustParamEntity.setSign(sign);
+            }
+        }
 
-//        AlipaySignature.rsaSign();
-//        this.createSign()
-
-
-
-
-        Map<String, String> sortedParams = new TreeMap<String, String>();
-
-
-         getSignContent(sortedParams);
-
-
-
-
+        if(StringUtils.isNoneBlank(mustParamEntity.getSign())){
+            // 发送请求
+            String jsonBody = JSONUtil.parseObj(mustParamEntity, false).toStringPretty();
+            String body = HttpRequest.post(SecurityInterfaceConstans.PAYMONEYZFBURL)
+                    .body(jsonBody).execute().body();
+            return Optional.ofNullable(body);
+        }
         return Optional.empty();
     }
 
@@ -221,10 +228,9 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
     /**
      * 生成签名
      *
-     *
      * @param content    加签内容
      * @param privateKey 商户私钥
-     * @param charset    字符集
+     * @param charset    字符集 默认 uft-8
      * @return
      */
     private String createSign(String content, String privateKey, String charset) {
