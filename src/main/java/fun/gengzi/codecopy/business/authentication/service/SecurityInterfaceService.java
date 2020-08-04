@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.authentication.service;
 
+import fun.gengzi.codecopy.business.authentication.entity.MustParamEntity;
 import fun.gengzi.codecopy.business.authentication.entity.OrderInfoEntity;
 
 import java.util.Map;
@@ -46,6 +47,15 @@ public interface SecurityInterfaceService {
      * @return
      */
     Optional<String> sendSignAndDataInfoToZFB(OrderInfoEntity orderInfoEntity);
+
+
+    /**
+     * 支付宝校验签名和请求参数，执行业务，重新回调商户的回调地址
+     *
+     * @param mustParamEntity
+     * @return
+     */
+    Optional<String> responseSignAndDataInfoToSH(MustParamEntity mustParamEntity);
 
 
 }

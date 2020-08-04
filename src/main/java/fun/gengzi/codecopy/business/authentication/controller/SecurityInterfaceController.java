@@ -216,22 +216,21 @@ public class SecurityInterfaceController {
 
     /**
      * 请求参数：
-     *
+     * <p>
      * {
-     *   "buyer_id": "202008041411269735742",
-     *   "goods_detail": "88.88",
-     *   "out_trade_no": "Phone+Xs+Max+256G",
-     *   "seller_id": "2088102175953034",
-     *   "subject": "ss",
-     *   "total_amount": "2088102175107499"
+     * "buyer_id": "202008041411269735742",
+     * "goods_detail": "88.88",
+     * "out_trade_no": "Phone+Xs+Max+256G",
+     * "seller_id": "2088102175953034",
+     * "subject": "ss",
+     * "total_amount": "2088102175107499"
      * }
-     *
      *
      * @param orderInfoEntity
      * @return
      */
     @ApiOperation(value = "服务与服务之间参数的加密与解密", notes = "服务与服务之间参数的加密与解密- " +
-            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）")
+            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）本接口演示商户客户端发送请求到支付宝（不是真正的调用支付宝）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "OrderInfoEntity", value = "请求参数实体", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
@@ -260,7 +259,7 @@ public class SecurityInterfaceController {
 
 
     @ApiOperation(value = "服务与服务之间参数的加密与解密", notes = "服务与服务之间参数的加密与解密- " +
-            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）")
+            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）本接口演示支付宝接受商户请求，并响应")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "MustParamEntity", value = "请求参数实体", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
@@ -273,6 +272,8 @@ public class SecurityInterfaceController {
     @ResponseBody
     public ReturnData payMoneyByZFB(@RequestBody MustParamEntity mustParamEntity) {
         logger.info("mustParamEntity : {}", mustParamEntity.toString());
+        logger.info("mustParamEntity to json : {} ", JSONObject.toJSONString(mustParamEntity));
+        securityInterfaceService.responseSignAndDataInfoToSH(mustParamEntity);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;
