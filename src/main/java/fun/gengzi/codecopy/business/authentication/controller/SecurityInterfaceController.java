@@ -1,6 +1,9 @@
 package fun.gengzi.codecopy.business.authentication.controller;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
+import fun.gengzi.codecopy.business.authentication.constant.SecurityInterfaceConstans;
 import fun.gengzi.codecopy.business.authentication.entity.*;
 import fun.gengzi.codecopy.business.authentication.service.SecurityInterfaceService;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
@@ -19,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -282,9 +288,24 @@ public class SecurityInterfaceController {
     public ReturnData payMoneyByZFB(@RequestBody MustParamEntity mustParamEntity) {
         logger.info("mustParamEntity : {}", mustParamEntity.toString());
         logger.info("mustParamEntity to json : {} ", JSONObject.toJSONString(mustParamEntity));
-        securityInterfaceService.responseSignAndDataInfoToSH(mustParamEntity);
+        // 验签
+        boolean sign = securityInterfaceService.responseSignAndDataInfoToSH(mustParamEntity);
+        if(sign){
+            String biz_content = mustParamEntity.getBiz_content();
+            OrderInfoEntity orderInfoEntity = (OrderInfoEntity) JSONObject.parse(biz_content);
+            String total_amount = orderInfoEntity.getTotal_amount();
+            BigDecimal bigDecimal = new BigDecimal(total_amount);
+            //TODO 修改金额这个参数，响应
+            // 手续费
+            BigDecimal fee = BigDecimal.valueOf(0.04);
+            bigDecimal.add(fee);
+            orderInfoEntity.setTotal_amount(bigDecimal.toString());
+            String new_biz_content = JSONObject.toJSONString(orderInfoEntity);
+            // 回调
+            securityInterfaceService.sendSignAndDataInfoToSH(mustParamEntity);
+        }
         ReturnData ret = ReturnData.newInstance();
-        ret.setSuccess();
+        ret.setFailure("error");
         return ret;
     }
 

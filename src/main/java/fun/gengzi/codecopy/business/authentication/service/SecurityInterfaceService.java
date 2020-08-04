@@ -48,6 +48,14 @@ public interface SecurityInterfaceService {
      */
     Optional<String> sendSignAndDataInfoToZFB(OrderInfoEntity orderInfoEntity);
 
+    /**
+     * 将数据和签名发送至商户
+     *
+     * @param mustParamEntity {@link MustParamEntity}
+     * @return
+     */
+    Optional<String> sendSignAndDataInfoToSH(MustParamEntity mustParamEntity);
+
 
     /**
      * 支付宝校验签名和请求参数，执行业务，重新回调商户的回调地址
@@ -55,7 +63,7 @@ public interface SecurityInterfaceService {
      * @param mustParamEntity
      * @return
      */
-    Optional<String> responseSignAndDataInfoToSH(MustParamEntity mustParamEntity);
+    boolean responseSignAndDataInfoToSH(MustParamEntity mustParamEntity);
 
 
 }

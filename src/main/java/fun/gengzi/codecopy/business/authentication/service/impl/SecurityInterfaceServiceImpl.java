@@ -17,9 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
 
-import javax.crypto.Cipher;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -168,6 +166,39 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<String> sendSignAndDataInfoToSH(MustParamEntity mustParamEntity) {
+        mustParamEntity.setTimestamp(String.valueOf(System.currentTimeMillis()));
+        // 获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数
+        // 并排序
+        TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
+        treeMap.forEach((k, v) -> {
+            logger.info("排序后的 key : {} || value {}", k, v);
+        });
+
+        if (!treeMap.isEmpty()) {
+            // 需要签名内容
+            String signContent = getSignContent(treeMap);
+            logger.info("签名内容 signContent : {}", signContent);
+            if (StringUtils.isNotBlank(signContent)) {
+                // 生成签名
+                String sign = createSign(signContent, SecurityInterfaceConstans.ZFBPRIVATEKEYRSA, SecurityInterfaceConstans.DEFAULT_CHARSET);
+                // 发送请求
+                logger.info("签名 sign : {}", sign);
+                mustParamEntity.setSign(sign);
+            }
+        }
+
+        if (StringUtils.isNoneBlank(mustParamEntity.getSign())) {
+            // 发送请求
+            String jsonBody = JSONUtil.parseObj(mustParamEntity, false).toStringPretty();
+            String body = HttpRequest.post(mustParamEntity.getNotify_url())
+                    .body(jsonBody).execute().body();
+            return Optional.ofNullable(body);
+        }
+        return Optional.empty();
+    }
+
     /**
      * 支付宝校验签名和请求参数，执行业务，重新回调商户的回调地址
      *
@@ -175,7 +206,7 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
      * @return
      */
     @Override
-    public Optional<String> responseSignAndDataInfoToSH(MustParamEntity mustParamEntity) {
+    public boolean responseSignAndDataInfoToSH(MustParamEntity mustParamEntity) {
         if (StringUtils.isBlank(mustParamEntity.getSign())) {
             throw new RrException("sign 不能为null");
         }
@@ -183,15 +214,15 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
         String signContent = getSignContent(treeMap);
         try {
-            String s = parseSign(sign, SecurityInterfaceConstans.DEFAULT_CHARSET, SecurityInterfaceConstans.MYPUBLICKEYRSA, signContent);
-            logger.info("content : {} ", s);
-
-
+            boolean isSuccess = this.parseSign(sign, SecurityInterfaceConstans.DEFAULT_CHARSET, SecurityInterfaceConstans.MYPUBLICKEYRSA, signContent);
+            if (isSuccess) {
+                logger.info("验签成功");
+                return true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return Optional.empty();
+        return false;
     }
 
 
@@ -276,7 +307,6 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
             }
             return doSign(content, charset, privateKey);
         } catch (Exception e) {
-
             String errorMessage = "RSA 签名遭遇异常，请检查私钥格式是否正确。" + e.getMessage() +
                     " content=" + content + "，charset=" + charset + "，privateKeySize=" + privateKey.length();
             throw new RrException(errorMessage, e);
@@ -284,6 +314,13 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
     }
 
 
+    /**
+     * @param content    需要加密的内容
+     * @param charset    字符集
+     * @param privateKey 私钥
+     * @return
+     * @throws Exception
+     */
     protected String doSign(String content, String charset, String privateKey) throws Exception {
         PrivateKey priKey = getPrivateKeyFromPKCS8(SecurityInterfaceConstans.SIGN_TYPE_RSA,
                 new ByteArrayInputStream(privateKey.getBytes()));
@@ -324,19 +361,20 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
      * @return
      * @throws Exception
      */
-    protected String parseSign(String signStr, String charset, String publicKey, String content) throws Exception {
+    protected boolean parseSign(String signStr, String charset, String publicKey, String content) throws Exception {
         PublicKey pubkey = getPublicKeyFromX509(SecurityInterfaceConstans.SIGN_TYPE_RSA,
                 new ByteArrayInputStream(publicKey.getBytes()));
         Signature signature = Signature.getInstance(getSignAlgorithm());
         signature.initVerify(pubkey);
+        // base64 解码
         byte[] bytes = Base64.decodeBase64(signStr);
         // 加载签名内容
         signature.update(content.getBytes(charset));
         // 验证签名
         if (signature.verify(bytes)) {
-            return "true";
+            return true;
         }
-        return "false";
+        return false;
     }
 
     public static PublicKey getPublicKeyFromX509(String algorithm, InputStream ins) throws Exception {
