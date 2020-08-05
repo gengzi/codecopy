@@ -235,7 +235,7 @@ public class SecurityInterfaceController {
      * @param orderInfoEntity
      * @return
      */
-    @ApiOperation(value = "服务与服务之间参数的加密与解密", notes = "服务与服务之间参数的加密与解密- " +
+    @ApiOperation(value = "服务与服务之间参数的加密与解密-第一步", notes = "服务与服务之间参数的加密与解密- " +
             "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）本接口演示商户客户端发送请求到支付宝（不是真正的调用支付宝）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "OrderInfoEntity", value = "请求参数实体", required = true)})
@@ -256,7 +256,8 @@ public class SecurityInterfaceController {
         // 支付宝自身业务处理完，返回数据，使用支付宝私钥加密，生成签名字段，
         // 商户通过支付宝公钥解密，比对响应参数，是否一致，一致后，处理自身业务。
         // 完成
-
+        logger.info("用户请求商户，发起付款");
+        logger.info("商户调用支付宝，发起付款");
         securityInterfaceService.sendSignAndDataInfoToZFB(orderInfoEntity);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
@@ -266,15 +267,14 @@ public class SecurityInterfaceController {
 
     /**
      * 请求参数
-     *
+     * <p>
      * {"biz_content":"{\"buyer_id\":\"2020080414112697357422\",\"goods_detail\":\"88.88\",\"out_trade_no\":\"Phone+Xs+Max+256G\",\"seller_id\":\"2088102175953034\",\"subject\":\"ss\",\"total_amount\":\"2088102175107499\"}","notify_url":"http://localhost:8089/api/v2/payMoneyResponse","sign":"XrUN996fT1e5tP4nLj5tDaXVJNd1rkBY+OP/qgg2yVt7EGZ04jwi/lrEufq0EQP1n7r1YlEA8LDIIYt4k4hthXaL+W81gv3M57fwTLW6oE77uN/n0e/eWah8ekKsSIm9MqcGzCAzNs2xamKRzNl0bJHno2kEbMbpJH3FL0mS25w=","timestamp":"1596535463426"}
-     *
      *
      * @param mustParamEntity
      * @return
      */
-    @ApiOperation(value = "服务与服务之间参数的加密与解密", notes = "服务与服务之间参数的加密与解密- " +
-            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）本接口演示支付宝接受商户请求，并响应")
+    @ApiOperation(value = "服务与服务之间参数的加密与解密-第二步", notes = "服务与服务之间参数的加密与解密- " +
+            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）本接口演示支付宝接受商户请求，并回调商户接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "MustParamEntity", value = "请求参数实体", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
@@ -286,13 +286,15 @@ public class SecurityInterfaceController {
     @PostMapping("/payMoneyByZFB")
     @ResponseBody
     public ReturnData payMoneyByZFB(@RequestBody MustParamEntity mustParamEntity) {
+        logger.info("支付宝接受商户请求");
         logger.info("mustParamEntity : {}", mustParamEntity.toString());
         logger.info("mustParamEntity to json : {} ", JSONObject.toJSONString(mustParamEntity));
         // 验签
         boolean sign = securityInterfaceService.responseSignAndDataInfoToSH(mustParamEntity);
-        if(sign){
+        if (sign) {
+            logger.info("用户使用支付宝付款");
             String biz_content = mustParamEntity.getBiz_content();
-            OrderInfoEntity orderInfoEntity = (OrderInfoEntity) JSONObject.parse(biz_content);
+            OrderInfoEntity orderInfoEntity = JSONUtil.toBean(biz_content, OrderInfoEntity.class);
             String total_amount = orderInfoEntity.getTotal_amount();
             BigDecimal bigDecimal = new BigDecimal(total_amount);
             //TODO 修改金额这个参数，响应
@@ -302,10 +304,40 @@ public class SecurityInterfaceController {
             orderInfoEntity.setTotal_amount(bigDecimal.toString());
             String new_biz_content = JSONObject.toJSONString(orderInfoEntity);
             // 回调
+            logger.info("完成付款，支付宝回调商户接口，通知商户，用户已经付款");
             securityInterfaceService.sendSignAndDataInfoToSH(mustParamEntity);
         }
         ReturnData ret = ReturnData.newInstance();
         ret.setFailure("error");
+        return ret;
+    }
+
+    @ApiOperation(value = "服务与服务之间参数的加密与解密-第三步", notes = "服务与服务之间参数的加密与解密- " +
+            "演示一个支付流程（参考支付宝支付流程对于数据的加密与解密）本接口演示商户接收支付宝请求，完成对自己的业务处理")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "MustParamEntity", value = "请求参数实体", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"success\",\n" +
+            "\t}\n")})
+    @PostMapping("/payMoneyBySH")
+    @ResponseBody
+    public ReturnData payMoneyBySH(@RequestBody MustParamEntity mustParamEntity) {
+        logger.info("商户接收支付宝通知信息");
+        ReturnData ret = ReturnData.newInstance();
+        logger.info("mustParamEntity : {}", mustParamEntity.toString());
+        logger.info("mustParamEntity to json : {} ", JSONObject.toJSONString(mustParamEntity));
+        // 验签
+        boolean sign = securityInterfaceService.responseSignAndDataInfoToZFB(mustParamEntity);
+        if (sign) {
+            // TODO 验签成功，执行自身业务
+            logger.info("为该用户办理业务，发货");
+            ret.setSuccess();
+            return ret;
+        }
+        ret.setFailure("失败，请稍后再试！");
         return ret;
     }
 

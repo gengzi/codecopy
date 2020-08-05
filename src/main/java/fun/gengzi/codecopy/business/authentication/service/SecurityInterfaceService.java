@@ -66,4 +66,12 @@ public interface SecurityInterfaceService {
     boolean responseSignAndDataInfoToSH(MustParamEntity mustParamEntity);
 
 
+    /**
+     *  商户验证支付宝的 签名和请求参数，执行自身的业务
+     *
+     * @param mustParamEntity
+     * @return
+     */
+    boolean responseSignAndDataInfoToZFB(MustParamEntity mustParamEntity);
+
 }

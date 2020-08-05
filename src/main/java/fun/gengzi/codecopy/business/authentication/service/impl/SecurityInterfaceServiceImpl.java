@@ -134,20 +134,21 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         logger.info("请求实体 biz_content : {}", biz_content);
         MustParamEntity mustParamEntity = new MustParamEntity();
         mustParamEntity.setBiz_content(biz_content);
-        mustParamEntity.setNotify_url("http://localhost:8089/api/v2/payMoneyResponse");
+        mustParamEntity.setNotify_url("http://localhost:8089/api/v2/payMoneyBySH");
         mustParamEntity.setTimestamp(String.valueOf(System.currentTimeMillis()));
         // 获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数
         // 并排序
         TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
-        treeMap.forEach((k, v) -> {
-            logger.info("排序后的 key : {} || value {}", k, v);
-        });
+//        treeMap.forEach((k, v) -> {
+//            logger.info("排序后的 key : {} || value {}", k, v);
+//        });
 
         if (!treeMap.isEmpty()) {
             // 需要签名内容
             String signContent = getSignContent(treeMap);
             logger.info("签名内容 signContent : {}", signContent);
             if (StringUtils.isNotBlank(signContent)) {
+                logger.info("使用商户私钥对参数签名");
                 // 生成签名
                 String sign = createSign(signContent, SecurityInterfaceConstans.MYPRIVATEKEYRSA, SecurityInterfaceConstans.DEFAULT_CHARSET);
                 // 发送请求
@@ -172,15 +173,16 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         // 获取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段，剔除值为空的参数
         // 并排序
         TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
-        treeMap.forEach((k, v) -> {
-            logger.info("排序后的 key : {} || value {}", k, v);
-        });
+//        treeMap.forEach((k, v) -> {
+//            logger.info("排序后的 key : {} || value ： {}", k, v);
+//        });
 
         if (!treeMap.isEmpty()) {
             // 需要签名内容
             String signContent = getSignContent(treeMap);
             logger.info("签名内容 signContent : {}", signContent);
             if (StringUtils.isNotBlank(signContent)) {
+                logger.info("使用支付宝私钥对参数签名");
                 // 生成签名
                 String sign = createSign(signContent, SecurityInterfaceConstans.ZFBPRIVATEKEYRSA, SecurityInterfaceConstans.DEFAULT_CHARSET);
                 // 发送请求
@@ -214,6 +216,7 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
         String signContent = getSignContent(treeMap);
         try {
+            logger.info("使用商户公钥验证签名");
             boolean isSuccess = this.parseSign(sign, SecurityInterfaceConstans.DEFAULT_CHARSET, SecurityInterfaceConstans.MYPUBLICKEYRSA, signContent);
             if (isSuccess) {
                 logger.info("验签成功");
@@ -222,6 +225,35 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        logger.info("验签失败");
+        return false;
+    }
+
+    /**
+     * 商户验证支付宝的 签名和请求参数，执行自身的业务
+     *
+     * @param mustParamEntity
+     * @return
+     */
+    @Override
+    public boolean responseSignAndDataInfoToZFB(MustParamEntity mustParamEntity) {
+        if (StringUtils.isBlank(mustParamEntity.getSign())) {
+            throw new RrException("sign 不能为null");
+        }
+        String sign = mustParamEntity.getSign();
+        TreeMap<String, String> treeMap = mustParamEntity.mustParamEntityToMap(mustParamEntity);
+        String signContent = getSignContent(treeMap);
+        try {
+            logger.info("使用支付宝公钥验证签名");
+            boolean isSuccess = this.parseSign(sign, SecurityInterfaceConstans.DEFAULT_CHARSET, SecurityInterfaceConstans.ZFBPUBLICKEYRSA, signContent);
+            if (isSuccess) {
+                logger.info("验签成功");
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("验签失败");
         return false;
     }
 
