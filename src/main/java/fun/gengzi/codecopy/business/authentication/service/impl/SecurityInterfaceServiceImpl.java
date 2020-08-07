@@ -257,6 +257,31 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         return false;
     }
 
+    /**
+     * java 调用js 进行加密
+     */
+    @Override
+    public void paramEncryptionToJs() {
+        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+        ScriptEngine nashorn = scriptEngineManager.getEngineByName("nashorn");
+        try {
+            String cryptoPath = ClassLoader.getSystemClassLoader().getResource("js/crypto-js-4.0.0/crypto-js.js").getPath();
+            String encryptPath = ClassLoader.getSystemClassLoader().getResource("js/securityInterface/encrypt.js").getPath();
+//            String jqueryPath = ClassLoader.getSystemClassLoader().getResource("js/securityInterface/jquery-1.11.3.min.js").getPath();
+            String paramCrypotPath = ClassLoader.getSystemClassLoader().getResource("js/securityInterface/paramCrypot.js").getPath();
+            nashorn.eval(Files.newBufferedReader(Paths.get(cryptoPath.substring(1))));
+            nashorn.eval(Files.newBufferedReader(Paths.get(encryptPath.substring(1))));
+//            nashorn.eval(Files.newBufferedReader(Paths.get(jqueryPath.substring(1))));
+            nashorn.eval(Files.newBufferedReader(Paths.get(paramCrypotPath.substring(1))));
+            Invocable in = (Invocable) nashorn;
+            String username = "16636663456";
+            String password = "gengzi666";
+            Object o = in.invokeFunction("requestParamCrypot", username, password);
+        } catch (ScriptException | IOException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * @param sortedParams

@@ -74,4 +74,9 @@ public interface SecurityInterfaceService {
      */
     boolean responseSignAndDataInfoToZFB(MustParamEntity mustParamEntity);
 
+    /**
+     * java 调用js 进行加密
+     */
+    void paramEncryptionToJs();
+
 }

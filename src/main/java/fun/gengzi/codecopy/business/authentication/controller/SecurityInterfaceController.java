@@ -1,9 +1,8 @@
 package fun.gengzi.codecopy.business.authentication.controller;
 
-import cn.hutool.http.HttpRequest;
+import cn.hutool.core.codec.Base64;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
-import fun.gengzi.codecopy.business.authentication.constant.SecurityInterfaceConstans;
 import fun.gengzi.codecopy.business.authentication.entity.*;
 import fun.gengzi.codecopy.business.authentication.service.SecurityInterfaceService;
 import fun.gengzi.codecopy.constant.RspCodeEnum;
@@ -16,10 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -338,6 +335,68 @@ public class SecurityInterfaceController {
             return ret;
         }
         ret.setFailure("失败，请稍后再试！");
+        return ret;
+    }
+
+
+    @ApiOperation(value = "前端-后端：提交参数的加密与解密", notes = "前端-后端：提交参数的加密与解密" +
+            "演示前端js将提交参数加密")
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"success\",\n" +
+            "\t}\n")})
+    @PostMapping("/paramEncryptionToJS")
+    @ResponseBody
+    public ReturnData paramEncryptionToJS() {
+        securityInterfaceService.paramEncryptionToJs();
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        return ret;
+    }
+
+
+    /**
+     * 其实前端对参数的加密，来保证安全，就好像是一个纸老虎。但是依然能提高接口的安全程度。
+     * <p>
+     * 敏感数据加密后，攻击者无法仅通过网络抓包来详细了解敏感数据的内容。
+     * 为了让这个纸老虎更加逼真，对前端js 混淆，添加一些无效参数，记录用户行为，将这些组合在一起，提升攻击者的难度。
+     * 可能攻击者分析分析着，就放弃了。
+     * <p>
+     * 该接口演示，使用微博登陆的加密js，对用户名和密码进行加密处理，并提交至后台。
+     *
+     * @return
+     */
+    @ApiOperation(value = "前端-后端：提交参数的加密与解密", notes = "前端-后端：提交参数的加密与解密" +
+            "演示后台解密")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "ParamEncryptionEntity", value = "ParamEncryptionEntity", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"success\",\n" +
+            "\t}\n")})
+    @PostMapping("/paramEncryption")
+    @ResponseBody
+    public ReturnData paramEncryption(@RequestBody ParamEncryptionEntity paramEncryptionEntity) {
+        // 编写加密js 的function 方法
+        // java 调用这些js 方法，执行加密操作，发送ajax 请求
+        // 前端js混淆，引入额外参数，替换页面的原属性值
+        // 后台接受 ajax 请求，获取参数，将参数解密处理，执行具体业务
+        logger.info("paramEncryptionEntity : {}", paramEncryptionEntity.toString());
+
+        String nonce = paramEncryptionEntity.getNonce();
+        String su = Base64.decodeStr(paramEncryptionEntity.getSu());
+        logger.info("su : {}", su);
+
+        // 跟 nonce 获取 publickey
+        Optional<String> sp = RSAUtils.decrypt(paramEncryptionEntity.getSu(), secretkey);
+        logger.info("sp : {}", sp.orElse(""));
+
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
         return ret;
     }
 

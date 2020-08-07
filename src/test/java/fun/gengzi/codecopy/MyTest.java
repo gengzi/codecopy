@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy;
 
+import cn.hutool.core.io.file.FileReader;
+
 import java.io.*;
 
 public class MyTest {
@@ -49,7 +51,10 @@ public class MyTest {
 
 
     public void fun03(){
-
+//        FileReader fileReader = new FileReader("");
+//        fileReader.readBytes();
+//
+//        java.io.FileReader
     }
 
 

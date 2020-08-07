@@ -1,0 +1,69 @@
+// 编写加密js 的function 方法
+// java 调用这些js 方法，执行加密操作，发送ajax 请求
+// 前端js混淆，引入额外参数，替换页面的原属性值
+// 后台接受 ajax 请求，获取参数，将参数解密处理，执行具体业务
+
+
+// var username = "16636663456"
+// var password = "gengzi666"
+
+function requestParamCrypot(username, password) {
+    // 调用加密js 进行加密   -- 这里使用 微博登录中提取的 js 方法进行加密
+    // 获取加密后的用户名
+    username = getusername(username)
+    // 当前时间
+    var servicetime = new Date().getTime()
+    // nonce 和 rsapubkey 是首次访问微博网站，就能返回的信息，这里我们之间写死
+    var nonce = "5XP86"
+    var rsaPubkey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbcdLKOtTKOjalffv/LLLOqfyh8Ep4XHjvOivMU3Nb1N0puG4+NTrXBS8GDczgsZ+7J6D7FTcH8JInMKpz85LMCAwEAAQ=="
+    // 获取加密后的密码
+    password = getpassword(password, servicetime, nonce, rsaPubkey)
+
+    // 加密完毕，调用后台接口
+    var data = JSON.stringify({
+        "nonce": nonce,
+        "serviceTime": servicetime,
+        "sp": password,
+        "su": username
+    });
+    //
+    // var settings = {
+    //     "async": true,
+    //     "crossDomain": true,
+    //     "url": "http://localhost:8089/api/v2/paramEncryption",
+    //     "method": "POST",
+    //     "headers": {
+    //         "Content-Type": "application/json",
+    //         "cache-control": "no-cache"
+    //     },
+    //     "processData": false,
+    //     "data": data
+    // }
+    //
+    // $.ajax(settings).done(function (response) {
+    //     console.log(response);
+    // });
+
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+            console.log(this.responseText);
+        }
+    });
+
+    xhr.open("POST", "http://localhost:8089/api/v2/paramEncryption");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.setRequestHeader("Postman-Token", "396f6be6-ce5e-45a8-a69f-d991d4180ed1");
+
+    xhr.send(data);
+
+}
+
+
+
+
+
+
