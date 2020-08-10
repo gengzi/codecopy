@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.authentication.controller;
 
+import fun.gengzi.codecopy.utils.RSAUtils;
 import org.junit.Test;
 
 import javax.script.Invocable;
@@ -9,6 +10,7 @@ import javax.script.ScriptException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * 参考：https://www.cnblogs.com/jifeng/p/8901168.html
@@ -69,6 +71,25 @@ public class SecurityInterfaceControllerTest {
         } catch (ScriptException | IOException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+
+    // rsa 密钥
+    private static final String secretkey = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAttx0so61Mo6NqV9+/8sss6p/KHwSnhceO86K8xTc1vU3Sm4bj41OtcFLwYNzOCxn7snoPsVNwfwkicwqnPzkswIDAQABAkBGw9Xda+Cvaf9kdnJdZzErbmW7Mxi5WVT37BxVqdM01BTjudKSADlLn53fEeWl7pmfMkMuXZ7uPNdqmLWVLMNxAiEA6LXvDTKtEZNyTvjXs4nDJweiIT9kZtZmYD3hVcQueJUCIQDJKV+PcdKehVw8U+hdeE4/NZDFCHRzaGM4Zs5YRRbuJwIgSG0fSn9EKB04zWVbVNCCgWo5xplBOVRvJnL758KYKAUCIDdpmzZDb3ZVXCwOHRMqYbuNwNxV0OY9mh9eSncMSR2/AiEApSModT03Kr+nHxhgzAyOvzLcKE0IPMJ+ny3mjdyBjWc=";
+
+
+    @Test
+    public void fun03() {
+        Optional<String> sp = RSAUtils.decryptByPublic("d/8TgJb/+G9VwBKNJVphRH4MnlCnPRX0Iqz7f7MysxCaFMvTnOn8wOWmzWfuCfEeRmkSIexBbzHcTS30UbRB4g==", secretkey);
+
+        System.out.println(sp.orElse(""));
+
+        if (sp.orElse("").contains("1597037902899" + "\t" + "5XP86"+ "\n")) {
+            String s = sp.get();
+            String[] split = s.split("\n");
+            String ss = split[split.length-1];
+            System.out.println(ss);
+        }
+
     }
 
 

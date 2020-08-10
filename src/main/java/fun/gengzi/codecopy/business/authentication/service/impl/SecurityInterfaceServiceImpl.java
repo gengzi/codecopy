@@ -265,18 +265,28 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
         ScriptEngine nashorn = scriptEngineManager.getEngineByName("nashorn");
         try {
+            String basePath = ClassLoader.getSystemClassLoader().getResource("js/base.js").getPath();
+            String jsencryptPath = ClassLoader.getSystemClassLoader().getResource("js/jsencrypt/jsencrypt.js").getPath();
             String cryptoPath = ClassLoader.getSystemClassLoader().getResource("js/crypto-js-4.0.0/crypto-js.js").getPath();
             String encryptPath = ClassLoader.getSystemClassLoader().getResource("js/securityInterface/encrypt.js").getPath();
-//            String jqueryPath = ClassLoader.getSystemClassLoader().getResource("js/securityInterface/jquery-1.11.3.min.js").getPath();
             String paramCrypotPath = ClassLoader.getSystemClassLoader().getResource("js/securityInterface/paramCrypot.js").getPath();
+            nashorn.eval(Files.newBufferedReader(Paths.get(basePath.substring(1))));
             nashorn.eval(Files.newBufferedReader(Paths.get(cryptoPath.substring(1))));
+            nashorn.eval(Files.newBufferedReader(Paths.get(jsencryptPath.substring(1))));
             nashorn.eval(Files.newBufferedReader(Paths.get(encryptPath.substring(1))));
-//            nashorn.eval(Files.newBufferedReader(Paths.get(jqueryPath.substring(1))));
             nashorn.eval(Files.newBufferedReader(Paths.get(paramCrypotPath.substring(1))));
             Invocable in = (Invocable) nashorn;
             String username = "16636663456";
             String password = "gengzi666";
-            Object o = in.invokeFunction("requestParamCrypot", username, password);
+            Object o = in.invokeFunction("requestParamCrypotByJsencrypt", username, password);
+            logger.info("加密后的参数数据 ： {} ", o);
+            // 发送请求
+            if (StringUtils.isNoneBlank(o.toString())) {
+                // 发送请求
+                String body = HttpRequest.post(SecurityInterfaceConstans.PARAMENCRYPTIONURL)
+                        .body(o.toString()).execute().body();
+
+            }
         } catch (ScriptException | IOException | NoSuchMethodException e) {
             e.printStackTrace();
         }

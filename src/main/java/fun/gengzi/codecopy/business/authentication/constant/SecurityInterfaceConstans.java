@@ -28,6 +28,8 @@ public class SecurityInterfaceConstans {
     public static final String SIGN_TYPE_RSA = "RSA";
     // 请求支付宝地址
     public static final String PAYMONEYZFBURL = "http://localhost:8089/api/v2/payMoneyByZFB";
+    // 参数加密请求地址
+    public static final String PARAMENCRYPTIONURL = "http://localhost:8089/api/v2/paramEncryption";
 
 
 

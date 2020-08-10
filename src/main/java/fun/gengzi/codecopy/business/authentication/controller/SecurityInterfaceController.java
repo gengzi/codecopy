@@ -15,12 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -391,9 +389,20 @@ public class SecurityInterfaceController {
         String su = Base64.decodeStr(paramEncryptionEntity.getSu());
         logger.info("su : {}", su);
 
-        // 跟 nonce 获取 publickey
-        Optional<String> sp = RSAUtils.decrypt(paramEncryptionEntity.getSu(), secretkey);
+        // 跟 nonce 获取 publickey 省略
+        Optional<String> sp = RSAUtils.decryptByPublic(paramEncryptionEntity.getSp(), secretkey);
         logger.info("sp : {}", sp.orElse(""));
+        // 比对参数
+        String signStr = sp.orElse("");
+        String password = null;
+        if (signStr.contains(paramEncryptionEntity.getServiceTime() + "\t" + paramEncryptionEntity.getNonce() + "\n")) {
+            String[] split = signStr.split("\n");
+            password = split[split.length - 1];
+        }
+
+        //TODO 与数据库比对账号密码，一致登陆成功
+        logger.info("username :{} and password : {}", su, password);
+
 
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
