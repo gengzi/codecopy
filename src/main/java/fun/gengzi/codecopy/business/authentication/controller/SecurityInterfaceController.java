@@ -437,10 +437,6 @@ public class SecurityInterfaceController {
     @PostMapping("/preventUnauthorizedAccess")
     @ResponseBody
     public ReturnData preventUnauthorizedAccess() {
-
-
-
-
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;
