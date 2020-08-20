@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.elasticsearch.controller;
 
+import com.alibaba.otter.canal.common.utils.JsonUtils;
 import fun.gengzi.codecopy.business.elasticsearch.entity.VideoEntity;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
@@ -32,7 +33,13 @@ public class ElasticSearchVideoController {
             "\t    \"bzcode\": \"\"\n" +
             "\t}\n")})
     @RequestMapping(value = "/saveVideoEntity", method = RequestMethod.POST)
-    public ReturnData testServerIsEnable(@RequestBody VideoEntity videoEntity) {
+    public ReturnData testServerIsEnable(@RequestBody List<VideoEntity> videoEntity) {
+//
+//        VideoEntity.VideoEntityBuilder haha = new VideoEntity().builder().videoname("haha").videotime("22").videourl("http://333").imgurl("http://rr");
+//        String string = JsonUtils.marshalToString(haha);
+//        logger.info(string);
+
+
         // 数据库保存
         // es 保存
         // 响应数据

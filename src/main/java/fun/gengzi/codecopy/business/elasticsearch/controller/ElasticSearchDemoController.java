@@ -249,4 +249,25 @@ public class ElasticSearchDemoController {
     }
 
 
+    /**
+     * 一个好的起点是批处理1,000至5,000个文档，总有效负载在5MB至15MB之间
+     * @return
+     */
+    @ApiOperation(value = "批量索引数据", notes = "批量索引数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "jsoncontent", value = "jsoncontent", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @RequestMapping(value = "/bulkInsertData", method = RequestMethod.POST)
+    public ReturnData bulkInsertData(@RequestParam("jsoncontent") String jsoncontent) {
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage("");
+        return ret;
+    }
+
 }
