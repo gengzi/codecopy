@@ -6,14 +6,14 @@ import java.lang.reflect.Field;
 public class BeanDataMaskUtils {
 
 
-    public static Object maskObj(Object value){
+    public static Object maskObj(Object value) {
         if (null == value) {
             return null;
         }
         try {
             Class<?> aClass = value.getClass();
             Field[] declaredFields = aClass.getDeclaredFields();
-            for (Field field:declaredFields) {
+            for (Field field : declaredFields) {
                 if (field.getType() == String.class) {
                     Sensitive sensitive = field.getAnnotation(Sensitive.class);
                     SensitiveType sensitiveType = getSensitiveType(field, sensitive);
@@ -22,7 +22,7 @@ public class BeanDataMaskUtils {
                     field.setAccessible(true);
                     Object o = field.get(value);
                     String newValue = mask((String) o, sensitive, sensitiveType);
-                    field.set(value,newValue);
+                    field.set(value, newValue);
                     // 恢复访问控制权限
                     field.setAccessible(accessible);
                 }
@@ -37,6 +37,7 @@ public class BeanDataMaskUtils {
 
     /**
      * 对字段进行mask
+     *
      * @param value 值
      * @return 脱敏后的值
      */
@@ -56,22 +57,15 @@ public class BeanDataMaskUtils {
     }
 
 
-
     private static SensitiveType getSensitiveType(Field field, Sensitive sensitive) {
         SensitiveType type = null;
         if (sensitive == null) {
-            type = SensitiveType.Default;
+            type = null;
         } else {
             type = sensitive.type();
         }
         return type;
     }
-
-
-
-
-
-
 
 
     public enum SensitiveType {

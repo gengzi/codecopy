@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestObj {
-    @fun.gengzi.codecopy.utils.datamask.Sensitive(type = BeanDataMaskUtils.SensitiveType.Phone)
+    @Sensitive(type = BeanDataMaskUtils.SensitiveType.Phone, keepChars = {3, 3})
     private String phone;
     @Sensitive(type = BeanDataMaskUtils.SensitiveType.Email)
     private String email;

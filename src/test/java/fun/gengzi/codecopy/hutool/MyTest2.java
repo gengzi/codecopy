@@ -11,7 +11,7 @@ public class MyTest2 {
     public void fun01(){
         TestObj testObJ = new TestObj();
         testObJ.setEmail("11640@qq.com");
-        testObJ.setPhone("17632132102");
+        testObJ.setPhone("13526978456");
         testObJ.setTest("fdsf");
 
         TestObj testObj = (TestObj) BeanDataMaskUtils.maskObj(testObJ);
