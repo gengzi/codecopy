@@ -9,6 +9,7 @@ import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.exception.RrException;
 import fun.gengzi.codecopy.utils.AESUtils;
 import fun.gengzi.codecopy.utils.RSAUtils;
+import fun.gengzi.codecopy.utils.datamask.BeanDataMaskUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -413,17 +414,15 @@ public class SecurityInterfaceController {
      * 防止越权访问常用策略：
      * 对于鉴权用户，对于所查询的数据，验证一切来自客户端的参数，重点是权限相关的参数，比如用户id，或者角色权限id 等
      * 将 sessin id 和 认证token 做绑定，放在服务器的会话中，不发生给客户端。
-     *
+     * <p>
      * 也就是，对于关乎于不同用户的数据，不能出现本用户，查询到其他用户的数据。
      * 如果通过session 或者 token 控制，很简单。 在查询的数据前，校验前端请求的参数是否是 本用户的数据，如果是 允许查询，不是拒绝。
      * 例子，比如前端参数中有，用户id这个参数，到后台后，如果不做判断，当修改用户id ，将会查询到其他用户的数据。
      * 所以在设计上应该避免，前端传递 用户id 等参数，而是通过 sessionid 或者 token 来获取当前请求用户的用户id ，执行业务操作。
-     *
+     * <p>
      * 但是假如说，在之前的业务中，存在必须使用关乎权限的参数，请求后台，就有可能出现越权访问。
      * 比如,前台传递了订单id，有一个接口可以根据订单id，查询订单信息。如果这个接口，没有进行鉴权操作。可能会出现，循环订单id，查询到其他订单的数据
      * 有一个办法，在返回订单id的时候，加密处理。在查询订单信息的时候，再解密订单id，防止 循环订单id
-     *
-     *
      *
      * @return
      */
@@ -443,9 +442,30 @@ public class SecurityInterfaceController {
     }
 
 
+    @ApiOperation(value = "针对查询接口，返回脱敏的信息", notes = "返回脱敏的信息")
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"success\",\n" +
+            "\t}\n")})
+    @PostMapping("/qryUserInfo")
+    @ResponseBody
+    public ReturnData qryUserInfo() {
+        ShowUserInfoVo showUserInfoVo = new ShowUserInfoVo();
+        showUserInfoVo.setUserName("张三");
+        showUserInfoVo.setAddress("北京市朝阳");
+        showUserInfoVo.setBankCard("9559480089071474413");
+        showUserInfoVo.setIdCard("410329188905068899");
+        showUserInfoVo.setEmail("11640@qq.com");
+        showUserInfoVo.setPhone("14535634523");
+        ShowUserInfoVo maskObj = (ShowUserInfoVo) BeanDataMaskUtils.maskObj(showUserInfoVo);
 
-
-
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(maskObj);
+        return ret;
+    }
 
 
 }

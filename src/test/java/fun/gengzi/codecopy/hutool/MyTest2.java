@@ -8,7 +8,7 @@ public class MyTest2 {
 
 
     @Test
-    public void fun01(){
+    public void fun01() {
         TestObj testObJ = new TestObj();
         testObJ.setEmail("11640@qq.com");
         testObJ.setPhone("13526978456");
@@ -19,7 +19,6 @@ public class MyTest2 {
         System.out.println(testObj);
 
     }
-
 
 
 }
