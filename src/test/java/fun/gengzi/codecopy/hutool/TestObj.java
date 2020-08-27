@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  *
  */
@@ -20,4 +22,5 @@ public class TestObj {
     private String email;
     private String test;
 
+    private List<TestObj> testObjs;
 }

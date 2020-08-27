@@ -1,10 +1,17 @@
 package fun.gengzi.codecopy.utils.datamask;
 
 
+import fun.gengzi.codecopy.business.authentication.controller.SecurityInterfaceController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 public class BeanDataMaskUtils {
-
+    private static Logger logger = LoggerFactory.getLogger(BeanDataMaskUtils.class);
 
     public static Object maskObj(Object value) {
         if (null == value) {
@@ -15,6 +22,7 @@ public class BeanDataMaskUtils {
             Field[] declaredFields = aClass.getDeclaredFields();
             for (Field field : declaredFields) {
                 if (field.getType() == String.class) {
+                    // 字符串处理
                     Sensitive sensitive = field.getAnnotation(Sensitive.class);
                     SensitiveType sensitiveType = getSensitiveType(field, sensitive);
                     boolean accessible = field.isAccessible();
@@ -25,6 +33,23 @@ public class BeanDataMaskUtils {
                     field.set(value, newValue);
                     // 恢复访问控制权限
                     field.setAccessible(accessible);
+                } else if (Collection.class.isAssignableFrom(field.getType())) {
+                    // 集合处理
+                    boolean accessible = field.isAccessible();
+                    field.setAccessible(true);
+                    Collection collection = (Collection) field.get(value);
+                    if (collection != null) {
+                        if (field.getGenericType() instanceof ParameterizedType) {
+                            ParameterizedType pt = (ParameterizedType) field.getGenericType();
+                            Type[] listActualTypeArguments = pt.getActualTypeArguments();
+                            logger.info("类型:{}", listActualTypeArguments[listActualTypeArguments.length - 1]);
+                            collection.stream().forEach(obj -> {
+                                maskObj(obj);
+                            });
+                            // 恢复访问控制权限
+                            field.setAccessible(accessible);
+                        }
+                    }
                 }
             }
 
