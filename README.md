@@ -21,6 +21,7 @@ SwaggerConfig swagger 配置  swagger 可以升级为 kinfe4j
 增加了 logback 的配置 logback.xml 
 CacheConfig 缓存配置类
 ThreadPoolConfig 线程池配置类
+ShardingJDBCConfig sharding 分库分表配置
 
 ### fun.gengzi.codecopy.utils 工具类
 常用工具类
@@ -28,7 +29,8 @@ IPUtils ip工具类
 SpringContextUtils spring上下文工具类
 引入hutool 工具包
 引入vjtools 工具包
-
+datamask 基于 vjtools 日志脱敏，实现的对象脱敏工具类
+AESUtils RSAUtils 基于hutool 实现的加密解密工具类
 
 
 
@@ -47,9 +49,15 @@ RspCodeEnum 响应code枚举类
 
 增加短链接生成服务   shorturl
 增加接口权限校验服务 authentication
+增加接口参数的加密解密的服务  authentication  下的  SecurityInterfaceController
 增加sharding jdbc 分库分表服务 subdata
 增加分片业务实例，检测在指定ip范围的mysql链接是否成功，成功的插入数据库 connection
 （针对MySQL数据库的勒索病毒预警 https://www.freebuf.com/articles/system/213975.html ）
+
+增加elatsicsearch 相关的一些操作 elasticsearch
+增加了一个对 mysql 链接检测的服务，通过接口，可以得知 某个mysql 服务是否开启，并连接成功 connection
+增加演示商品信息缓存实践- 解决缓存的三大问题，缓存穿透，缓存雪崩，缓存击穿 product 
+增加工具类的测试服务 utilstest  （html转pdf）
 
 
 ### fun.gengzi.codecopy.vo 全局vo
