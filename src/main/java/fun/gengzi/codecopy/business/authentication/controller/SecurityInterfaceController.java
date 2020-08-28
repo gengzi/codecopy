@@ -515,6 +515,12 @@ public class SecurityInterfaceController {
         if (StringUtils.isBlank(signkey)) {
             throw new RrException(RspCodeEnum.ERROR.getDesc(), RspCodeEnum.ERROR.getCode());
         }
+        // 解密身份证数据
+        String idkey = showUserInfoVo.getIdkey();
+        Optional<String> decrypt = AESUtils.decrypt(idkey, aeskey);
+        showUserInfoVo.setIdCard(decrypt.orElse("error"));
+        logger.info("解密后的IdCard：{}",showUserInfoVo.getIdCard());
+        // 验证签名
         boolean flag = securityInterfaceService.checkSignField(signkey, SecurityInterfaceController.class.getName(), showUserInfoVo.getIdCard(), showUserInfoVo.getPhone());
         if (!flag) {
             ret.setFailure("参数校验失败，请重新尝试");
