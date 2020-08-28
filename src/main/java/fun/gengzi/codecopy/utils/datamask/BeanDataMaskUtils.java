@@ -1,7 +1,6 @@
 package fun.gengzi.codecopy.utils.datamask;
 
 
-import fun.gengzi.codecopy.business.authentication.controller.SecurityInterfaceController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +30,22 @@ public class BeanDataMaskUtils {
                     Object o = field.get(value);
                     String newValue = mask((String) o, sensitive, sensitiveType);
                     field.set(value, newValue);
+                    // 恢复访问控制权限
+                    field.setAccessible(accessible);
+                } else if(field.getType() == String[].class){
+                    // 其他的基本数据类型 和 包装类型
+                    Sensitive sensitive = field.getAnnotation(Sensitive.class);
+                    SensitiveType sensitiveType = getSensitiveType(field, sensitive);
+                    boolean accessible = field.isAccessible();
+                    // 修改访问控制权限
+                    field.setAccessible(true);
+                    String[] strArr= (String[]) field.get(value);
+                    if(strArr != null){
+                        for (int i = 0; i < strArr.length; i++) {
+                            strArr[i] = mask(strArr[i], sensitive, sensitiveType);
+                        }
+                        field.set(value, strArr);
+                    }
                     // 恢复访问控制权限
                     field.setAccessible(accessible);
                 } else if (Collection.class.isAssignableFrom(field.getType())) {

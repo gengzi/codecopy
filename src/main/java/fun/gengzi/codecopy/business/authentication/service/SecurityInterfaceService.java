@@ -67,7 +67,7 @@ public interface SecurityInterfaceService {
 
 
     /**
-     *  商户验证支付宝的 签名和请求参数，执行自身的业务
+     * 商户验证支付宝的 签名和请求参数，执行自身的业务
      *
      * @param mustParamEntity
      * @return
@@ -78,5 +78,26 @@ public interface SecurityInterfaceService {
      * java 调用js 进行加密
      */
     void paramEncryptionToJs();
+
+
+    /**
+     * 返回字段签名
+     *
+     * @param salt   盐
+     * @param fields 字段集合
+     * @return 摘要
+     */
+    String signFields(String salt, String... fields);
+
+    /**
+     * 校验字段签名
+     *
+     * @param signKey 签名
+     * @param salt    盐
+     * @param fields  字段集合
+     * @return true 校验成功， false 校验失败
+     */
+    boolean checkSignField(String signKey, String salt, String... fields);
+
 
 }

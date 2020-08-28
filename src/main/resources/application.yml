@@ -147,6 +147,8 @@ shorturl:
 
 # token 认证相关
 token:
+  # Hmac 密钥
+  hmacKey: codecopy
   # aes 密钥
   aeskey: f24fea293ac8bd5a6439f3ca3df746ae
   # rsa 公钥

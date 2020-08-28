@@ -25,5 +25,10 @@ public class ShowUserInfoVo implements Serializable {
     private String address;
     @Sensitive(type = BeanDataMaskUtils.SensitiveType.IDCard, keepChars = {5, 2})
     private String idCard;
+    // 加密字段
+    private String idkey;
+    // 签名字段
+    private String signkey;
+
 
 }

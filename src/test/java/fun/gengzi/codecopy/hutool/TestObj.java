@@ -23,4 +23,6 @@ public class TestObj {
     private String test;
 
     private List<TestObj> testObjs;
+    @Sensitive(type = BeanDataMaskUtils.SensitiveType.Address, keepChars = {9, 0})
+    private String[] addressinfo;
 }

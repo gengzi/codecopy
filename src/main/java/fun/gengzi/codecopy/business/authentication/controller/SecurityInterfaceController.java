@@ -12,9 +12,11 @@ import fun.gengzi.codecopy.utils.RSAUtils;
 import fun.gengzi.codecopy.utils.datamask.BeanDataMaskUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -41,6 +43,10 @@ public class SecurityInterfaceController {
     private static final String publickey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbcdLKOtTKOjalffv/LLLOqfyh8Ep4XHjvOivMU3Nb1N0puG4+NTrXBS8GDczgsZ+7J6D7FTcH8JInMKpz85LMCAwEAAQ==";
     // rsa 密钥
     private static final String secretkey = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAttx0so61Mo6NqV9+/8sss6p/KHwSnhceO86K8xTc1vU3Sm4bj41OtcFLwYNzOCxn7snoPsVNwfwkicwqnPzkswIDAQABAkBGw9Xda+Cvaf9kdnJdZzErbmW7Mxi5WVT37BxVqdM01BTjudKSADlLn53fEeWl7pmfMkMuXZ7uPNdqmLWVLMNxAiEA6LXvDTKtEZNyTvjXs4nDJweiIT9kZtZmYD3hVcQueJUCIQDJKV+PcdKehVw8U+hdeE4/NZDFCHRzaGM4Zs5YRRbuJwIgSG0fSn9EKB04zWVbVNCCgWo5xplBOVRvJnL758KYKAUCIDdpmzZDb3ZVXCwOHRMqYbuNwNxV0OY9mh9eSncMSR2/AiEApSModT03Kr+nHxhgzAyOvzLcKE0IPMJ+ny3mjdyBjWc=";
+
+    // AES 密钥
+    @Value("${token.aeskey}")
+    private String aeskey;
 
     @Autowired
     private SecurityInterfaceService securityInterfaceService;
@@ -442,7 +448,7 @@ public class SecurityInterfaceController {
     }
 
 
-    @ApiOperation(value = "针对查询接口，返回脱敏的信息", notes = "返回脱敏的信息")
+    @ApiOperation(value = "针对查询接口，返回脱敏和需要加密的信息和签名字段", notes = "针对查询接口，返回脱敏和需要加密的信息和签名字段")
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
             "\t    \"status\": 200,\n" +
             "\t    \"info\": {\n" +
@@ -452,6 +458,7 @@ public class SecurityInterfaceController {
     @PostMapping("/qryUserInfo")
     @ResponseBody
     public ReturnData qryUserInfo() {
+        // TODO 执行业务，返回数据
         ShowUserInfoVo showUserInfoVo = new ShowUserInfoVo();
         showUserInfoVo.setUserName("张三");
         showUserInfoVo.setAddress("北京市朝阳");
@@ -459,13 +466,62 @@ public class SecurityInterfaceController {
         showUserInfoVo.setIdCard("410329188905068899");
         showUserInfoVo.setEmail("11640@qq.com");
         showUserInfoVo.setPhone("14535634523");
+        // 加密 idCard 字段
+        Optional<String> encrypt = AESUtils.encrypt(showUserInfoVo.getIdCard(), aeskey);
+        showUserInfoVo.setIdkey(encrypt.orElse("error"));
+        // 摘要信息，假如在其他接口，需要用到这个接口的返回信息，为了保证数据的完整性和正确性，将某几个字段组拼生成摘要，在下个接口中验证
+        // 这里将 手机号 和 身份证id 加盐处理
+        String sign = securityInterfaceService.signFields(SecurityInterfaceController.class.getName(), showUserInfoVo.getIdCard(), showUserInfoVo.getPhone());
+        showUserInfoVo.setSignkey(sign);
+        // 敏感数据的脱敏
         ShowUserInfoVo maskObj = (ShowUserInfoVo) BeanDataMaskUtils.maskObj(showUserInfoVo);
-
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(maskObj);
         return ret;
     }
 
+
+    /**
+     * {
+     * "userName": "*三",
+     * "phone": "145*****523",
+     * "email": "1***0@qq.com",
+     * "bankCard": "9559*************13",
+     * "address": "北****",
+     * "idCard": "41032***********99",
+     * "idkey": "DYJjryX7Bv3iQ3CY/qGFhwHuBKjsrSCf6y0C84MLq8s=",
+     * "signkey": "b87d8b5d855568b551aa5674af12fda9"
+     * }
+     *
+     * @param showUserInfoVo
+     * @return
+     */
+    @ApiOperation(value = "提交接口，验证签名,解密数据", notes = "提交接口，验证签名，解密数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "ShowUserInfoVo", value = "ShowUserInfoVo", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"success\",\n" +
+            "\t}\n")})
+    @PostMapping("/commitInfo")
+    @ResponseBody
+    public ReturnData commitInfo(@RequestBody ShowUserInfoVo showUserInfoVo) {
+        logger.info("ShowUserInfoVo ：{}", showUserInfoVo);
+        ReturnData ret = ReturnData.newInstance();
+        String signkey = showUserInfoVo.getSignkey();
+        if (StringUtils.isBlank(signkey)) {
+            throw new RrException(RspCodeEnum.ERROR.getDesc(), RspCodeEnum.ERROR.getCode());
+        }
+        boolean flag = securityInterfaceService.checkSignField(signkey, SecurityInterfaceController.class.getName(), showUserInfoVo.getIdCard(), showUserInfoVo.getPhone());
+        if (!flag) {
+            ret.setFailure("参数校验失败，请重新尝试");
+        }
+        ret.setSuccess();
+        ret.setMessage("校验成功，返回数据");
+        return ret;
+    }
 
 }

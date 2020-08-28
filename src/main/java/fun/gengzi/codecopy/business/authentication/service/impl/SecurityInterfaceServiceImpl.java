@@ -1,6 +1,8 @@
 package fun.gengzi.codecopy.business.authentication.service.impl;
 
 
+import cn.hutool.crypto.digest.HMac;
+import cn.hutool.crypto.digest.HmacAlgorithm;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +18,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.script.Invocable;
@@ -40,6 +43,9 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
 
 
     private Logger logger = LoggerFactory.getLogger(SecurityInterfaceServiceImpl.class);
+
+    @Value("${token.hmacKey}")
+    private String hmacKey;
 
     /**
      * 生成 RSA 密钥 和 公钥
@@ -290,6 +296,61 @@ public class SecurityInterfaceServiceImpl implements SecurityInterfaceService {
         } catch (ScriptException | IOException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 返回字段签名
+     *
+     * @param salt   盐
+     * @param fields 字段集合
+     * @return 摘要
+     */
+    @Override
+    public String signFields(String salt, String... fields) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Arrays.stream(fields).forEach(
+                field -> {
+                    stringBuilder.append("&" + field);
+                }
+        );
+        stringBuilder.append(salt);
+        String param = stringBuilder.toString();
+        byte[] key = hmacKey.getBytes();
+        HMac mac = new HMac(HmacAlgorithm.HmacMD5, key);
+        return mac.digestHex(param);
+    }
+
+    /**
+     * 校验字段签名
+     *
+     * @param signKey 签名
+     * @param salt    盐
+     * @param fields  字段集合
+     * @return true 校验成功， false 校验失败
+     */
+    @Override
+    public boolean checkSignField(String signKey, String salt, String... fields) {
+        if (StringUtils.isAnyEmpty(signKey, salt)) {
+            throw new RrException("参数缺少！");
+        }
+        List<String> fieldsList = Arrays.asList(fields);
+        if (fieldsList == null || fieldsList.isEmpty()) {
+            throw new RrException("待签名参数缺少！");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        Arrays.stream(fields).forEach(
+                field -> {
+                    stringBuilder.append("&" + field);
+                }
+        );
+        stringBuilder.append(salt);
+        String param = stringBuilder.toString();
+        byte[] key = hmacKey.getBytes();
+        HMac mac = new HMac(HmacAlgorithm.HmacMD5, key);
+        if (signKey.equals(mac.digestHex(param))) {
+            return true;
+        }
+        return false;
     }
 
 

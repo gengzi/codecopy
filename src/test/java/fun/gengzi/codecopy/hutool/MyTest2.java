@@ -107,4 +107,41 @@ public class MyTest2 {
     }
 
 
+    @Test
+    public void fun04() {
+        TestObj testObj = new TestObj();
+        testObj.setPhone("13526978456");
+        testObj.setEmail("11640@qq.com");
+        testObj.setTest("fdsf");
+
+        ArrayList<TestObj> objects = new ArrayList<>();
+        TestObj testObj1 = new TestObj();
+        testObj1.setPhone("13526978456");
+        testObj1.setEmail("11640@qq.com");
+        testObj1.setTest("fdsf");
+        TestObj testObj3 = new TestObj();
+        testObj3.setPhone("13526978456");
+        testObj3.setTest("fdsf");
+        TestObj testObj4 = new TestObj();
+        testObj4.setPhone("13526978456");
+        testObj4.setTest("fdsf");
+        objects.add(testObj3);
+        objects.add(testObj1);
+        objects.add(testObj4);
+
+
+
+
+        testObj.setTestObjs(objects);
+        String[] strings = {"中国河南郑州二七广场火车站","中国河南郑州二七广场高铁站"};
+        testObj.setAddressinfo(strings);
+
+        TestObj o = (TestObj) BeanDataMaskUtils.maskObj(testObj);
+
+
+        System.out.println(o);
+
+    }
+
+
 }
