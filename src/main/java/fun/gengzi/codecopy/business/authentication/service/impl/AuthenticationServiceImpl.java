@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new RrException("认证失败", RspCodeEnum.FAILURE.getCode()));
         // 解析参数，对比 随机码 跟签名中的随机码是否一致
         String[] split = reqParams.split("&");
-        final HashMap<String, String> paramKeyValue = new HashMap<>();
+        final HashMap<String, String> paramKeyValue = new HashMap<>(16);
         Arrays.asList(split).forEach(s -> {
             String[] keyvalue = s.split("=");
             paramKeyValue.put(keyvalue[0], keyvalue[1]);

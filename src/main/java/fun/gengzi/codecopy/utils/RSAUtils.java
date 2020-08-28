@@ -43,7 +43,7 @@ public class RSAUtils {
     }
 
     public static Map<String, String> generatekeyToMap() {
-        final HashMap<String, String> map = new HashMap<>();
+        final HashMap<String, String> map = new HashMap<>(16);
         KeyPair pair = SecureUtil.generateKeyPair(ALGORITHM_RSA, KEY_SIZE);
         byte[] pri = pair.getPrivate().getEncoded();
         byte[] pub = pair.getPublic().getEncoded();

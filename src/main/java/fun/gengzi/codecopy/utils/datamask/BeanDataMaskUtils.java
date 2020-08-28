@@ -108,6 +108,9 @@ public class BeanDataMaskUtils {
     }
 
 
+    /**
+     *  脱敏类型枚举类
+     */
     public enum SensitiveType {
         Name(new NameMask()),//中文名
         Phone(new PartMask(), 3),//电话
@@ -126,7 +129,9 @@ public class BeanDataMaskUtils {
 
         Default(new PartMask(), 1, 0); //缺省,只显示第一个字符串
 
+        // 脱敏策略
         private MaskStrategy strategy;
+        // 范围
         private int[] params;
 
         SensitiveType(MaskStrategy strategy, int... params) {
