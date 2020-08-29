@@ -33,7 +33,7 @@ public class BeanDataMaskUtils {
                     // 恢复访问控制权限
                     field.setAccessible(accessible);
                 } else if(field.getType() == String[].class){
-                    // 其他的基本数据类型 和 包装类型
+                    // 字符串数据处理
                     Sensitive sensitive = field.getAnnotation(Sensitive.class);
                     SensitiveType sensitiveType = getSensitiveType(field, sensitive);
                     boolean accessible = field.isAccessible();
