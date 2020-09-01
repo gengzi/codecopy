@@ -5,11 +5,11 @@ package fun.gengzi.codecopy.business.utilstest.utils;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 
+
+import com.itextpdf.text.pdf.BaseFont;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -46,9 +46,7 @@ public class HtmlToPdfUtils {
         try {
             fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/simhei.ttf").getPath(),
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
         logger.info("HtmlToPdfUtils完成");
@@ -72,13 +70,11 @@ public class HtmlToPdfUtils {
             //解决中文字体，需要单独下载字体
             //同时在前端样式中加入font-family:SimSun;
             ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
-            try {
-                fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/simhei.ttf").getPath(),
+                fontResolver.addFont("D:\\jeecg\\simsun\\simsun.ttf",
                         BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            fontResolver.addFont("D:\\jeecg\\simsun\\simsun.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
                 logger.info("耗时：{}",timer.interval());
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
             logger.info(text);
             iTextRenderer.setDocumentFromString(text);
 
@@ -87,7 +83,7 @@ public class HtmlToPdfUtils {
             iTextRenderer.createPDF(outputStream);
             logger.info("耗时：{}",timer.interval());
             outputStream.close();
-        } catch (DocumentException | IOException e) {
+        } catch (IOException | DocumentException e) {
             logger.warn("PDF转换异常：" + e);
         }
     }
@@ -122,15 +118,15 @@ public class HtmlToPdfUtils {
 //        HtmlToPdfUtils.htmlToPdf(file, pdfPath1);
 
         HtmlToPdfUtils.textToPdf("<!DOCTYPE html>" +
-                "<html lang=\"en\">" +
+                "<html lang=\"cn\">" +
                 "<head>" +
                 "    <meta charset=\"utf-8\"/>" +
                 "    <title>FreeMarker</title>" +
                 "</head>" +
-                "<body style=\"font-family: '黑体' \">" +
+                "<body style=\"font-family:SimSun; \">" +
                 "<p><input type=\"checkbox\" checked=\"checked\" disabled=\"disabled\" name=\"vehicle\" value=\"Bike\" /> I have a bike</p>" +
                 "<h1>hello world刘宁233333</h1>" +
-                "<h1 style=\"color: red\">${name}</h1>" +
+                "<h1 style=\"color: red\">减法的南方科大是农发</h1>" +
                 "</body>" +
                 "</html>", "D:\\jeecg\\2.pdf");
     }
