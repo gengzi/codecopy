@@ -1,13 +1,15 @@
 package fun.gengzi.codecopy.business.utilstest.utils;
 
 
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 
 
+import cn.hutool.http.HttpRequest;
 import com.itextpdf.text.pdf.BaseFont;
 import com.lowagie.text.DocumentException;
+import com.vip.vjtools.vjkit.io.FileUtil;
+import fun.gengzi.codecopy.exception.RrException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,18 +20,31 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
- * Utils - html转换成PDF
- * 只需要引入依赖:
+ * <h1>Html转pdf工具</h1>
+ * 使用 itextpdf 类库实现
+ *
+ *
  * <dependency>
  * <groupId>org.xhtmlrenderer</groupId>
- * <artifactId>flying-saucer-pdf-itext5</artifactId>
- * <version>9.0.3</version>
+ * <artifactId>flying-saucer-pdf</artifactId>
+ * <version>9.0.7</version>
  * </dependency>
  *
- * @author liuning
- * @date 2020-05-30 23:03
+ * <dependency>
+ * <groupId>com.itextpdf</groupId>
+ * <artifactId>itext-asian</artifactId>
+ * <version>5.2.0</version>
+ * </dependency>
+ * <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+ * <dependency>
+ * <groupId>com.itextpdf</groupId>
+ * <artifactId>itextpdf</artifactId>
+ * <version>5.5.13</version>
+ * </dependency>
  */
 @Component
 public class HtmlToPdfUtils {
@@ -44,7 +59,7 @@ public class HtmlToPdfUtils {
         ITextRenderer iTextRenderer = new ITextRenderer();
         ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
         try {
-            fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/simhei.ttf").getPath(),
+            fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/simsun.ttf").getPath(),
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
@@ -52,83 +67,126 @@ public class HtmlToPdfUtils {
         logger.info("HtmlToPdfUtils完成");
     }
 
+
     /**
      * html文本转换成PDF
      *
-     * @param text    html字符串
-     * @param pdfPath pdf生成路径
+     * 由于 ITextpdf 对html 检测非常严格，html 头部必须声明
+     * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+     * <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+     *
+     * 以及其他的都要加</>结束，所以一般的页面都将不支持 转换 pdf
+     *
+     *
+     * @param url           网址
+     * @param pdfPath        pdf生成路径
+     * @param fontFamilyEnum {@link FontFamilyEnum}  中文字体信息
      */
-    public static void textToPdf(String text, String pdfPath) {
+    public static void htmlTextToPdf(URL url, String pdfPath, FontFamilyEnum fontFamilyEnum) {
+        String body = HttpRequest.get(url.toString()).execute().body();
+        htmlTextToPdf(body, pdfPath, fontFamilyEnum);
+    }
 
+
+    /**
+     * html文本转换成PDF
+     *
+     * @param file           html 文件
+     * @param pdfPath        pdf生成路径
+     * @param fontFamilyEnum {@link FontFamilyEnum}  中文字体信息
+     */
+    public static void htmlTextToPdf(File file, String pdfPath, FontFamilyEnum fontFamilyEnum) {
         try {
-            OutputStream outputStream = new FileOutputStream(pdfPath);
+            htmlTextToPdf(FileUtil.toString(file), pdfPath, fontFamilyEnum);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * html文本转换成PDF
+     *
+     * @param htmlText       html字符串
+     * @param pdfPath        pdf生成路径
+     * @param fontFamilyEnum {@link FontFamilyEnum}  中文字体信息
+     */
+    public static void htmlTextToPdf(String htmlText, String pdfPath, FontFamilyEnum fontFamilyEnum) {
+        logger.info("html转pdf入参,htmltext: {} , pdfpath:{}", htmlText, pdfPath);
+        // 为了支持中文，检查html内容中是否包含 font-family:SimSun
+        boolean fontFamilyFlag = htmlText.contains("font-family");
+        boolean fontNameFlag = htmlText.contains(fontFamilyEnum.getFontName());
+        if (!fontFamilyFlag || !fontNameFlag) {
+            logger.warn("--请注意，当前转换的html未包含字体文件，中文可能转换失败--");
+        }
+        try {
             TimeInterval timer = DateUtil.timer();
+            OutputStream outputStream = new FileOutputStream(pdfPath);
             ITextRenderer iTextRenderer = new ITextRenderer();
-            logger.info("耗时：{}",timer.interval());
-
-
             //解决中文字体，需要单独下载字体
             //同时在前端样式中加入font-family:SimSun;
             ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
-                fontResolver.addFont("D:\\jeecg\\simsun\\simsun.ttf",
-                        BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-            fontResolver.addFont("D:\\jeecg\\simsun\\simsun.ttf",
+            fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/" + fontFamilyEnum.fontFileName).getPath(),
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-                logger.info("耗时：{}",timer.interval());
-            logger.info(text);
-            iTextRenderer.setDocumentFromString(text);
-
+            iTextRenderer.setDocumentFromString(htmlText);
             iTextRenderer.layout();
-            logger.info("耗时：{}",timer.interval());
             iTextRenderer.createPDF(outputStream);
-            logger.info("耗时：{}",timer.interval());
+            logger.info("转换耗时(毫秒)：{}", timer.interval());
             outputStream.close();
         } catch (IOException | DocumentException e) {
-            logger.warn("PDF转换异常：" + e);
+            throw new RrException("PDF转换异常", e);
         }
     }
 
     /**
-     * html文件转换成pdf
-     *
-     * @param htmlFile html文件
-     * @param pdfPath  pdf生成路径
+     * 字体枚举类
      */
-    private static void htmlToPdf(File htmlFile, String pdfPath) {
-        try {
-            OutputStream outputStream = new FileOutputStream(pdfPath);
+    public enum FontFamilyEnum {
 
-            ITextRenderer iTextRenderer = new ITextRenderer();
-            iTextRenderer.setDocument(htmlFile);
-            iTextRenderer.layout();
-            iTextRenderer.createPDF(outputStream);
+        SIMSUN("SimSun", "simsun.ttf");
 
-            outputStream.flush();
-            outputStream.close();
-        } catch (IOException | DocumentException e) {
-            logger.warn("PDF转换异常：" + e);
+        // 字体名称
+        private String fontName;
+        // 字体文件
+        private String fontFileName;
+
+        FontFamilyEnum(String fontName, String fontFileName) {
+            this.fontName = fontName;
+            this.fontFileName = fontFileName;
+        }
+
+        public String getFontName() {
+            return fontName;
+        }
+
+        public String getFontFileName() {
+            return fontFileName;
         }
     }
 
     public static void main(String[] args) {
-//        File file = new File(ClassLoader.getSystemClassLoader().getResource("templates/index.ftl").getPath());
-//        String pdfPath1 = System.getProperty("user.dir") + "/test1.pdf";
-//        String pdfPath2 = System.getProperty("user.dir") + "/test2.pdf";
-//
-//        HtmlToPdfUtils.htmlToPdf(file, pdfPath1);
 
-        HtmlToPdfUtils.textToPdf("<!DOCTYPE html>" +
-                "<html lang=\"cn\">" +
-                "<head>" +
-                "    <meta charset=\"utf-8\"/>" +
-                "    <title>FreeMarker</title>" +
-                "</head>" +
-                "<body style=\"font-family:SimSun; \">" +
-                "<p><input type=\"checkbox\" checked=\"checked\" disabled=\"disabled\" name=\"vehicle\" value=\"Bike\" /> I have a bike</p>" +
-                "<h1>hello world刘宁233333</h1>" +
-                "<h1 style=\"color: red\">减法的南方科大是农发</h1>" +
-                "</body>" +
-                "</html>", "D:\\jeecg\\2.pdf");
+//        HtmlToPdfUtils.htmlTextToPdf("<!DOCTYPE html>" +
+//                "<html lang=\"cn\">" +
+//                "<head>" +
+//                "    <meta charset=\"utf-8\"/>" +
+//                "    <title>FreeMarker</title>" +
+//                "</head>" +
+//                "<body style=\"font-family:SimSun; \">" +
+//                "<p><input type=\"checkbox\" checked=\"checked\" disabled=\"disabled\" name=\"vehicle\" value=\"Bike\" /> I have a bike</p>" +
+//                "<h1>hello world刘宁233333</h1>" +
+//                "<h1 style=\"color: red\">减法的南方科大fdsafaf是农发321321</h1>" +
+//                "</body>" +
+//                "</html>", "D:\\jeecg\\2.pdf", HtmlToPdfUtils.FontFamilyEnum.SIMSUN);
+
+//        URL url = null;
+//        try {
+//            url = new URL("http://localhost:8089/swagger-ui.html#/");
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        HtmlToPdfUtils.htmlTextToPdf(url, "D:\\jeecg\\3.pdf", HtmlToPdfUtils.FontFamilyEnum.SIMSUN);
     }
+
 
 }
