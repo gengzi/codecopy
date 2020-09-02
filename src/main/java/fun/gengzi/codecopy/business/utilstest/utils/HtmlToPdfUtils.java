@@ -72,15 +72,14 @@ public class HtmlToPdfUtils {
 
     /**
      * 使用wkhtmltopdf 将html转pdf
-     *
+     * <p>
      * 注意，需要安装  wkhtmltopdf 该软件
      * 需要将 wkhtmltopdf 配置到环境变量中，以便使用
      * 在测试时，注意当前执行main方法的环境变量中，是否包含了 wkhtmltopdf 的配置
      * idea会读取系统环境变量的配置，但是刚修改的好像不能及时更新，可以重新idea 来帮助其更新配置
      * 具体，可点击edit configuration 配置运行界面，的 Enviaorment variables 中查看
-     *
+     * <p>
      * 页面信息越复杂，内容越多，转换时间越慢
-     *
      *
      * @param url     网址
      * @param pdfPath 路径
@@ -90,7 +89,34 @@ public class HtmlToPdfUtils {
         if (StringUtils.isAnyBlank(url)) {
             throw new RrException("url参数或pdfpath参数缺少！");
         }
-        String execStr = "cmd.exe /c wkhtmltopdf " + url + " " + pdfPath;
+        String execStr = "cmd.exe /c wkhtmltopdf  %s  %s ";
+        execStr = String.format(execStr, url, pdfPath);
+        logger.info("execStr:{}", execStr);
+        List<String> infos = RuntimeUtil.execForLines(execStr);
+        infos.forEach(info -> logger.info("命令执行结果：{}", info));
+        logger.info("转换耗时(毫秒)：{}", timer.interval());
+    }
+
+    /**
+     * 使用Chrome  Headless 无头浏览器，完成对html转换pdf
+     *
+     * 需要安装 goole chrome 浏览器，版本在 60 以上，linux 在 59以上
+     * 调用命令实现转换
+     *
+     *
+     *
+     * @param url     网址
+     * @param pdfPath 路径
+     */
+    public static void ChromhtmlTextToPdfBy(String url, String pdfPath) {
+        TimeInterval timer = DateUtil.timer();
+        if (StringUtils.isAnyBlank(url)) {
+            throw new RrException("url参数或pdfpath参数缺少！");
+        }
+        //--window-size=800x1000
+        // --virtual-time-budget=10000
+        String execStr = "cmd.exe /c chrome --headless --run-all-compositor-stages-before-draw  --disable-gpu --print-to-pdf=\"%s\"  %s";
+        execStr = String.format(execStr, pdfPath, url);
         logger.info("execStr:{}", execStr);
         List<String> infos = RuntimeUtil.execForLines(execStr);
         infos.forEach(info -> logger.info("命令执行结果：{}", info));
@@ -216,7 +242,9 @@ public class HtmlToPdfUtils {
 //        }
 //        HtmlToPdfUtils.htmlTextToPdf(url, "D:\\jeecg\\3.pdf", HtmlToPdfUtils.FontFamilyEnum.SIMSUN);
 
-        WKhtmlTextToPdfBy("https://blog.csdn.net/qq_14873105/article/details/51394026", "D://jeecg/5.pdf");
+//        WKhtmlTextToPdfBy("https://blog.csdn.net/qq_14873105/article/details/51394026", "D://jeecg/5.pdf");
+
+//          ChromhtmlTextToPdfBy("https://www.csdn.net/", "D://jeecg/xx1.pdf");
     }
 
 
