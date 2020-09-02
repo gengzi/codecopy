@@ -5,11 +5,13 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 
 
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.http.HttpRequest;
 import com.itextpdf.text.pdf.BaseFont;
 import com.lowagie.text.DocumentException;
 import com.vip.vjtools.vjkit.io.FileUtil;
 import fun.gengzi.codecopy.exception.RrException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,8 +22,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1>Html转pdf工具</h1>
@@ -59,7 +62,7 @@ public class HtmlToPdfUtils {
         ITextRenderer iTextRenderer = new ITextRenderer();
         ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
         try {
-            fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/simsun.ttf").getPath(),
+            fontResolver.addFont(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("font/simsun.ttf")).getPath(),
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
@@ -67,18 +70,44 @@ public class HtmlToPdfUtils {
         logger.info("HtmlToPdfUtils完成");
     }
 
+    /**
+     * 使用wkhtmltopdf 将html转pdf
+     *
+     * 注意，需要安装  wkhtmltopdf 该软件
+     * 需要将 wkhtmltopdf 配置到环境变量中，以便使用
+     * 在测试时，注意当前执行main方法的环境变量中，是否包含了 wkhtmltopdf 的配置
+     * idea会读取系统环境变量的配置，但是刚修改的好像不能及时更新，可以重新idea 来帮助其更新配置
+     * 具体，可点击edit configuration 配置运行界面，的 Enviaorment variables 中查看
+     *
+     * 页面信息越复杂，内容越多，转换时间越慢
+     *
+     *
+     * @param url     网址
+     * @param pdfPath 路径
+     */
+    public static void WKhtmlTextToPdfBy(String url, String pdfPath) {
+        TimeInterval timer = DateUtil.timer();
+        if (StringUtils.isAnyBlank(url)) {
+            throw new RrException("url参数或pdfpath参数缺少！");
+        }
+        String execStr = "cmd.exe /c wkhtmltopdf " + url + " " + pdfPath;
+        logger.info("execStr:{}", execStr);
+        List<String> infos = RuntimeUtil.execForLines(execStr);
+        infos.forEach(info -> logger.info("命令执行结果：{}", info));
+        logger.info("转换耗时(毫秒)：{}", timer.interval());
+    }
+
 
     /**
      * html文本转换成PDF
-     *
+     * <p>
      * 由于 ITextpdf 对html 检测非常严格，html 头部必须声明
      * <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
      * <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-     *
+     * <p>
      * 以及其他的都要加</>结束，所以一般的页面都将不支持 转换 pdf
      *
-     *
-     * @param url           网址
+     * @param url            网址
      * @param pdfPath        pdf生成路径
      * @param fontFamilyEnum {@link FontFamilyEnum}  中文字体信息
      */
@@ -126,7 +155,7 @@ public class HtmlToPdfUtils {
             //解决中文字体，需要单独下载字体
             //同时在前端样式中加入font-family:SimSun;
             ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
-            fontResolver.addFont(ClassLoader.getSystemClassLoader().getResource("font/" + fontFamilyEnum.fontFileName).getPath(),
+            fontResolver.addFont(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("font/" + fontFamilyEnum.fontFileName)).getPath(),
                     BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
             iTextRenderer.setDocumentFromString(htmlText);
             iTextRenderer.layout();
@@ -186,6 +215,8 @@ public class HtmlToPdfUtils {
 //            e.printStackTrace();
 //        }
 //        HtmlToPdfUtils.htmlTextToPdf(url, "D:\\jeecg\\3.pdf", HtmlToPdfUtils.FontFamilyEnum.SIMSUN);
+
+        WKhtmlTextToPdfBy("https://blog.csdn.net/qq_14873105/article/details/51394026", "D://jeecg/5.pdf");
     }
 
 
