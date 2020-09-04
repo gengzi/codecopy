@@ -70,7 +70,7 @@ public class AsyncShowController {
             long taskCount = asyncOneThreadPool.getTaskCount();
             int activeCount = asyncOneThreadPool.getActiveCount();
             long completedTaskCount = asyncOneThreadPool.getCompletedTaskCount();
-            logger.info("总线程数|当前活动线程数|当前排队线程数|执行完成线程数");
+            logger.info("总任务数|当前活动线程数|当前排队线程数|执行完成线程数");
             logger.info("   {}  |      {}    |      {}     |      {}    ", taskCount, activeCount, queueSize, completedTaskCount);
 
             try {
@@ -79,6 +79,34 @@ public class AsyncShowController {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    /**
+     * 模拟同时下载多文件，每个文件，通过子文件合并生成
+     *
+     * 线程池，异步，
+     *
+     *
+     *
+     * @return
+     */
+    @ApiOperation(value = "异步-避免io操作影响主线程", notes = "异步-避免io操作影响主线程")
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/asyncDownload")
+    @ResponseBody
+    public ReturnData asyncDownload() {
+        for (int i = 0; i < 500; i++) {
+            asyncShowService.doSomething("xxx");
+        }
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        return ret;
     }
 
 
