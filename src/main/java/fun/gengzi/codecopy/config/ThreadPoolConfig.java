@@ -26,7 +26,7 @@ public class ThreadPoolConfig {
     private static final Long KEEP_ALIVE_TIME = 60L;
 
     @Bean("connectionThreadPool")
-    public ThreadPoolExecutor getThreadPoolExecutor() {
+    public ThreadPoolExecutor getDefaultThreadPoolExecutor() {
         return new ThreadPoolExecutor(
                 CORE_POOL_SIZE,
                 MAX_POOL_SIZE,
@@ -34,6 +34,20 @@ public class ThreadPoolConfig {
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(QUEUE_CAPACITY),
                 new mysqlConnectionTreadFactory("mysql"),
+                // 多出的任务由caller 执行
+                new ThreadPoolExecutor.CallerRunsPolicy());
+    }
+
+
+    @Bean("asyncOneThreadPool")
+    public ThreadPoolExecutor getAsyncOneThreadPoolExecutor() {
+        return new ThreadPoolExecutor(
+                CORE_POOL_SIZE,
+                MAX_POOL_SIZE,
+                KEEP_ALIVE_TIME,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(QUEUE_CAPACITY),
+                new mysqlConnectionTreadFactory("async"),
                 // 多出的任务由caller 执行
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
