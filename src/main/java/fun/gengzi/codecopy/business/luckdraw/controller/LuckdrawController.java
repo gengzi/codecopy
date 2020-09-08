@@ -1,12 +1,18 @@
 package fun.gengzi.codecopy.business.luckdraw.controller;
 
+import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
+import fun.gengzi.codecopy.business.luckdraw.entity.LuckdrawAlgorithlmEntity;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbActivity;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 
 /**
@@ -30,6 +36,9 @@ public class LuckdrawController {
 
     private Logger logger = LoggerFactory.getLogger(LuckdrawController.class);
 
+    @Autowired
+    @Qualifier("DefaultLuckdrawAlgorithlm")
+    private LuckdrawAlgorithlm luckdrawAlgorithlm;
 
     @ApiOperation(value = "xx", notes = "xx")
     @ApiImplicitParams({
@@ -43,6 +52,23 @@ public class LuckdrawController {
     @PostMapping("/luckdraw")
     @ResponseBody
     public ReturnData luckdraw(@RequestParam("aid") String aid, @RequestBody TbActivity tbActivity) {
+        logger.info("luckdraw quest param ,aid:{} , tbActivity :{}", aid, tbActivity);
+
+        LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
+        luckdrawAlgorithlmEntity.setActivityId("11");
+        ArrayList<Double> probabilityList = new ArrayList<>(10);
+        probabilityList.add(0.0001);
+        probabilityList.add(0.01);
+        probabilityList.add(0.1);
+        probabilityList.add(0.2);
+        probabilityList.add(0.3);
+        probabilityList.add(0.3);
+        luckdrawAlgorithlmEntity.setProbabilityList(probabilityList);
+        for (int i = 0; i < 1000; i++) {
+            Integer algorithlm = luckdrawAlgorithlm.algorithlm(luckdrawAlgorithlmEntity);
+            logger.info("{}:{}", i, algorithlm);
+        }
+
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;
