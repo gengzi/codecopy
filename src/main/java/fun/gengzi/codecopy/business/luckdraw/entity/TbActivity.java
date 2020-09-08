@@ -10,11 +10,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 /**
- *  <h1>活动实体类</h1>
+ * <h1>活动实体类</h1>
  *
  * @author gengzi
  * @date 2020年9月8日12:01:39
- *
  */
 @Data
 @AllArgsConstructor
@@ -35,12 +34,12 @@ public class TbActivity {
     private String activityInfo;
     // 开始时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "starttime")
     private Date starttime;
     // 结束时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "endtime")
     private Date endtime;
     // 是否失效
@@ -48,12 +47,12 @@ public class TbActivity {
     private short isInvalid;
     // 创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createtime")
     private Date createtime;
     // 更新时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatetime")
     private Date updatetime;
 }

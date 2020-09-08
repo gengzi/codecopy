@@ -6,10 +6,7 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -25,13 +22,9 @@ public class LuckdrawController {
 
 
     /**
-     *
      * 发起抽奖接口，返回抽奖结果
      * 查询当前用户的抽奖记录和发放记录
      * 查看当前用户获得的奖品
-     *
-     *
-     *
      */
 
 
@@ -49,11 +42,19 @@ public class LuckdrawController {
             "\t}\n")})
     @PostMapping("/luckdraw")
     @ResponseBody
-    public ReturnData luckdraw(@RequestBody TbActivity tbActivity) {
+    public ReturnData luckdraw(@RequestParam("aid") String aid, @RequestBody TbActivity tbActivity) {
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;
     }
+
+//    @PostMapping("/error")
+//    @ResponseBody
+//    public ReturnData error() {
+//        ReturnData ret = ReturnData.newInstance();
+//        ret.setFailure("活动已经过期！");
+//        return ret;
+//    }
 
 
 }
