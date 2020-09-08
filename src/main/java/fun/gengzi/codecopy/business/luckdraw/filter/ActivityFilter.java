@@ -44,13 +44,13 @@ public class ActivityFilter implements Filter {
 //        String aidStr = request.getParameter("aid");
         if (StringUtils.isBlank(aidStr)) {
             logger.warn("活动id不存在!");
-            httpServletResponse.sendRedirect("/luckdraw/error");
+            httpServletResponse.sendRedirect("http://123.206.30.117/404.html");
             return;
         }
         List<TbActivity> tbActivities = activityDao.getEffectiveActivityInfo(new Date());
         if (CollectionUtils.isEmpty(tbActivities)) {
             logger.warn("当前无活动!");
-            httpServletResponse.sendRedirect("/luckdraw/error");
+            httpServletResponse.sendRedirect("http://123.206.30.117/404.html");
             return;
         }
         Optional<TbActivity> tbActivityInfo = tbActivities.stream().filter(tbActivity -> aidStr.equals(tbActivity.getId())).findFirst();
@@ -71,7 +71,7 @@ public class ActivityFilter implements Filter {
                     } else {
                         logger.warn("活动已经过期，感谢关注!");
                         try {
-                            httpServletResponse.sendRedirect("/luckdraw/error");
+                            httpServletResponse.sendRedirect("http://123.206.30.117/404.html");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -80,6 +80,6 @@ public class ActivityFilter implements Filter {
 
                 }
         );
-        httpServletResponse.sendRedirect("/luckdraw/error");
+        httpServletResponse.sendRedirect("http://123.206.30.117/404.html");
     }
 }
