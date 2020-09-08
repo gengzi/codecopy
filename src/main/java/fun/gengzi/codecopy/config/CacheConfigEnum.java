@@ -27,7 +27,9 @@ public enum CacheConfigEnum {
     // 服务接口信息  设置缓存策略在4小时未写入，过期缓存
     DATADIC_SERVER_INFO(4, TimeUnit.HOURS, 100),
     // 产品信息 设置最大缓存10000 条
-    PRODUCT_INFO_ID_CACHE_AVALANCHE(50,TimeUnit.SECONDS, 1000);
+    PRODUCT_INFO_ID_CACHE_AVALANCHE(50,TimeUnit.SECONDS, 1000),
+    // 活动信息
+    LUCKDRAW_LOCALCACHE(10,TimeUnit.SECONDS, -1);
 
     // 过期时间 -1 不过期
     private long ttl;
