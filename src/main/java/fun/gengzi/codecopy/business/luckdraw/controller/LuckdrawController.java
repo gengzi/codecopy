@@ -4,6 +4,8 @@ import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.LuckdrawAlgorithlmEntity;
 import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
+import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
+import fun.gengzi.codecopy.business.luckdraw.entity.TokenInfoEntity;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.business.luckdraw.vo.VerificationVo;
 import fun.gengzi.codecopy.vo.ReturnData;
@@ -13,9 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 
@@ -93,22 +97,41 @@ public class LuckdrawController {
             "\t}\n")})
     @PostMapping("/verificationUserInfo")
     @ResponseBody
-    public ReturnData verificationUserInfo(@RequestBody VerificationVo verificationVo) {
+    public ReturnData verificationUserInfo(@RequestParam("aid") String aid, @RequestBody VerificationVo verificationVo, HttpServletResponse response) {
         logger.info("VerificationVo :{} ", verificationVo);
-        ReturnData ret = ReturnData.newInstance();
-        if(verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(),verificationVo.getValidCode())){
+        final ReturnData ret = ReturnData.newInstance();
+        if (verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(), verificationVo.getValidCode())) {
             ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
             return ret;
         }
         // TODO 默认校验成功
         boolean flag = true;
         // 根据手机号获取用户信息
-        SysUser userInfoByPhoneNum = luckdrawService.getUserInfoByPhoneNum(verificationVo.getPhone());
-        // 获取该用户对应该活动的积分信息
+        if (flag) {
+            SysUser userInfoByPhoneNum = luckdrawService.getUserInfoByPhoneNum(verificationVo.getPhone());
+            if (userInfoByPhoneNum != null) {
+                // 获取该用户对应该活动的积分信息
+                TbIntegral integralInfo = luckdrawService.getIntegralInfo(aid, userInfoByPhoneNum.getUid());
+                if (integralInfo != null) {
+                    // 返回token 其他数据
+                    final TokenInfoEntity tokenInfoEntity = new TokenInfoEntity();
+                    tokenInfoEntity.setUname(userInfoByPhoneNum.getUname());
+                    tokenInfoEntity.setIntegral(String.valueOf(integralInfo.getIntegral()));
+                    // 设置响应头 token
+                    response.setHeader(HttpHeaders.AUTHORIZATION, userInfoByPhoneNum.getToken());
 
+                    ret.setSuccess();
+                    ret.setInfo(tokenInfoEntity);
+                    return ret;
+                }
+            }
+            ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
+            return ret;
+        } else {
+            ret.setFailure(LuckdrawEnum.ERROR_VALIDCODE.getMsg());
+            return ret;
+        }
 
-        ret.setSuccess();
-        return ret;
     }
 
 

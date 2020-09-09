@@ -90,6 +90,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         SysUser sysUser = sysUserDao.findByPhone(phone);
         String token = IdUtil.randomUUID();
         String userInfokey = LuckdrawContants.USERPREFIX + token;
+        sysUser.setToken(userInfokey);
         boolean flag = redisUtil.set(userInfokey, sysUser, LuckdrawContants.INVALIDTIME);
         if (flag) {
             throw new RrException("保存用户信息失败");
@@ -100,12 +101,20 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     /**
      * 根据活动id
      *
-     * @param activityid
-     * @param uid
-     * @return
+     * @param activityid 活动id
+     * @param uid        用户id
+     * @return {@link TbIntegral} 用户活动积分信息
      */
     @Override
     public TbIntegral getIntegralInfo(String activityid, String uid) {
-        return null;
+        TbIntegral tbIntegral = intergralDao.findFirstByActivityidAndUid(activityid, uid);
+        String integralKey = LuckdrawContants.INTEGRAL_PREFIX + activityid + LuckdrawContants.REDISKEYSEPARATOR + uid;
+        boolean flag = redisUtil.set(integralKey, tbIntegral, LuckdrawContants.INVALIDTIME);
+        if (flag) {
+            throw new RrException("保存用户活动积分信息失败");
+        }
+        return tbIntegral;
     }
+
+
 }

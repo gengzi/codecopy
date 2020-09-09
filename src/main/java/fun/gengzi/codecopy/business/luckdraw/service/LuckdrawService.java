@@ -2,7 +2,6 @@ package fun.gengzi.codecopy.business.luckdraw.service;
 
 
 import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
-import fun.gengzi.codecopy.business.luckdraw.entity.TbAwardee;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbPrize;
 
@@ -34,9 +33,9 @@ public interface LuckdrawService {
 
     /**
      * 根据活动id
-     * @param activityid
-     * @param uid
-     * @return
+     * @param activityid  活动id
+     * @param uid  用户id
+     * @return {@link TbIntegral} 用户活动积分信息
      */
     TbIntegral getIntegralInfo(String activityid,String uid);
 

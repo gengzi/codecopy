@@ -37,4 +37,6 @@ public class SysUser {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatetime")
     private Date updatetime;
+    // token
+    private String token;
 }

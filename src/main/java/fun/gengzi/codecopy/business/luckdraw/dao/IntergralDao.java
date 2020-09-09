@@ -17,9 +17,9 @@ public interface IntergralDao extends JpaRepository<TbIntegral, Integer> {
 
     /**
      * 根据活动id，用户id 获取当前用户的积分信息
-     * @param activityid
-     * @param uid
-     * @return
+     * @param activityid 活动id
+     * @param uid 用户id
+     * @return {@link TbIntegral} 用户活动积分信息
      */
     TbIntegral findFirstByActivityidAndUid(String activityid, String uid);
 }
