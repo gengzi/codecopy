@@ -1,10 +1,14 @@
 package fun.gengzi.codecopy.business.luckdraw.controller;
 
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
+import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.LuckdrawAlgorithlmEntity;
-import fun.gengzi.codecopy.business.luckdraw.entity.TbActivity;
+import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
+import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
+import fun.gengzi.codecopy.business.luckdraw.vo.VerificationVo;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +44,10 @@ public class LuckdrawController {
     @Qualifier("DefaultLuckdrawAlgorithlm")
     private LuckdrawAlgorithlm luckdrawAlgorithlm;
 
-    @ApiOperation(value = "xx", notes = "xx")
+    @Autowired
+    private LuckdrawService luckdrawService;
+
+    @ApiOperation(value = "luckdraw", notes = "luckdraw")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "TbActivity", value = "TbActivity", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
@@ -49,10 +56,10 @@ public class LuckdrawController {
             "\t		}\n" +
             "\t    \"message\": \"信息\",\n" +
             "\t}\n")})
-    @PostMapping("/luckdraw")
+    @PostMapping("/start")
     @ResponseBody
-    public ReturnData luckdraw(@RequestParam("aid") String aid, @RequestBody TbActivity tbActivity) {
-        logger.info("luckdraw quest param ,aid:{} , tbActivity :{}", aid, tbActivity);
+    public ReturnData start(@RequestParam("aid") String aid) {
+        logger.info("luckdraw quest param ,aid:{} ", aid);
 
         LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
         luckdrawAlgorithlmEntity.setActivityId("11");
@@ -74,13 +81,35 @@ public class LuckdrawController {
         return ret;
     }
 
-//    @PostMapping("/error")
-//    @ResponseBody
-//    public ReturnData error() {
-//        ReturnData ret = ReturnData.newInstance();
-//        ret.setFailure("活动已经过期！");
-//        return ret;
-//    }
+
+    @ApiOperation(value = "验证用户信息", notes = "验证用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "VerificationVo", value = "VerificationVo", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/verificationUserInfo")
+    @ResponseBody
+    public ReturnData verificationUserInfo(@RequestBody VerificationVo verificationVo) {
+        logger.info("VerificationVo :{} ", verificationVo);
+        ReturnData ret = ReturnData.newInstance();
+        if(verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(),verificationVo.getValidCode())){
+            ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
+            return ret;
+        }
+        // TODO 默认校验成功
+        boolean flag = true;
+        // 根据手机号获取用户信息
+        SysUser userInfoByPhoneNum = luckdrawService.getUserInfoByPhoneNum(verificationVo.getPhone());
+        // 获取该用户对应该活动的积分信息
+
+
+        ret.setSuccess();
+        return ret;
+    }
 
 
 }

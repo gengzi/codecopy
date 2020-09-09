@@ -9,6 +9,9 @@ import java.util.List;
 
 /**
  * <h1>默认抽奖算法</h1>
+ *
+ * @author gengzi
+ * @date 2020年9月9日09:29:20
  */
 @Service("DefaultLuckdrawAlgorithlm")
 public class DefaultLuckdrawAlgorithlm implements LuckdrawAlgorithlm<LuckdrawAlgorithlmEntity> {

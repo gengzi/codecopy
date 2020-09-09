@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2020-09-08 17:23:29
+Date: 2020-09-09 17:46:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -36,6 +36,24 @@ CREATE TABLE `sys_permission` (
 
 -- ----------------------------
 -- Records of sys_permission
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user` (
+  `uid` varchar(16) NOT NULL,
+  `uname` varchar(64) DEFAULT NULL COMMENT '名称',
+  `utype` int(3) DEFAULT NULL COMMENT '用户类型',
+  `phone` char(11) DEFAULT NULL COMMENT '电话',
+  `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of sys_user
 -- ----------------------------
 
 -- ----------------------------
@@ -90,6 +108,25 @@ CREATE TABLE `tb_awardee` (
 
 -- ----------------------------
 -- Records of tb_awardee
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tb_integral
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_integral`;
+CREATE TABLE `tb_integral` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` varchar(16) DEFAULT NULL COMMENT '用户id',
+  `activityid` varchar(10) DEFAULT NULL COMMENT '活动id',
+  `uname` varchar(64) DEFAULT NULL COMMENT '用户名称',
+  `integral` int(11) DEFAULT NULL COMMENT '积分',
+  `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of tb_integral
 -- ----------------------------
 
 -- ----------------------------
