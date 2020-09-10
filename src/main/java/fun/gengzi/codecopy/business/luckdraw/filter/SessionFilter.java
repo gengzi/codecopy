@@ -60,11 +60,11 @@ public class SessionFilter implements Filter {
         boolean flag = redisUtil.hasKey(userInfokey);
 
         if (flag) {
-            SysUser sysUser = (SysUser) redisUtil.get(token);
+            SysUser sysUser = (SysUser) redisUtil.get(userInfokey);
             logger.info("sysUser info :{} ", sysUser);
             if (sysUser != null && StringUtils.isNoneBlank(sysUser.getUid(), aidStr)) {
                 // 重新设置token 过期时间
-                redisUtil.expire(token, LuckdrawContants.INVALIDTIME);
+                redisUtil.expire(userInfokey, LuckdrawContants.INVALIDTIME);
                 // 从redis 获取当前用户对应活动的积分数据
                 String integralKey = LuckdrawContants.INTEGRAL_PREFIX + aidStr + LuckdrawContants.REDISKEYSEPARATOR + sysUser.getUid();
                 TbIntegral tbIntegral = (TbIntegral) redisUtil.get(integralKey);

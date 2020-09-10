@@ -2,6 +2,7 @@ package fun.gengzi.codecopy.business.luckdraw.service;
 
 
 import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
+import fun.gengzi.codecopy.business.luckdraw.entity.SysUserDTO;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbPrize;
 
@@ -28,7 +29,7 @@ public interface LuckdrawService {
      * @param phone 手机号
      * @return {@link SysUser} 用户信息
      */
-    SysUser getUserInfoByPhoneNum(String phone);
+    SysUserDTO getUserInfoByPhoneNum(String phone);
 
 
     /**

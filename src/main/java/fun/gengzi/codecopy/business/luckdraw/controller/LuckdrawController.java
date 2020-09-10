@@ -2,10 +2,7 @@ package fun.gengzi.codecopy.business.luckdraw.controller;
 
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
-import fun.gengzi.codecopy.business.luckdraw.entity.LuckdrawAlgorithlmEntity;
-import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
-import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
-import fun.gengzi.codecopy.business.luckdraw.entity.TokenInfoEntity;
+import fun.gengzi.codecopy.business.luckdraw.entity.*;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.business.luckdraw.vo.VerificationVo;
 import fun.gengzi.codecopy.vo.ReturnData;
@@ -108,7 +105,7 @@ public class LuckdrawController {
         boolean flag = true;
         // 根据手机号获取用户信息
         if (flag) {
-            SysUser userInfoByPhoneNum = luckdrawService.getUserInfoByPhoneNum(verificationVo.getPhone());
+            SysUserDTO userInfoByPhoneNum = luckdrawService.getUserInfoByPhoneNum(verificationVo.getPhone());
             if (userInfoByPhoneNum != null) {
                 // 获取该用户对应该活动的积分信息
                 TbIntegral integralInfo = luckdrawService.getIntegralInfo(aid, userInfoByPhoneNum.getUid());

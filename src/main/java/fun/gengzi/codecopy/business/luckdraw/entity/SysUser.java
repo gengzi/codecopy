@@ -1,6 +1,7 @@
 package fun.gengzi.codecopy.business.luckdraw.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "sys_user")
-public class SysUser {
+public class SysUser implements Serializable {
+
+    private static final long serialVersionUID = 4853544709315167689L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uid")
@@ -37,6 +40,5 @@ public class SysUser {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatetime")
     private Date updatetime;
-    // token
-    private String token;
+
 }

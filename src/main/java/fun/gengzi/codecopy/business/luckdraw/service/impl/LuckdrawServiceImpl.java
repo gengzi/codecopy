@@ -7,6 +7,7 @@ import fun.gengzi.codecopy.business.luckdraw.dao.IntergralDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.PrizeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.SysUserDao;
 import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
+import fun.gengzi.codecopy.business.luckdraw.entity.SysUserDTO;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbPrize;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
@@ -15,6 +16,7 @@ import fun.gengzi.codecopy.exception.RrException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,16 +88,21 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      * @return {@link SysUser} 用户信息
      */
     @Override
-    public SysUser getUserInfoByPhoneNum(String phone) {
+    public SysUserDTO getUserInfoByPhoneNum(String phone) {
         SysUser sysUser = sysUserDao.findByPhone(phone);
+        if (sysUser == null) {
+            return null;
+        }
         String token = IdUtil.randomUUID();
         String userInfokey = LuckdrawContants.USERPREFIX + token;
-        sysUser.setToken(userInfokey);
-        boolean flag = redisUtil.set(userInfokey, sysUser, LuckdrawContants.INVALIDTIME);
-        if (flag) {
+        SysUserDTO sysUserDTO = new SysUserDTO();
+        BeanUtils.copyProperties(sysUser, sysUserDTO); //使用更新对象的非空值去覆盖待更新对象
+        sysUserDTO.setToken(token);
+        boolean flag = redisUtil.set(userInfokey, sysUserDTO, LuckdrawContants.INVALIDTIME);
+        if (!flag) {
             throw new RrException("保存用户信息失败");
         }
-        return sysUser;
+        return sysUserDTO;
     }
 
     /**
@@ -110,7 +117,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         TbIntegral tbIntegral = intergralDao.findFirstByActivityidAndUid(activityid, uid);
         String integralKey = LuckdrawContants.INTEGRAL_PREFIX + activityid + LuckdrawContants.REDISKEYSEPARATOR + uid;
         boolean flag = redisUtil.set(integralKey, tbIntegral, LuckdrawContants.INVALIDTIME);
-        if (flag) {
+        if (!flag) {
             throw new RrException("保存用户活动积分信息失败");
         }
         return tbIntegral;

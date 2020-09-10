@@ -1,6 +1,7 @@
 package fun.gengzi.codecopy.business.luckdraw.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,7 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_integral")
-public class TbIntegral {
+public class TbIntegral implements Serializable {
+    private static final long serialVersionUID = -6105491137297093022L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
