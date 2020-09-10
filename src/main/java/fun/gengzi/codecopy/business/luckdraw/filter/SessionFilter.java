@@ -66,9 +66,8 @@ public class SessionFilter implements Filter {
                 // 重新设置token 过期时间
                 redisUtil.expire(userInfokey, LuckdrawContants.INVALIDTIME);
                 // 从redis 获取当前用户对应活动的积分数据
-                String integralKey = LuckdrawContants.INTEGRAL_PREFIX + aidStr + LuckdrawContants.REDISKEYSEPARATOR + sysUser.getUid();
-                TbIntegral tbIntegral = (TbIntegral) redisUtil.get(integralKey);
-                Integer integral = tbIntegral.getIntegral();
+                String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, aidStr, sysUser.getUid());
+                long integral = redisUtil.incr(onleyintegralkey, 0);
                 if (integral > 0) {
                     chain.doFilter(request, response);
                     return;

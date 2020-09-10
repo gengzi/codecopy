@@ -34,7 +34,7 @@ public interface PrizeDao extends JpaRepository<TbPrize, String> {
      * @param date
      * @return
      */
-    @Query("SELECT t FROM TbPrize t WHERE t.activityid IN ( SELECT t1.id FROM TbActivity t1 WHERE t1.isInvalid = 0 AND ?1 BETWEEN t1.starttime AND t1.endtime )")
+    @Query("SELECT t FROM TbPrize t WHERE t.activityid IN ( SELECT t1.id FROM TbActivity t1 WHERE t1.isInvalid = 0 AND ?1 >= t1.starttime and  ?1 <= t1.endtime  )")
     List<TbPrize> qryTbPrizeByEffectActivityId(Date date);
 
 

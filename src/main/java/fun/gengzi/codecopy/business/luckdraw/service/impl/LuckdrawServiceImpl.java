@@ -101,7 +101,24 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     // 判断几等奖，异步扣奖品表的库存
                     TbPrize tbPrize = tbPrizes.get(algorithlm);
                     logger.info("jaingpin 信息：{}", tbPrize);
-                    // 扣缓存库存
+                    // 扣缓存库存，会出现多发问题
+                    // 预扣缓存库存
+                    String onleyprizekey = String.format(LuckdrawContants.ONLEYPRIZEKEY, activityid, tbPrize.getId());
+                    long decr = redisUtil.decr(onleyprizekey, 1);
+                    if(decr < 0){
+                        logger.info("未抽到！");
+                    }
+                    // 异步减真实库存
+
+//                    扣积分，扣库存，记录发奖信息
+                    // 扣积分成功，扣库存失败怎么处理
+                    // 扣积分成功，扣库存成功，记录发奖信息失败怎么处理。
+                    // 分布式事务
+                    // 分布式锁
+
+
+
+
                     return tbPrize;
                 } else {
                     logger.info("积分不足哦！");
@@ -158,7 +175,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
             redisUtil.del(integralKey, onleyintegralkey);
         }
         // 将该用户活动积分对象存入redis
-        boolean flag = redisUtil.set(integralKey, tbIntegral, LuckdrawContants.INVALIDTIME);
+        boolean flag = redisUtil.set(integralKey, tbIntegral);
         if (!flag) {
             throw new RrException("保存用户活动积分信息失败");
         }

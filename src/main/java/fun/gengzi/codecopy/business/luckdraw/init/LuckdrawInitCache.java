@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.luckdraw.init;
 
+import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.dao.PrizeDao;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbPrize;
 import fun.gengzi.codecopy.dao.RedisUtil;
@@ -26,11 +27,15 @@ public class LuckdrawInitCache implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-
-        // todo
         // 查询现在生效的活动，对应的奖品信息
-//        List<TbPrize> tbPrizes = prizeDao.qryTbPrizeByEffectActivityId(new Date());
+        List<TbPrize> tbPrizes = prizeDao.qryTbPrizeByEffectActivityId(new Date());
 
-
+        tbPrizes.forEach(tbPrize -> {
+            Integer id = tbPrize.getId();
+            String activityid = tbPrize.getActivityid();
+            Integer prizeNum = tbPrize.getPrizeNum();
+            String onleyprizekey = String.format(LuckdrawContants.ONLEYPRIZEKEY, activityid, id);
+            redisUtil.incr(onleyprizekey, prizeNum);
+        });
     }
 }

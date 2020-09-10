@@ -14,6 +14,8 @@ public class LuckdrawContants {
     public static final String INTEGRAL_PREFIX = "integral:";
     // 仅积分信息 redis 前缀
     public static final String ONLEY_INTEGRAL_PREFIX = "onley_integral:";
+    // 仅奖品信息 redis 前缀
+    public static final String ONLEY_PRIZE_PREFIX = "onley_prize:";
     // reids key 分隔符
     public static final String REDISKEYSEPARATOR = ":";
 
@@ -25,6 +27,8 @@ public class LuckdrawContants {
     public static final String USERINFOKEY = LuckdrawContants.USERPREFIX + "%s";
     // 利用redis 原子特性，仅存储 活动用户的积分
     public static final String ONLEYINTEGRALKEY = LuckdrawContants.ONLEY_INTEGRAL_PREFIX + "%s" + LuckdrawContants.REDISKEYSEPARATOR + "%s";
+    // 利用redis 原子特性，仅存储 奖品的积分 活动id:奖品id
+    public static final String ONLEYPRIZEKEY = LuckdrawContants.ONLEY_PRIZE_PREFIX + "%s" + LuckdrawContants.REDISKEYSEPARATOR + "%s";
 
 
 }
