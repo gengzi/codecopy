@@ -31,7 +31,7 @@ public class TbPrize {
     private Integer prizeNum;
     //概率
     @Column(name = "probability")
-    private BigDecimal probability;
+    private Double probability;
     //活动id
     @Column(name = "activityid")
     private String activityid;

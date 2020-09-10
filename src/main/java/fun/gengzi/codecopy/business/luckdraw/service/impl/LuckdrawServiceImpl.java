@@ -1,6 +1,5 @@
 package fun.gengzi.codecopy.business.luckdraw.service.impl;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.IdUtil;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
@@ -20,8 +19,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * <h1>抽奖服务</h1>
@@ -63,51 +64,53 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         // 扣除用户积分
         // 减少奖品数目
 
-        List<TbPrize> tbPrizes = prizeDao.findByActivityid(activityid);
+        List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
         if (CollectionUtils.isNotEmpty(tbPrizes)) {
-            BigDecimal count = new BigDecimal(0);
+            AtomicReference<Double> count = new AtomicReference<>(0.00);
             tbPrizes.forEach(tbPrize -> {
-                        BigDecimal probability = tbPrize.getProbability();
-                        count.add(probability);
+                        Double probability = tbPrize.getProbability();
+                        count.updateAndGet(v -> v + probability);
                     }
             );
             boolean flag = false;
             // 计算奖品总概率不能超过1
-            if (count.compareTo(new BigDecimal(1)) < 0) {
+            if (count.get().compareTo(1.00) < 0) {
                 flag = true;
             }
-            // 从缓存中获得用户积分
-            final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
-            SysUser sysUser = (SysUser) redisUtil.get(userinfokey);
-            final String integralkey = String.format(LuckdrawContants.INTEGRALKEY, activityid, sysUser.getUid());
-            TbIntegral tbIntegral = (TbIntegral) redisUtil.get(integralkey);
-            // 冻结积分信息
-            // 获取redis分布式锁，锁定redis 中存储的该用户积分数据
-            Integer integral = tbIntegral.getIntegral();
-            if ((integral - 30) >= 0) {
-                // 允许抽奖
-                // 扣积分
-                String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
-                redisUtil.decr(onleyintegralkey,30);
-                final LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
-                luckdrawAlgorithlmEntity.setActivityId(activityid);
-                ArrayList<Double> probabilityList = new ArrayList<>(10);
-                probabilityList.add(0.0001);
-                probabilityList.add(0.01);
-                probabilityList.add(0.1);
-                probabilityList.add(0.2);
-                probabilityList.add(0.3);
-                probabilityList.add(0.3);
-                luckdrawAlgorithlmEntity.setProbabilityList(probabilityList);
-                Integer algorithlm = luckdrawAlgorithlm.algorithlm(luckdrawAlgorithlmEntity);
-                // 判断几等奖，异步扣奖品表的库存
+            if (flag) {
+                // 从缓存中获得用户积分
+                final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
+                SysUser sysUser = (SysUser) redisUtil.get(userinfokey);
+                final String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
+                long integral = redisUtil.incr(onleyintegralkey, 0);
+                // 冻结积分信息
+                // 获取redis分布式锁，锁定redis 中存储的该用户积分数据
+                if ((integral - 30) >= 0) {
+                    // 允许抽奖
+                    // 扣积分
+                    redisUtil.decr(onleyintegralkey, 30);
+                    final LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
+                    luckdrawAlgorithlmEntity.setActivityId(activityid);
+                    // 组装概率
+                    List<Double> collect = tbPrizes.stream().map(tbPrize -> tbPrize.getProbability())
+                            .sorted(Comparator.comparing(probability -> probability))
+                            .collect(Collectors.toList());
 
+                    luckdrawAlgorithlmEntity.setProbabilityList(collect);
+                    Integer algorithlm = luckdrawAlgorithlm.algorithlm(luckdrawAlgorithlmEntity);
+                    // 判断几等奖，异步扣奖品表的库存
+                    TbPrize tbPrize = tbPrizes.get(algorithlm);
+                    logger.info("jaingpin 信息：{}", tbPrize);
+                    // 扣缓存库存
+                    return tbPrize;
+                } else {
+                    logger.info("积分不足哦！");
+                }
 
+            } else {
+                logger.info("奖品信息概率有误");
             }
-
         }
-
-
         return null;
     }
 
@@ -150,9 +153,9 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         }
         String integralKey = LuckdrawContants.INTEGRAL_PREFIX + activityid + LuckdrawContants.REDISKEYSEPARATOR + uid;
         String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, uid);
-        if(redisUtil.hasKey(integralKey) || redisUtil.hasKey(onleyintegralkey)){
+        if (redisUtil.hasKey(integralKey) || redisUtil.hasKey(onleyintegralkey)) {
             // 移除缓存
-            redisUtil.del(integralKey,onleyintegralkey);
+            redisUtil.del(integralKey, onleyintegralkey);
         }
         // 将该用户活动积分对象存入redis
         boolean flag = redisUtil.set(integralKey, tbIntegral, LuckdrawContants.INVALIDTIME);

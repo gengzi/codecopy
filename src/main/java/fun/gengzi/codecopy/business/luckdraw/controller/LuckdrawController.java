@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
@@ -61,26 +63,13 @@ public class LuckdrawController {
     @PostMapping("/start")
     @ResponseBody
     @LuckdrawServiceLimit(limitType = LuckdrawServiceLimit.LimitType.IP)
-    public ReturnData start(@RequestParam("aid") String aid) {
+    public ReturnData start(@RequestParam("aid") String aid, HttpServletRequest request) {
         logger.info("luckdraw quest param ,aid:{} ", aid);
-
-        LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
-        luckdrawAlgorithlmEntity.setActivityId("11");
-        ArrayList<Double> probabilityList = new ArrayList<>(10);
-        probabilityList.add(0.0001);
-        probabilityList.add(0.01);
-        probabilityList.add(0.1);
-        probabilityList.add(0.2);
-        probabilityList.add(0.3);
-        probabilityList.add(0.3);
-        luckdrawAlgorithlmEntity.setProbabilityList(probabilityList);
-        for (int i = 0; i < 1000; i++) {
-            Integer algorithlm = luckdrawAlgorithlm.algorithlm(luckdrawAlgorithlmEntity);
-            logger.info("{}:{}", i, algorithlm);
-        }
-
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        TbPrize luckdraw = luckdrawService.luckdraw(aid, token);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
+        ret.setInfo(luckdraw.getPrizeName());
         return ret;
     }
 
