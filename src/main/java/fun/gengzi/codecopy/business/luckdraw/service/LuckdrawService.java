@@ -18,9 +18,10 @@ public interface LuckdrawService {
      * 根据活动id，抽奖
      *
      * @param activityid 活动id
+     * @param token      用户的token 信息
      * @return {@link TbPrize}  获得的奖品信息
      */
-    TbPrize luckdraw(String activityid);
+    TbPrize luckdraw(String activityid, String token);
 
 
     /**
@@ -34,10 +35,11 @@ public interface LuckdrawService {
 
     /**
      * 根据活动id
-     * @param activityid  活动id
-     * @param uid  用户id
+     *
+     * @param activityid 活动id
+     * @param uid        用户id
      * @return {@link TbIntegral} 用户活动积分信息
      */
-    TbIntegral getIntegralInfo(String activityid,String uid);
+    TbIntegral getIntegralInfo(String activityid, String uid);
 
 }

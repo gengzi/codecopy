@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 @Configuration
-public class LimitAspect {
-    private static Logger logger = LoggerFactory.getLogger(LimitAspect.class);
+public class LuckdrawLimitAspect {
+    private static Logger logger = LoggerFactory.getLogger(LuckdrawLimitAspect.class);
     //根据IP分不同的令牌桶, 每天自动清理缓存
     private static LoadingCache<String, RateLimiter> caches = CacheBuilder.newBuilder()
             /*设置缓存容器的最大容量大小为10万*/
@@ -44,7 +44,7 @@ public class LimitAspect {
             });
 
     //Service层切点  限流
-    @Pointcut("@annotation(fun.gengzi.codecopy.business.luckdraw.aop.ServiceLimit)")
+    @Pointcut("@annotation(fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawServiceLimit)")
     public void ServiceAspect() {
 
     }
@@ -54,14 +54,14 @@ public class LimitAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         // 获取方法修饰的 @ServiceLimit 注解
-        ServiceLimit limitAnnotation = method.getAnnotation(ServiceLimit.class);
+        LuckdrawServiceLimit limitAnnotation = method.getAnnotation(LuckdrawServiceLimit.class);
         // 获取注解中的limitType参数
-        ServiceLimit.LimitType limitType = limitAnnotation.limitType();
+        LuckdrawServiceLimit.LimitType limitType = limitAnnotation.limitType();
         // 获取注解中的key参数
         String key = limitAnnotation.key();
         Object obj;
         try {
-            if (limitType.equals(ServiceLimit.LimitType.IP)) {
+            if (limitType.equals(LuckdrawServiceLimit.LimitType.IP)) {
                 // 获取真实ip地址
                 key = IPUtils.getIpAddr();
             }
