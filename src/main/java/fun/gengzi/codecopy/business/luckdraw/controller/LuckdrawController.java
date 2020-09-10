@@ -1,6 +1,7 @@
 package fun.gengzi.codecopy.business.luckdraw.controller;
 
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
+import fun.gengzi.codecopy.business.luckdraw.aop.ServiceLimit;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
@@ -59,6 +60,7 @@ public class LuckdrawController {
             "\t}\n")})
     @PostMapping("/start")
     @ResponseBody
+    @ServiceLimit(limitType = ServiceLimit.LimitType.IP)
     public ReturnData start(@RequestParam("aid") String aid) {
         logger.info("luckdraw quest param ,aid:{} ", aid);
 
@@ -94,6 +96,7 @@ public class LuckdrawController {
             "\t}\n")})
     @PostMapping("/verificationUserInfo")
     @ResponseBody
+    @ServiceLimit(limitType = ServiceLimit.LimitType.IP)
     public ReturnData verificationUserInfo(@RequestParam("aid") String aid, @RequestBody VerificationVo verificationVo, HttpServletResponse response) {
         logger.info("VerificationVo :{} ", verificationVo);
         final ReturnData ret = ReturnData.newInstance();
