@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50720
 File Encoding         : 65001
 
-Date: 2020-09-09 17:46:25
+Date: 2020-09-11 15:32:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -55,6 +55,7 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
+INSERT INTO `sys_user` VALUES ('1', 'zhangsan', '1', '110', '2020-09-01 10:23:14', '2020-09-02 10:23:18');
 
 -- ----------------------------
 -- Table structure for tb_activity
@@ -104,11 +105,27 @@ CREATE TABLE `tb_awardee` (
   `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of tb_awardee
 -- ----------------------------
+INSERT INTO `tb_awardee` VALUES ('1', 'hd_001', null, '3', '积分8888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('2', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('3', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('4', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('6', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('7', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('8', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('9', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('10', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('11', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('12', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('13', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('14', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('15', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('16', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-11 00:00:00', null);
 
 -- ----------------------------
 -- Table structure for tb_integral
@@ -123,11 +140,12 @@ CREATE TABLE `tb_integral` (
   `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of tb_integral
 -- ----------------------------
+INSERT INTO `tb_integral` VALUES ('1', '1', 'hd_001', 'zhangsan', '60', '2020-09-11 15:28:40', '2020-09-11 15:28:40');
 
 -- ----------------------------
 -- Table structure for tb_prize
@@ -138,13 +156,18 @@ CREATE TABLE `tb_prize` (
   `prize_name` varchar(128) DEFAULT NULL COMMENT '奖品名称',
   `prize_info` varchar(255) DEFAULT NULL COMMENT '奖品信息',
   `prize_num` int(11) DEFAULT NULL COMMENT '奖品数目',
-  `probability` decimal(10,0) DEFAULT NULL COMMENT '概率',
+  `probability` decimal(20,10) DEFAULT NULL COMMENT '概率',
   `activityid` varchar(64) DEFAULT NULL COMMENT '活动id',
   `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of tb_prize
 -- ----------------------------
+INSERT INTO `tb_prize` VALUES ('1', '积分88', '积分88', '99993', '0.5500000000', 'hd_001', '2020-09-11 15:28:36', '2020-09-11 15:28:36');
+INSERT INTO `tb_prize` VALUES ('2', '积分888', '积分888', '9990', '0.3000000000', 'hd_001', '2020-09-11 15:28:40', '2020-09-11 15:28:40');
+INSERT INTO `tb_prize` VALUES ('3', '积分8888', '积分8888', '999', '0.1000000000', 'hd_001', '2020-09-11 13:53:23', '2020-09-11 13:53:23');
+INSERT INTO `tb_prize` VALUES ('4', '现金100元', '现金100元', '100', '0.0100000000', 'hd_001', '2020-09-01 15:15:07', '2020-09-10 15:15:10');
+INSERT INTO `tb_prize` VALUES ('5', '现金500元', '现金500元', '10', '0.0010000000', 'hd_001', '2020-09-01 15:15:07', '2020-09-10 15:15:10');

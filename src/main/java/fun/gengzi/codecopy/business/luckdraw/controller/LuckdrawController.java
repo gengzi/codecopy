@@ -14,13 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 
 
 /**
@@ -74,6 +72,15 @@ public class LuckdrawController {
     }
 
 
+    /**
+     * 使用手机号，验证码来进入抽奖页面
+     *
+     *
+     * @param aid
+     * @param verificationVo
+     * @param response
+     * @return
+     */
     @ApiOperation(value = "验证用户信息", notes = "验证用户信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "VerificationVo", value = "VerificationVo", required = true)})
