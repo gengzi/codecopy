@@ -3,10 +3,12 @@ package fun.gengzi.codecopy.business.luckdraw.service.impl;
 import cn.hutool.core.util.IdUtil;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
+import fun.gengzi.codecopy.business.luckdraw.dao.AwardeeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.IntergralDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.PrizeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.SysUserDao;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
+import fun.gengzi.codecopy.business.luckdraw.service.AysncLuckdrawService;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.exception.RrException;
@@ -17,9 +19,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -44,8 +47,14 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     private IntergralDao intergralDao;
 
     @Autowired
+    private AwardeeDao awardeeDao;
+
+    @Autowired
     @Qualifier("DefaultLuckdrawAlgorithlm")
     private LuckdrawAlgorithlm luckdrawAlgorithlm;
+
+    @Autowired
+    private AysncLuckdrawService aysncLuckdrawService;
 
     /**
      * 根据活动id，抽奖
@@ -54,6 +63,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      * @param token      用户的token
      * @return {@link TbPrize}  获得的奖品信息
      */
+    @Transactional
     @Override
     public TbPrize luckdraw(String activityid, String token) {
         // 根据活动id ，获取奖品信息
@@ -63,7 +73,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         // 冻结奖品信息
         // 扣除用户积分
         // 减少奖品数目
-
+        logger.info("抽奖开始");
         List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
         if (CollectionUtils.isNotEmpty(tbPrizes)) {
             AtomicReference<Double> count = new AtomicReference<>(0.00);
@@ -77,6 +87,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
             if (count.get().compareTo(1.00) < 0) {
                 flag = true;
             }
+            logger.info("校验奖品概率不超过1：{}",flag);
             if (flag) {
                 // 从缓存中获得用户积分
                 final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
@@ -85,10 +96,15 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                 long integral = redisUtil.incr(onleyintegralkey, 0);
                 // 冻结积分信息
                 // 获取redis分布式锁，锁定redis 中存储的该用户积分数据
+                logger.info("校验用户积分是否足够，现在积分：{}",integral);
                 if ((integral - 30) >= 0) {
+                    logger.info("积分足够，可以抽奖");
                     // 允许抽奖
                     // 扣积分
                     redisUtil.decr(onleyintegralkey, 30);
+                    // 线程池，异步db扣积分
+                    aysncLuckdrawService.runDeductionIntergral(activityid,sysUser.getUid(),30);
+
                     final LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
                     luckdrawAlgorithlmEntity.setActivityId(activityid);
                     // 组装概率
@@ -109,16 +125,28 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                         logger.info("未抽到！");
                     }
                     // 异步减真实库存
+                    aysncLuckdrawService.runDeductionPrizeNum(activityid,tbPrize.getId());
+                    // 异步记录发奖信息
+                    logger.info("记录发奖信息开始");
+                    TbAwardee tbAwardee = new TbAwardee();
+                    tbAwardee.setActivityId(activityid);
+                    tbAwardee.setAwardeeName(sysUser.getUname());
+                    tbAwardee.setCreatetime(new Date());
+                    tbAwardee.setPrizeId(tbPrize.getId());
+                    tbAwardee.setPrizeName(tbPrize.getPrizeName());
+                    // 获奖数目 1
+                    tbAwardee.setPrizeNum(1);
+                    // 是否发放，奖品缺一个奖品类型字段
+                    short isGrant = 1;
+                    tbAwardee.setIsGrant(isGrant);
+                    awardeeDao.save(tbAwardee);
+                    logger.info("记录发奖信息结束");
 
-//                    扣积分，扣库存，记录发奖信息
+
                     // 扣积分成功，扣库存失败怎么处理
                     // 扣积分成功，扣库存成功，记录发奖信息失败怎么处理。
                     // 分布式事务
                     // 分布式锁
-
-
-
-
                     return tbPrize;
                 } else {
                     logger.info("积分不足哦！");

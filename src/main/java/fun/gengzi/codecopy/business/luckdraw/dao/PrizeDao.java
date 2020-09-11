@@ -3,8 +3,10 @@ package fun.gengzi.codecopy.business.luckdraw.dao;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbPrize;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,17 @@ public interface PrizeDao extends JpaRepository<TbPrize, String> {
     @Query("SELECT t FROM TbPrize t WHERE t.activityid IN ( SELECT t1.id FROM TbActivity t1 WHERE t1.isInvalid = 0 AND ?1 >= t1.starttime and  ?1 <= t1.endtime  )")
     List<TbPrize> qryTbPrizeByEffectActivityId(Date date);
 
+
+    /**
+     * 根据活动id，奖品id，减奖品数目
+     * @param activityId 活动id
+     * @param prizeId 奖品id
+     * @return
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE TbPrize SET prizeNum = prizeNum - 1 WHERE id = ?2 AND activityid = ?1 AND prizeNum - 1 >= 0")
+    Integer deductionPrizeNum(String activityId, Integer prizeId);
 
 
 
