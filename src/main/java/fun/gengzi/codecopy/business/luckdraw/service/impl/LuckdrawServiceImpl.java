@@ -102,8 +102,8 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     // 允许抽奖
                     // 扣积分
                     redisUtil.decr(onleyintegralkey, 30);
-                    // 线程池，异步db扣积分
-                    aysncLuckdrawService.runDeductionIntergral(activityid,sysUser.getUid(),30);
+                    // db扣积分
+                    intergralDao.deductionIntergral(activityid, sysUser.getUid(), 30);
 
                     final LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
                     luckdrawAlgorithlmEntity.setActivityId(activityid);
@@ -124,9 +124,14 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     if(decr < 0){
                         logger.info("未抽到！");
                     }
-                    // 异步减真实库存
-                    aysncLuckdrawService.runDeductionPrizeNum(activityid,tbPrize.getId());
-                    // 异步记录发奖信息
+                    // 减真实库存
+                    Integer integer = prizeDao.deductionPrizeNum(activityid, tbPrize.getId());
+                    if(integer <= 0){
+                        return null;
+                    }
+                    // 减库存失败，就不需要记录发奖信息
+
+                    // 记录发奖信息
                     logger.info("记录发奖信息开始");
                     TbAwardee tbAwardee = new TbAwardee();
                     tbAwardee.setActivityId(activityid);
