@@ -32,6 +32,14 @@ import javax.servlet.http.HttpServletResponse;
  * 对于活动用户积分信息，这张表应该会特别的大，并且执行次数也会多，考虑一个活动一张表，不能将所有的活动用户积分信息存到一张表中
  * <p>
  * 对于减积分，减库存，记录发奖，应该设置一个 事物中，如果有一个失败，及时回滚。如果这几个抽离成几个服务，考虑使用分布式事务
+ * 控制积分，库存字段，数据库层必须大于0
+ * 设置数据库字段为 unsigned
+ * 比如 `integral` int(11) unsigned DEFAULT NULL COMMENT '积分',
+ * `prize_num` int(11) unsigned DEFAULT NULL COMMENT '奖品数目',
+ *
+ *
+ *
+ *
  * <p>
  * 对于抽奖逻辑，是否要加锁。加锁的目的在于，同时多个线程对某个资源的使用，为了防止出现  超过自己的抽奖次数，减库存超过原有库存数，
  * 将资源加锁，当一个线程执行完，再执行下一个线程。 这里使用 mysql的乐观锁，在更新语句中，设置 数量的减少不能小于0
@@ -83,12 +91,10 @@ public class LuckdrawController {
 
     /**
      * 抽奖方法
-     * 隐藏抽奖接口真实地址
      * 优化事物，当任意事物失败，直接结束，注意事物失效的一些情况
      * 增加事物测试，增加数据库乐观锁测试
      * 梳理本地缓存和redis缓存的使用地方，看是否会出现缓存穿透，缓存雪崩，缓存击穿
      * 考虑实现前端页面，了解前端页面的静态化，cdn加速等
-     *
      *
      * @param aid
      * @param request
@@ -106,7 +112,7 @@ public class LuckdrawController {
     @PostMapping("/start")
     @ResponseBody
     @LuckdrawServiceLimit(limitType = LuckdrawServiceLimit.LimitType.IP)
-    public ReturnData start(@RequestParam("aid") String aid, HttpServletRequest request) {
+    public ReturnData start(@RequestParam("aid") String aid, @PathVariable("path") String path, HttpServletRequest request) {
         logger.info("luckdraw quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);

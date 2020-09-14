@@ -58,6 +58,14 @@ public class LuckdrawServiceImpl implements LuckdrawService {
 
     /**
      * 根据活动id，抽奖
+     * <p>
+     * 根据活动id ，获取奖品信息
+     * 根据token ，获取用户信息
+     * 冻结用户积分
+     * 调用抽奖算法，开始抽奖
+     * 冻结奖品信息
+     * 扣除用户积分
+     * 减少奖品数目
      *
      * @param activityid 活动id
      * @param token      用户的token
@@ -66,28 +74,13 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     @Transactional
     @Override
     public TbPrize luckdraw(String activityid, String token) {
-        // 根据活动id ，获取奖品信息
-        // 根据token ，获取用户信息
-        // 冻结用户积分
-        // 调用抽奖算法，开始抽奖
-        // 冻结奖品信息
-        // 扣除用户积分
-        // 减少奖品数目
+
         logger.info("抽奖开始");
         List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
         if (CollectionUtils.isNotEmpty(tbPrizes)) {
-            AtomicReference<Double> count = new AtomicReference<>(0.00);
-            tbPrizes.forEach(tbPrize -> {
-                        Double probability = tbPrize.getProbability();
-                        count.updateAndGet(v -> v + probability);
-                    }
-            );
-            boolean flag = false;
-            // 计算奖品总概率不能超过1
-            if (count.get().compareTo(1.00) < 0) {
-                flag = true;
-            }
-            logger.info("校验奖品概率不超过1：{}",flag);
+            logger.info("校验奖品概率");
+            boolean flag = this.checkPrizeProbability(tbPrizes);
+            logger.info("校验奖品概率不超过1：{}", flag);
             if (flag) {
                 // 从缓存中获得用户积分
                 final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
@@ -95,8 +88,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                 final String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
                 long integral = redisUtil.incr(onleyintegralkey, 0);
                 // 冻结积分信息
-                // 获取redis分布式锁，锁定redis 中存储的该用户积分数据
-                logger.info("校验用户积分是否足够，现在积分：{}",integral);
+                logger.info("校验用户积分是否足够，现在积分：{}", integral);
                 if ((integral - 30) >= 0) {
                     logger.info("积分足够，可以抽奖");
                     // 允许抽奖
@@ -104,29 +96,25 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     redisUtil.decr(onleyintegralkey, 30);
                     // db扣积分
                     intergralDao.deductionIntergral(activityid, sysUser.getUid(), 30);
-
-                    final LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
-                    luckdrawAlgorithlmEntity.setActivityId(activityid);
-                    // 组装概率
-                    List<Double> collect = tbPrizes.stream().map(tbPrize -> tbPrize.getProbability())
-                            .sorted(Comparator.comparing(probability -> probability))
-                            .collect(Collectors.toList());
-
-                    luckdrawAlgorithlmEntity.setProbabilityList(collect);
-                    Integer algorithlm = luckdrawAlgorithlm.algorithlm(luckdrawAlgorithlmEntity);
-                    // 判断几等奖，异步扣奖品表的库存
+                    // 抽奖返回奖项
+                    Integer algorithlm = startLuckdraw(activityid, tbPrizes);
+                    // 判断几等奖，扣奖品表的库存
                     TbPrize tbPrize = tbPrizes.get(algorithlm);
                     logger.info("jaingpin 信息：{}", tbPrize);
-                    // 扣缓存库存，会出现多发问题
+
                     // 预扣缓存库存
                     String onleyprizekey = String.format(LuckdrawContants.ONLEYPRIZEKEY, activityid, tbPrize.getId());
                     long decr = redisUtil.decr(onleyprizekey, 1);
-                    if(decr < 0){
+                    if (decr < 0) {
                         logger.info("未抽到！");
                     }
+
+
+
+
                     // 减真实库存
                     Integer integer = prizeDao.deductionPrizeNum(activityid, tbPrize.getId());
-                    if(integer <= 0){
+                    if (integer <= 0) {
                         return null;
                     }
                     // 减库存失败，就不需要记录发奖信息
@@ -147,11 +135,6 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     awardeeDao.save(tbAwardee);
                     logger.info("记录发奖信息结束");
 
-
-                    // 扣积分成功，扣库存失败怎么处理
-                    // 扣积分成功，扣库存成功，记录发奖信息失败怎么处理。
-                    // 分布式事务
-                    // 分布式锁
                     return tbPrize;
                 } else {
                     logger.info("积分不足哦！");
@@ -163,6 +146,46 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         }
         return null;
     }
+
+    /**
+     * 开始抽奖
+     * @param activityid 活动id
+     * @param tbPrizes 奖品信息
+     * @return 奖项
+     */
+    private Integer startLuckdraw(String activityid, List<TbPrize> tbPrizes) {
+        final LuckdrawAlgorithlmEntity luckdrawAlgorithlmEntity = new LuckdrawAlgorithlmEntity();
+        luckdrawAlgorithlmEntity.setActivityId(activityid);
+        // 组装概率
+        List<Double> collect = tbPrizes.stream().map(tbPrize -> tbPrize.getProbability())
+                .sorted(Comparator.comparing(probability -> probability))
+                .collect(Collectors.toList());
+
+        luckdrawAlgorithlmEntity.setProbabilityList(collect);
+        return luckdrawAlgorithlm.algorithlm(luckdrawAlgorithlmEntity);
+    }
+
+    /**
+     * 检测当前活动的奖品概率不能超过1
+     *
+     * @param tbPrizes 奖品信息
+     * @return true 未超过 false 超过
+     */
+    private boolean checkPrizeProbability(List<TbPrize> tbPrizes) {
+        AtomicReference<Double> count = new AtomicReference<>(0.00);
+        tbPrizes.forEach(tbPrize -> {
+                    Double probability = tbPrize.getProbability();
+                    count.updateAndGet(v -> v + probability);
+                }
+        );
+        boolean flag = false;
+        // 计算奖品总概率不能超过1
+        if (count.get().compareTo(1.00) < 0) {
+            flag = true;
+        }
+        return flag;
+    }
+
 
     /**
      * 根据手机号，获取用户信息

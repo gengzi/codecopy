@@ -21,6 +21,14 @@ public class CommonController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    /**
+     * http://localhost:8089/codeBuildNew?tablename=表名
+     * 测试：
+     *
+     * @param tablename
+     * @return
+     * @throws SQLException
+     */
     @RequestMapping(value = "codeBuildNew")
     @ResponseBody
     public String codeBuildNew(String tablename) throws SQLException {
@@ -91,9 +99,9 @@ public class CommonController {
             Object[] objects = values.toArray();
             String columnName = SpringUtils.camelName(objects[0] + "");
 
-            String columnComment = objects[1]  + "";
+            String columnComment = objects[1] + "";
 
-            String columnDatatype = objects[2]  + "";
+            String columnDatatype = objects[2] + "";
 
             if ("id".equals(columnName)) {
 
@@ -373,10 +381,9 @@ public class CommonController {
             Object[] objects = values.toArray();
             String columnName = SpringUtils.camelName(objects[0] + "");
 
-            String columnComment = objects[1]  + "";
+            String columnComment = objects[1] + "";
 
-            String columnNameTable = objects[2]  + "";
-
+            String columnNameTable = objects[2] + "";
 
 
             if (StringUtils.isBlank(columnComment)) {

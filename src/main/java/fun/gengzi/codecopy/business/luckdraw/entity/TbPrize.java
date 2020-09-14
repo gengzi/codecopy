@@ -29,6 +29,12 @@ public class TbPrize {
     //奖品数目
     @Column(name = "prize_num")
     private Integer prizeNum;
+    //奖品cdk的类型
+    @Column(name = "prize_cdktype")
+    private String prizeCdktype;
+    //奖品类型  1 优惠券 2 实物奖品 3 积分
+    @Column(name = "prize_type")
+    private Integer prizeType;
     //概率
     @Column(name = "probability")
     private Double probability;
