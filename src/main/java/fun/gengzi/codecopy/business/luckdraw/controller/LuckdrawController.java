@@ -112,7 +112,7 @@ public class LuckdrawController {
     @PostMapping("/start")
     @ResponseBody
     @LuckdrawServiceLimit(limitType = LuckdrawServiceLimit.LimitType.IP)
-    public ReturnData start(@RequestParam("aid") String aid, @PathVariable("path") String path, HttpServletRequest request) {
+    public ReturnData start(@RequestParam("aid") String aid, HttpServletRequest request) {
         logger.info("luckdraw quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);

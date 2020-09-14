@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.RateLimiter;
+import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.exception.RrException;
 import fun.gengzi.codecopy.utils.IPUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -72,10 +73,10 @@ public class LuckdrawLimitAspect {
             if (flag) {
                 obj = joinPoint.proceed();
             } else {
-                throw new RrException("请稍等，正在为您抽奖中哦！");
+                throw new RrException(LuckdrawEnum.ERROR_SERVICE_LIMIT.getMsg());
             }
         } catch (Throwable e) {
-            throw new RrException("请稍等，正在为您抽奖中哦！");
+            throw new RrException(LuckdrawEnum.ERROR_DEFAULT.getMsg());
         }
         return obj;
     }

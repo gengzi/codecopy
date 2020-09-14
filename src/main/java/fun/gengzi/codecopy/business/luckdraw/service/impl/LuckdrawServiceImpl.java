@@ -109,16 +109,12 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                         logger.info("未抽到！");
                     }
 
-
-
-
                     // 减真实库存
                     Integer integer = prizeDao.deductionPrizeNum(activityid, tbPrize.getId());
                     if (integer <= 0) {
                         return null;
                     }
                     // 减库存失败，就不需要记录发奖信息
-
                     // 记录发奖信息
                     logger.info("记录发奖信息开始");
                     TbAwardee tbAwardee = new TbAwardee();
@@ -135,6 +131,14 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     awardeeDao.save(tbAwardee);
                     logger.info("记录发奖信息结束");
 
+                    // TODO 测试事物回滚，期望事物回滚后，返回给用户 抽奖异常，请稍后再试
+                    try {
+                        logger.warn("测试事物回滚，期望事物回滚后，返回给用户 抽奖异常，请稍后再试");
+                        int i = 1 / 0;
+                    } catch (Exception e) {
+                        throw new RuntimeException("异常了");
+                    }
+
                     return tbPrize;
                 } else {
                     logger.info("积分不足哦！");
@@ -149,8 +153,9 @@ public class LuckdrawServiceImpl implements LuckdrawService {
 
     /**
      * 开始抽奖
+     *
      * @param activityid 活动id
-     * @param tbPrizes 奖品信息
+     * @param tbPrizes   奖品信息
      * @return 奖项
      */
     private Integer startLuckdraw(String activityid, List<TbPrize> tbPrizes) {
