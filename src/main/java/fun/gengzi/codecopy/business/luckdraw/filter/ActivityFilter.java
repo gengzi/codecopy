@@ -39,7 +39,6 @@ public class ActivityFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
         // 判断当前活动是否失效，失效，直接返回，并过滤无效活动id
         // 查询活动列表，先查询当前缓存，缓存失效，查询数据库
         final ReturnData ret = ReturnData.newInstance();
@@ -52,6 +51,10 @@ public class ActivityFilter implements Filter {
             HttpResponseUtils.responseResult((HttpServletResponse) response, ret);
             return;
         }
+
+        // 判断活动id 是否存在，不存在直接返回
+
+
         List<TbActivity> tbActivities = activityDao.getEffectiveActivityInfo(new Date());
         if (CollectionUtils.isEmpty(tbActivities)) {
             logger.warn("当前无活动!");

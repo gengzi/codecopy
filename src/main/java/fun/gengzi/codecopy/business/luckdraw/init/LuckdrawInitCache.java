@@ -25,6 +25,14 @@ public class LuckdrawInitCache implements ApplicationRunner {
     private PrizeDao prizeDao;
 
 
+    /**
+     *
+     * 初始化现在生效的活动的奖品库存（redis）
+     *
+     *
+     * @param applicationArguments
+     * @throws Exception
+     */
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         // 查询现在生效的活动，对应的奖品信息

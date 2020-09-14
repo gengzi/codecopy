@@ -27,7 +27,7 @@ public class LuckdrawContants {
     public static final String USERINFOKEY = LuckdrawContants.USERPREFIX + "%s";
     // 利用redis 原子特性，仅存储 活动用户的积分
     public static final String ONLEYINTEGRALKEY = LuckdrawContants.ONLEY_INTEGRAL_PREFIX + "%s" + LuckdrawContants.REDISKEYSEPARATOR + "%s";
-    // 利用redis 原子特性，仅存储 奖品的积分 活动id:奖品id
+    // 利用redis 原子特性，仅存储 奖品的数目 活动id:奖品id
     public static final String ONLEYPRIZEKEY = LuckdrawContants.ONLEY_PRIZE_PREFIX + "%s" + LuckdrawContants.REDISKEYSEPARATOR + "%s";
 
 
