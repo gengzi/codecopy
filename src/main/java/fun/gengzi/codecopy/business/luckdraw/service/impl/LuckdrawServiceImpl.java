@@ -94,6 +94,12 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     // 允许抽奖
                     // 扣积分
                     redisUtil.decr(onleyintegralkey, 30);
+
+                    //TODO 测试数据库乐观锁执行
+                    //2020-09-14 15:10:46.164 WARN  http-nio-8089-exec-4 org.hibernate.engine.jdbc.spi.SqlExceptionHelper Line:137 - SQL Error: 1690, SQLState: 22001
+                    //2020-09-14 15:10:46.164 ERROR http-nio-8089-exec-4 org.hibernate.engine.jdbc.spi.SqlExceptionHelper Line:142 - Data truncation: BIGINT UNSIGNED value is out of range in '(`luckdraw_db`.`tb_integral`.`integral` - 30)'
+
+
                     // db扣积分
                     intergralDao.deductionIntergral(activityid, sysUser.getUid(), 30);
                     // 抽奖返回奖项
@@ -130,14 +136,6 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     tbAwardee.setIsGrant(isGrant);
                     awardeeDao.save(tbAwardee);
                     logger.info("记录发奖信息结束");
-
-                    // TODO 测试事物回滚，期望事物回滚后，返回给用户 抽奖异常，请稍后再试
-                    try {
-                        logger.warn("测试事物回滚，期望事物回滚后，返回给用户 抽奖异常，请稍后再试");
-                        int i = 1 / 0;
-                    } catch (Exception e) {
-                        throw new RuntimeException("异常了");
-                    }
 
                     return tbPrize;
                 } else {
