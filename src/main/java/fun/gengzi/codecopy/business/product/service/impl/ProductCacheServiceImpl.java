@@ -12,6 +12,7 @@ import fun.gengzi.codecopy.constant.RspCodeEnum;
 import fun.gengzi.codecopy.dao.BloomFilterHelper;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.exception.RrException;
+import io.swagger.models.auth.In;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <h1>产品信息缓存实现服务</h1>
@@ -207,6 +210,81 @@ public class ProductCacheServiceImpl implements ProductCacheService {
         product = productDao.findById(id.longValue()).orElse(null);
         // 将数据缓存到本地一份
         cache.put(id, product);
+        return product;
+    }
+
+    // 创建锁
+    private static Lock lock = new ReentrantLock();
+
+    /**
+     * 根据产品id 获取产品信息  -  解决缓存击穿
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Product getOneProductCacheInfoByMutex(Integer id) {
+        // 查询内存缓存
+        Cache cache = localhostCacheManager.getCache("PRODUCT_INFO_ID_CACHE_AVALANCHE");
+        Product product = getProductByLocalCache(id);
+        if (product == null || StringUtils.isBlank(product.getId() + "")) {
+            // 尝试获得锁
+            if (lock.tryLock()) {
+                try {
+                    logger.info("获得锁，准备查询数据库");
+                    // 拿到锁，查询数据库
+                    Product productBydb = productDao.findById(id.longValue()).orElse(null);
+                    if (productBydb == null) {
+                        logger.warn("数据查询内容信息为null");
+                        throw new RrException("服务异常，请稍后再试");
+                    }
+                    // 将查询到的数据，存入缓存
+                    cache.put(id, productBydb);
+                } finally {
+                    logger.info("释放锁");
+                    lock.unlock();
+                }
+            } else {
+                // 再次从缓存中取,双重判断
+                product = getProductByLocalCache(id);
+                if (product == null || StringUtils.isBlank(product.getId() + "")) {
+                    logger.info("未获得锁，缓存还没有数据，等待一会，再查");
+                    // 增加延迟，重试
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return getOneProductCacheInfoByMutex(id);
+                }
+            }
+        }
+        logger.info("数据已经拿到，product :{}", product);
+        return product;
+    }
+
+
+    /**
+     * 从本地缓存获取商品信息
+     *
+     * @param id 产品id
+     * @return {@link Product}
+     */
+    private Product getProductByLocalCache(Integer id) {
+        // 查询内存缓存
+        Cache cache = localhostCacheManager.getCache("PRODUCT_INFO_ID_CACHE_AVALANCHE");
+        Cache.ValueWrapper valueWrapper = cache.get(id);
+        Product product = null;
+        if (valueWrapper != null) {
+            Object object = valueWrapper.get();
+            if (object instanceof Product) {
+                product = (Product) object;
+                logger.info("获取信息: {} ", product.toString());
+            }
+            if (product != null && StringUtils.isNoneBlank(product.getId() + "")) {
+                return product;
+            }
+        }
         return product;
     }
 

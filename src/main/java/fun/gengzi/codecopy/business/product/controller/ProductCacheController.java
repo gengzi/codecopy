@@ -205,6 +205,25 @@ public class ProductCacheController {
         return ret;
     }
 
+    @ApiOperation(value = "缓存击穿-使用互斥锁", notes = "缓存击穿-使用互斥锁,当缓存失效，限定只有第一个线程查询数据库并更新缓存，其他线程阻塞，等待缓存更新，再从缓存中拿数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "id", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/findCacheByMutex")
+    @ResponseBody
+    public ReturnData findCacheByMutex(@RequestParam("id") Integer id) {
+        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoTest2(id);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(oneProductCacheInfo);
+        return ret;
+    }
+
 
     /**
      * 使用反射，根据随机参数调用 service 的方法，将数据存入不同的过期时间内

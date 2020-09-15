@@ -58,6 +58,9 @@ import javax.servlet.http.HttpServletResponse;
  * 对于用户积分表，记录获奖信息表，是否要考虑，分库分表，数据量的上升是飞快的
  * <p>
  * 对于一些记录获奖信息完成，发送短信邮件通知用户，可以异步
+ *
+ *
+ * redis 预减库存，会出现负数
  */
 
 

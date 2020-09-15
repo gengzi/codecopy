@@ -60,6 +60,13 @@ public interface ProductCacheService {
 
 
     /**
+     * 根据产品id 获取产品信息  -  解决缓存击穿
+     * @param id
+     * @return
+     */
+    Product getOneProductCacheInfoByMutex(Integer id);
+
+    /**
      * 更新产品数据信息
      * @param product 产品
      */

@@ -20,12 +20,14 @@ import java.util.List;
 public interface ActivityDao extends JpaRepository<TbActivity, String> {
 
     /**
-     * 获取当前时间有效的活动列表，并将活动信息缓存到本地，设置五秒钟失效。
+     * 获取当前时间有效的活动列表，并将活动信息缓存到本地，设置10 秒钟失效。
+     *
+     * 当缓存失效，只允许第一个线程访问数据库，其他线程阻塞，等待缓存可用 sync = true
      *
      * @param currentTime 当前时间
      * @return {@link List<TbActivity>} 活动信息列表
      */
-    @Cacheable(cacheManager = "localhostCacheManager", value = "LUCKDRAW_LOCALCACHE", key = "getMethodName()")
+    @Cacheable(cacheManager = "localhostCacheManager", value = "LUCKDRAW_LOCALCACHE", key = "getMethodName()", sync = true)
     @Query(" select t from TbActivity t where  isInvalid  = 0 and  ?1 >= starttime and  ?1 <= endtime ")
     List<TbActivity> getEffectiveActivityInfo(Date currentTime);
 
