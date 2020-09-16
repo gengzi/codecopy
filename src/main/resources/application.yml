@@ -19,6 +19,8 @@ spring:
     port: 6379
     jedis.pool.max-wait: -1ms
     timeout: 2000ms
+    redisson:
+      config: classpath:redisson.yml
   jpa: #jpa配置
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
