@@ -106,7 +106,11 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     String onleyprizekey = String.format(LuckdrawContants.ONLEYPRIZEKEY, activityid, tbPrize.getId());
                     long decr = redisUtil.decr(onleyprizekey, 1);
                     if (decr < 0) {
-                        logger.info("未抽到！");
+                        // 直接阻断，返回未抽到
+                        // 减少额外请求，请求数据库
+                        // 这里可能出现，redis 预减缓存成功，db 失败。 导致redis的数据 与 库不一致。
+                       logger.info("未抽到！");
+                       return null;
                     }
 
                     // 减真实库存
