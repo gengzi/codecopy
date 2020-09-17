@@ -2,6 +2,8 @@ package fun.gengzi.codecopy.business.luckdraw.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
+import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawLock;
+import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawLockKey;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.dao.AwardeeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.IntergralDao;
@@ -72,8 +74,9 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      * @return {@link TbPrize}  获得的奖品信息
      */
     @Transactional
+    @LuckdrawLock(name = LuckdrawLock.LockType.REDIS_LOCK)
     @Override
-    public TbPrize luckdraw(String activityid, String token) {
+    public TbPrize luckdraw(@LuckdrawLockKey String activityid, String token) {
 
         logger.info("抽奖开始");
         List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
@@ -109,8 +112,8 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                         // 直接阻断，返回未抽到
                         // 减少额外请求，请求数据库
                         // 这里可能出现，redis 预减缓存成功，db 失败。 导致redis的数据 与 库不一致。
-                       logger.info("未抽到！");
-                       return null;
+                        logger.info("未抽到！");
+                        return null;
                     }
 
                     // 减真实库存
