@@ -71,38 +71,7 @@ public class LuckdrawLockAspect {
 
     @Around("lockAspect()")
     public Object around(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        Object aThis = joinPoint.getThis();
-        Class<?> aClass = aThis.getClass();
-//        Method[] methods = aClass.getMethods();
-//        String name1 = method.getName();
-//        Class<? extends Method> aClass1 = method.getClass();
-
-        Class<?> declaringClass = method.getDeclaringClass();
-        Method[] methods = declaringClass.getMethods();
-        String name1 = method.getName();
-        Class<? extends Method> aClass1 = method.getClass();
-
-        Method method1 = null;
-        for (Method method2:
-                methods) {
-            if(name1.equals(method2.getName())){
-                method1 = method2;
-            }
-        }
-
-        Object aThis1 = joinPoint.getThis();
-
-
-        LuckdrawLock annotation = method1.getAnnotation(LuckdrawLock.class);
-        LuckdrawLock.LockType name = annotation.name();
-        // 根据locktype 走不同的锁
-        if (name.equals(LuckdrawLock.LockType.REDIS_LOCK)) {
-            return execRedisLock(joinPoint);
-        } else {
-            return execJvmLock(joinPoint);
-        }
+        return execRedisLock(joinPoint);
     }
 
 
@@ -140,6 +109,7 @@ public class LuckdrawLockAspect {
         RLock lock = redissonClient.getLock(lockkey);
         // 最长等待锁时间 100 秒，上锁后自动解锁时间 10 秒
         try {
+            logger.info("redis加锁");
             lockFlag = lock.tryLock(100, 10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             // 获取锁异常
@@ -153,6 +123,7 @@ public class LuckdrawLockAspect {
                 throwable.printStackTrace();
             } finally {
                 // 释放锁
+                logger.info("redis解锁");
                 lock.unlock();
             }
         }
