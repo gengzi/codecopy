@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import cn.hutool.core.util.RandomUtil;
 import com.itextpdf.text.pdf.BaseFont;
 import org.junit.Test;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
@@ -81,6 +82,15 @@ public class Html2pdf {
             e.printStackTrace();
         }
 
+    }
+
+    @Test
+    public void fun03(){
+        String sql = "INSERT INTO `tb_integral` VALUES ('%s', '%s', 'hd_001', 't_%s', '%s', '2020-09-11 15:28:40', '2020-09-11 15:28:40');";
+        for (int i = 3; i < 100; i++) {
+            String format = String.format(sql, i, i, i, RandomUtil.randomInt(30, 1000));
+            System.out.println(format);
+        }
     }
 
 

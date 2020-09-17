@@ -23,6 +23,15 @@ public interface LuckdrawService {
      */
     TbPrize luckdraw(String activityid, String token);
 
+    /**
+     * 根据活动id，抽奖 测试方法
+     *
+     * @param activityid 活动id
+     * @param uid      用户id
+     * @return {@link TbPrize}  获得的奖品信息
+     */
+    TbPrize luckdrawTest(String activityid, String uid);
+
 
     /**
      * 根据手机号，获取用户信息
