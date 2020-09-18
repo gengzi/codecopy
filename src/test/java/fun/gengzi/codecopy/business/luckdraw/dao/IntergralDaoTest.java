@@ -11,7 +11,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -47,6 +46,21 @@ public class IntergralDaoTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    public void fun02(){
+        //
+        /**
+         * 日期 时间 奖品名称 奖品数量
+         */
+
+
+
+
+
+
     }
 
 

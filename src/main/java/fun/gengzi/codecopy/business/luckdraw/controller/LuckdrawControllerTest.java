@@ -17,6 +17,29 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
+/**
+ * <h1>测试工具类</h1>
+ *
+ * @author gengzi
+ * @date 2020年9月18日15:55:54
+ *
+ * 过滤器
+ * 权限控制
+ * 数据加密解密
+ * 接口安全控制
+ * 本地数据缓存
+ * 限流
+ * 接口限频
+ * 分布式锁
+ * 数据库乐观锁加限制
+ * 事物回滚
+ * 消息队列填谷晓峰
+ * 分库分表
+ * 读写分离
+ * reids集群
+ * redis缓存
+ *
+ */
 @Api(value = "luckdrawTest", tags = {"luckdrawTest"})
 @Controller
 @RequestMapping("/luckdrawTest")
