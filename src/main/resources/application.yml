@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: codecopy
+  thymeleaf:
+#    prefix: classpath:/templates/
+    cache: false
   profiles:
     # 可以配置多个。逗号分隔
     active: dev,dev_luckdraw,dev_https
@@ -123,6 +126,10 @@ spring:
       #        # 用户表
 
       #        sys_users:
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/templates/,classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
 #          key-generate-strategy:
 #            column: ID
 #            key-generator-name: snowflake
