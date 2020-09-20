@@ -100,7 +100,16 @@ public class LuckdrawController {
     private LuckdrawService luckdrawService;
 
 
-
+    /**
+     * 本地地址
+     * http://localhost:8089/luckdraw/activity?aid=hd_001
+     *
+     * 联通抽奖地址
+     * http://m.client.10010.com/dailylottery/view/dailylotteryshare.jsp?encryptusernumber=7d1300cffb536a6c3aea78b1aa175016&areaId=076&JiFenflag=2
+     * @param aid
+     * @param request
+     * @return
+     */
     @ApiOperation(value = "跳转页面", notes = "跳转页面")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "aid", value = "aid", required = true)})
