@@ -99,6 +99,24 @@ public class LuckdrawController {
     @Autowired
     private LuckdrawService luckdrawService;
 
+
+
+    @ApiOperation(value = "跳转页面", notes = "跳转页面")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aid", value = "aid", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @GetMapping("/activity")
+    public String activityToPage(@RequestParam("aid") String aid, HttpServletRequest request) {
+        logger.info("luckdraw quest param ,aid:{} ", aid);
+        return "activityuckdraw";
+    }
+
+
     /**
      * 抽奖方法
      * 梳理本地缓存和redis缓存的使用地方，看是否会出现缓存穿透，缓存雪崩，缓存击穿
