@@ -27,7 +27,7 @@ public interface LuckdrawService {
      * 根据活动id，抽奖 测试方法
      *
      * @param activityid 活动id
-     * @param uid      用户id
+     * @param uid        用户id
      * @return {@link TbPrize}  获得的奖品信息
      */
     TbPrize luckdrawTest(String activityid, String uid);
@@ -50,5 +50,13 @@ public interface LuckdrawService {
      * @return {@link TbIntegral} 用户活动积分信息
      */
     TbIntegral getIntegralInfo(String activityid, String uid);
+
+    /**
+     * 根据活动id,查询奖品信息
+     *
+     * @param activityid 活动id
+     * @return {@link TbPrize} 用户活动积分信息
+     */
+    List<TbPrize> getPrizeInfo(String activityid);
 
 }

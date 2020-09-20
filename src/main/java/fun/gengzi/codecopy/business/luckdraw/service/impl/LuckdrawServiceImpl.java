@@ -311,5 +311,16 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         return tbIntegral;
     }
 
+    /**
+     * 根据活动id,查询奖品信息
+     *
+     * @param activityid 活动id
+     * @return {@link List<TbPrize>} 用户活动积分信息
+     */
+    @Override
+    public List<TbPrize> getPrizeInfo(String activityid) {
+        return prizeDao.findByActivityidOrderByProbability(activityid);
+    }
+
 
 }

@@ -1,11 +1,14 @@
 package fun.gengzi.codecopy.business.luckdraw.controller;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.ShearCaptcha;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawServiceLimit;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.business.luckdraw.vo.VerificationVo;
+import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +20,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * 一些问题：
@@ -59,14 +65,14 @@ import javax.servlet.http.HttpServletResponse;
  * 对于用户积分表，记录获奖信息表，是否要考虑，分库分表，数据量的上升是飞快的
  * <p>
  * 对于一些记录获奖信息完成，发送短信邮件通知用户，可以异步
- *
+ * <p>
  * 注意锁和事物的顺序性，都使用锁上移
  * 现在可能存在的问题， 缓存与真实数据不一致
  * 在该项目中的处理，缓存仅作为 加快信息获取的一种方式，不作为数据真实的方式。
  * 但是在某些情况下，比如 缓存扣除积分成功，数据库扣除积分失败。 可以直接返回没有抽到奖品。但是下次用户再进来，
  * 重新刷新了缓存积分，用户会发现多了一次的抽奖机会
- *
- *
+ * <p>
+ * <p>
  * redis 预减库存，会出现负数
  */
 
@@ -99,17 +105,61 @@ public class LuckdrawController {
     @Autowired
     private LuckdrawService luckdrawService;
 
+    @Autowired
+    private RedisUtil redisUtil;
 
-    /**
-     * 本地地址
-     * http://localhost:8089/luckdraw/activity?aid=hd_001
-     *
-     * 联通抽奖地址
-     * http://m.client.10010.com/dailylottery/view/dailylotteryshare.jsp?encryptusernumber=7d1300cffb536a6c3aea78b1aa175016&areaId=076&JiFenflag=2
-     * @param aid
-     * @param request
-     * @return
-     */
+
+    @ApiOperation(value = "获取活动对应的奖品信息", notes = "获取活动对应的奖品信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aid", value = "aid", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @GetMapping("/getPrizeInfo")
+    @ResponseBody
+    public ReturnData activityToPage(@RequestParam("aid") String aid) {
+        List<TbPrize> prizeInfo = luckdrawService.getPrizeInfo(aid);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setInfo(prizeInfo);
+        return ret;
+    }
+
+    @ApiOperation(value = "获取登陆随机验证码", notes = "获取登陆随机验证码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aid", value = "aid", required = true),
+            @ApiImplicitParam(name = "code", value = "code", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @GetMapping("/getLoginCode")
+    public HttpServletResponse getLoginCode(@RequestParam("aid") String aid, @RequestParam("code") String code,HttpServletResponse response) {
+        ReturnData ret = ReturnData.newInstance();
+        if(StringUtils.isBlank(code)){
+            return response;
+        }
+        //定义图形验证码的长、宽、验证码字符数、干扰线宽度
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(200, 100, 4, 4);
+        String verificationCode  = captcha.getCode();
+        // 存入redis中
+        redisUtil.set(code,verificationCode,180);
+        //图形验证码写出，可以写出到文件，也可以写出到流
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            captcha.write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
     @ApiOperation(value = "跳转页面", notes = "跳转页面")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "aid", value = "aid", required = true)})
@@ -225,7 +275,6 @@ public class LuckdrawController {
     // 手动增加用户积分，并更新缓存信息
 
     // 查看抽奖信息
-
 
 
 }
