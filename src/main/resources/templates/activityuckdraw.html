@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="nei_quan">
-            <input type="button" name="name" class="zhiz" value="" id="luckdrawstart" >
+            <input type="button" name="name" class="zhiz" value="" id="luckdrawstart">
             <img src="/images/zhizhen4.png" class="zhiz_img" style="display:none;" alt="">
         </div>
     </div>
@@ -181,7 +181,6 @@
         "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>");
 
 
-
     //手机号限制输入数字
     var thisOldValue = '';//输入前的值
     var thisNewValue = '';//输入后的值
@@ -311,15 +310,25 @@
     });
 
     $("#luckdrawstart").click(function () {
-       alert("抽奖");
+        alert("抽奖");
     });
 
     /* 刷新图片验证码 */
     function flushValidateCode() {
         var aid = $.getUrlParam('aid');
         var validateImgObject = document.getElementById("yz_img");
-        validateImgObject.src = "/luckdraw/getLoginCode?aid=" + aid + "&code="
-            + new Date().getTime();
+        $.ajax({
+            type: 'GET',
+            url: "/luckdraw/getLoginCode?aid=" + aid + "&code=" + new Date().getTime(),
+            timeout: 50000, //超时时间设置，单位毫秒
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            success: function (data) {
+                validateImgObject.src = data;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
     }
 
     //提交请求

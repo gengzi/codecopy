@@ -17,5 +17,10 @@ public class VerificationVo {
     // 手机号
     private String phone;
     // 验证码
+    private String phoneValidCode;
+    // 页面验证码
     private String validCode;
+    // 页面验证码的code
+    private String code;
+
 }

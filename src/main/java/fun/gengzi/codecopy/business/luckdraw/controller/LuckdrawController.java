@@ -4,6 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawServiceLimit;
+import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
@@ -139,27 +140,33 @@ public class LuckdrawController {
             "\t    \"message\": \"信息\",\n" +
             "\t}\n")})
     @GetMapping("/getLoginCode")
-    public HttpServletResponse getLoginCode(@RequestParam("aid") String aid, @RequestParam("code") String code,HttpServletResponse response) {
+    @ResponseBody
+    public String getLoginCode(@RequestParam("aid") String aid, @RequestParam("code") String code, HttpServletResponse response) {
         ReturnData ret = ReturnData.newInstance();
-        if(StringUtils.isBlank(code)){
-            return response;
+        if (StringUtils.isBlank(code)) {
+            return "error";
         }
         //定义图形验证码的长、宽、验证码字符数、干扰线宽度
         ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(200, 100, 4, 4);
-        String verificationCode  = captcha.getCode();
+        String verificationCode = captcha.getCode();
         // 存入redis中
-        redisUtil.set(code,verificationCode,180);
+        redisUtil.set(String.format(LuckdrawContants.VALIDCODEKEY,code), verificationCode, 180);
         //图形验证码写出，可以写出到文件，也可以写出到流
-        try {
-            ServletOutputStream outputStream = response.getOutputStream();
-            captcha.write(outputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return response;
+        return "data:image/png;base64," + captcha.getImageBase64();
     }
 
 
+    /**
+     * 本地地址
+     * http://localhost:8089/luckdraw/activity?aid=hd_001
+     * <p>
+     * 联通抽奖地址
+     * http://m.client.10010.com/dailylottery/view/dailylotteryshare.jsp?encryptusernumber=7d1300cffb536a6c3aea78b1aa175016&areaId=076&JiFenflag=2
+     *
+     * @param aid
+     * @param request
+     * @return
+     */
     @ApiOperation(value = "跳转页面", notes = "跳转页面")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "aid", value = "aid", required = true)})
@@ -235,10 +242,19 @@ public class LuckdrawController {
     public ReturnData verificationUserInfo(@RequestParam("aid") String aid, @RequestBody VerificationVo verificationVo, HttpServletResponse response) {
         logger.info("VerificationVo :{} ", verificationVo);
         final ReturnData ret = ReturnData.newInstance();
-        if (verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(), verificationVo.getValidCode())) {
+        if (verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(), verificationVo.getValidCode(),verificationVo.getPhoneValidCode())) {
             ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
             return ret;
         }
+        // 仅校验一下随机验证码
+        String validCodeByRedis = (String) redisUtil.get(String.format(LuckdrawContants.VALIDCODEKEY, verificationVo.getCode()));
+        if(!verificationVo.getValidCode().equals(validCodeByRedis)){
+            ret.setFailure(LuckdrawEnum.ERROR_PAGE_VALIDCODE.getMsg());
+            return ret;
+        }
+        // 移除随机验证码的缓存
+        redisUtil.del(String.format(LuckdrawContants.VALIDCODEKEY, verificationVo.getCode()));
+
         // TODO 默认校验成功
         boolean flag = true;
         // 根据手机号获取用户信息
