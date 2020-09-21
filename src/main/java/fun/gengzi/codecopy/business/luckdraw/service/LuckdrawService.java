@@ -1,10 +1,7 @@
 package fun.gengzi.codecopy.business.luckdraw.service;
 
 
-import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
-import fun.gengzi.codecopy.business.luckdraw.entity.SysUserDTO;
-import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
-import fun.gengzi.codecopy.business.luckdraw.entity.TbPrize;
+import fun.gengzi.codecopy.business.luckdraw.entity.*;
 
 import java.util.List;
 
@@ -55,8 +52,17 @@ public interface LuckdrawService {
      * 根据活动id,查询奖品信息
      *
      * @param activityid 活动id
-     * @return {@link TbPrize} 用户活动积分信息
+     * @return {@link List<TbPrize>} 用户活动积分信息
      */
     List<TbPrize> getPrizeInfo(String activityid);
+
+    /**
+     * 根据活动id,查询当前最新的获奖人信息
+     *
+     * @param activityid 活动id
+     * @return {@link  List<AwardeeVo>} 用户活动积分信息
+     */
+    List<AwardeeVo> getAwardeeInfo(String activityid);
+
 
 }

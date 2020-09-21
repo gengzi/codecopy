@@ -38,7 +38,7 @@ public class TbAwardee {
     @Column(name = "awardee_name")
     private String awardeeName;
     //获奖时间
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     @Column(name = "awardee_time")
     private Date awardeeTime;
@@ -62,7 +62,7 @@ public class TbAwardee {
     @Column(name = "createtime")
     private Date createtime;
     //更新时间
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.DATE)
     @Column(name = "updatetime")
     private Date updatetime;

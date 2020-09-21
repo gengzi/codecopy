@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -194,6 +195,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     TbAwardee tbAwardee = new TbAwardee();
                     tbAwardee.setActivityId(activityid);
                     tbAwardee.setAwardeeName(uid);
+                    tbAwardee.setAwardeeTime(new Date());
                     tbAwardee.setCreatetime(new Date());
                     tbAwardee.setPrizeId(tbPrize.getId());
                     tbAwardee.setPrizeName(tbPrize.getPrizeName());
@@ -320,6 +322,24 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     @Override
     public List<TbPrize> getPrizeInfo(String activityid) {
         return prizeDao.findByActivityidOrderByProbability(activityid);
+    }
+
+    /**
+     * 根据活动id,查询当前最新的获奖人信息
+     *
+     * @param activityid 活动id
+     * @return {@link  List<AwardeeVo>} 用户活动积分信息
+     */
+    @Override
+    public List<AwardeeVo> getAwardeeInfo(String activityid) {
+        List<TbAwardee> tbAwardees = awardeeDao.qryTbAwardeeInfoByActivityIdAndDateNew(activityid);
+        ArrayList<AwardeeVo> awardeeVos = new ArrayList<>(tbAwardees.size());
+        AwardeeVo awardeeVo = new AwardeeVo();
+        tbAwardees.forEach(tbAwardee -> {
+            BeanUtils.copyProperties(tbAwardee, awardeeVo);
+            awardeeVos.add(awardeeVo);
+        });
+        return awardeeVos;
     }
 
 

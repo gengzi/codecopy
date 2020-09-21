@@ -21,10 +21,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -109,6 +107,27 @@ public class LuckdrawController {
     @Autowired
     private RedisUtil redisUtil;
 
+    @ApiOperation(value = "获取当前的获奖人信息", notes = "获取当前的获奖人信息，返回五条")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aid", value = "aid", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @GetMapping("/getAwardeeInfo")
+    @ResponseBody
+    public ReturnData getAwardeeInfo(@RequestParam("aid") String aid) {
+        logger.info("获取当前活动获奖人最新信息，入参:{}", aid);
+        List<AwardeeVo> awardeeInfo = luckdrawService.getAwardeeInfo(aid);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setInfo(awardeeInfo);
+        logger.info("获取当前活动获奖人最新信息，出参:{}", awardeeInfo);
+        return ret;
+    }
+
 
     @ApiOperation(value = "获取活动对应的奖品信息", notes = "获取活动对应的奖品信息")
     @ApiImplicitParams({
@@ -150,7 +169,7 @@ public class LuckdrawController {
         ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(200, 100, 4, 4);
         String verificationCode = captcha.getCode();
         // 存入redis中
-        redisUtil.set(String.format(LuckdrawContants.VALIDCODEKEY,code), verificationCode, 180);
+        redisUtil.set(String.format(LuckdrawContants.VALIDCODEKEY, code), verificationCode, 180);
         //图形验证码写出，可以写出到文件，也可以写出到流
         return "data:image/png;base64," + captcha.getImageBase64();
     }
@@ -242,13 +261,13 @@ public class LuckdrawController {
     public ReturnData verificationUserInfo(@RequestParam("aid") String aid, @RequestBody VerificationVo verificationVo, HttpServletResponse response) {
         logger.info("VerificationVo :{} ", verificationVo);
         final ReturnData ret = ReturnData.newInstance();
-        if (verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(), verificationVo.getValidCode(),verificationVo.getPhoneValidCode())) {
+        if (verificationVo != null && StringUtils.isAnyBlank(verificationVo.getPhone(), verificationVo.getValidCode(), verificationVo.getPhoneValidCode())) {
             ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
             return ret;
         }
         // 仅校验一下随机验证码
         String validCodeByRedis = (String) redisUtil.get(String.format(LuckdrawContants.VALIDCODEKEY, verificationVo.getCode()));
-        if(!verificationVo.getValidCode().equals(validCodeByRedis)){
+        if (!verificationVo.getValidCode().equals(validCodeByRedis)) {
             ret.setFailure(LuckdrawEnum.ERROR_PAGE_VALIDCODE.getMsg());
             return ret;
         }

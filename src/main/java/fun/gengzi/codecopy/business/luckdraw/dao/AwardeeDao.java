@@ -2,11 +2,14 @@ package fun.gengzi.codecopy.business.luckdraw.dao;
 
 import fun.gengzi.codecopy.business.luckdraw.entity.TbAwardee;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 /**
@@ -18,5 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface AwardeeDao extends JpaRepository<TbAwardee, Integer> {
 
+
+    /**
+     * 返回当前最新的五条获奖信息
+     *
+     * @param activityId 活动id
+     * @return List<TbAwardee>
+     */
+    @Cacheable(cacheManager = "loclRedisCacheManagers", value = "LUCKDRAW_ACTIVITY_AWARDEE_LIMIT5", key = "#activityId", sync = true)
+    @Query(value = "SELECT * FROM tb_awardee t WHERE t.activity_id = :activityId ORDER BY awardee_time LIMIT  0,5", nativeQuery = true)
+    List<TbAwardee> qryTbAwardeeInfoByActivityIdAndDateNew(String activityId);
 
 }
