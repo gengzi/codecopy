@@ -1104,35 +1104,40 @@
     $('.cj_num').html(playnum);
     var isture = 0;
     var clickfunc = function (data) {
+
         //data为随机出来的结果，根据概率后的结果
         //后台传入的奖品下标
-        var index = parseInt(data.prizecount);
-        var prizename = data.RspMsg;
-        var smlbbs = data.smlbbs;
-        var jifen = data.WelfareIntegral;
-        var signcoin = data.signcoin;
-        medal = data.medal;
-        if (index != 8) {
-            if (smlbbs == '1') {
-                $('.zj_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-                $('.zj_t').text(prizename);
-            } else if (jifen == "1") {
-                $('#prize_img_jifen').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-            } else if (signcoin == "1") {
-                $('#prize_img_signcoin').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-            } else {
-                $('#prize_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-            }
-        }
+        var index = parseInt(data.info.id);
+        alert(index)
+        var prizename = data.info.prizeName;
+        alert(prizename)
+        var smlbbs = "xx";
+        var jifen = "xx";
+        var signcoin = "xx";
+        // medal = data.medal;
+        // if (index != 8) {
+        //     if (smlbbs == '1') {
+        //         $('.zj_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+        //         $('.zj_t').text(prizename);
+        //     } else if (jifen == "1") {
+        //         $('#prize_img_jifen').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+        //     } else if (signcoin == "1") {
+        //         $('#prize_img_signcoin').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+        //     } else {
+        //         $('#prize_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+        //     }
+        // }
         if (index != null && prizename != null) {
-            if (jifen == "1") {
-                $('#zhongjiang_info_tanceng_jifen').text(prizename);
-            } else if (signcoin == "1") {
-                $('#zhongjiang_info_tanceng_signcoin').text(prizename);
-            } else {
-                $('#zhongjiang_info_tanceng').text(prizename);
-            }
+            alert("xx"+index)
+            // if (jifen == "1") {
+            //     $('#zhongjiang_info_tanceng_jifen').text(prizename);
+            // } else if (signcoin == "1") {
+            //     $('#zhongjiang_info_tanceng_signcoin').text(prizename);
+            // } else {
+            //     $('#zhongjiang_info_tanceng').text(prizename);
+            // }
             switch (index) {
+
                 case 1:
                     rotateFunc(1, 338, prizename, "x_n", smlbbs, jifen, signcoin);
                     break;
@@ -1165,8 +1170,8 @@
             rotateFunc(8, 22, "谢谢参与", "x_n");
         }
     }
+    // 抽奖
     $btn.click(function () {
-
         var total = $('#total').text();
         var flag = true;
         if (flag) {
@@ -1184,29 +1189,16 @@
 
                 jQuery.ajax({
                     type: 'POST',
-                    url: "/dailylottery/static/doubleball/choujiang?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016",
+                    url: "/luckdraw/start?aid=hd_001",
                     timeout: 15000, //超时时间设置，单位毫秒
                     async: true,
+                    headers: {
+                        'authorization': '8c685bac-2ebe-44f8-a0fd-eda36f63e83c'
+                    },
                     contentType: 'application/x-www-form-urlencoded; charset=utf-8',
                     dataType: 'json',
                     success: function (data) {
-                        if (data.Rsptype == "5555") {
-                            rotateFunc(8, 22, "谢谢参与", "x_n");
-                            $('#changevalue').text(changevalue - 1);
-                            if (data.RspCount != null && parseInt(data.RspCount) <= 0) {
-                                $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
-                                $(".zhiz_img,.zhiz").attr("disabled", "disabled");
-
-                            }
-                        } else if (data.Rsptype == "6666") {
-                            rotateFunc(8, 22, "谢谢参与", "x_n");
-                            $('#changevalue').text(changevalue - 1);
-                            if (data.RspCount != null && parseInt(data.RspCount) <= 0) {
-                                $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
-                                $(".zhiz_img,.zhiz").attr("disabled", "disabled");
-
-                            }
-                        } else if (data.RspCode == "9999") {
+                        if (data.info == "未中奖哦，再抽一次吧！") {
                             rotateFunc(8, 22, "谢谢参与", "x_n");
                         } else {
                             $(this).attr("disabled", "disabled");
@@ -1214,16 +1206,6 @@
                             clickfunc(data);
                             flag = true;
                             $('#changevalue').text(changevalue - 1);
-                            if (data.RspCount != null && parseInt(data.RspCount) <= 0) {
-                                $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
-                                $(".zhiz_img,.zhiz").attr("disabled", "disabled");
-
-                            } else {
-                                if (parseInt($('#changevalue').text()) <= 0) {
-                                    $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
-                                    $(".zhiz_img,.zhiz").attr("disabled", "disabled");
-                                }
-                            }
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -1365,253 +1347,6 @@
         return this[Math.floor(Math.random() * this.length)]
     }
 
-    /* 动态变化活动信息 */
-    $.ajax({
-        url: "/dailylottery/static/active/findActivityInfo",
-        type: 'GET',
-        data: {
-            areaCode: areaId,
-            groupByType: "",
-            mobile: phoneid
-        },
-        success: function (data) {
-            //let { lotInfos } = data;
-            if (data.lotInfos != null) {
-                havenOne = true;
-                havenFive = true;
-                havenSix = true;
-                for (var lotInfo of data.lotInfos) {
-                    infoType = lotInfo.infoType;
-                    /*
-                        1：背景图
-                        2：抽奖按钮 *
-                        3：我的礼包按钮
-                        4：分享好友按钮
-                        5：活动规则 *
-                        6：弹幕样式
-                        7：分享页背景图 *
-                        8：分享页领取按钮
-                     */
-                    if (infoType == "1") {
-                        //主页背景图
-                        bgImg = lotInfo.bgImg;
-                        if (bgImg != null) {
-                            $(".container_header_img").attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg);
-                        } else {
-                            $(".container_header_img").attr("src", "/images/container_header_img8.jpg");
-                        }
-                        havenOne = false;
-                    } else if (infoType == "2") {
-                        /* 背景图、抽奖按钮图、霓虹灯带图、霓虹灯亮图、霓虹灯灭图 */
-                        //let { bgImg, lotImg, neonBeltImg, neonOnImg, neonOffImg } = lotInfo;
-                        bgImg = lotInfo.bgImg;
-                        lotImg = lotInfo.lotImg;
-                        neonBeltImg = lotInfo.neonBeltImg;
-                        neonOnImg = lotInfo.neonOnImg;
-                        neonOffImg = lotInfo.neonOffImg;
-                        // 背景图
-                        //todo 此处ctx应该为ctxwing
-                        $("#goodsInfo").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg + ")");
-                        // 抽奖按钮图
-                        $(".zhiz").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + lotImg + ")");
-                        $(".zhiz_img").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + lotImg + ")");
-                        // 霓虹灯带图
-                        $(".zhuanpan_box_index").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + neonBeltImg + ")");
-                        // TODO 不太确定.zp_bg与.zp_bg2哪个是霓虹灯亮图哪个霓虹灯灭图
-                        // 霓虹灯亮图
-                        $(".zp_bg").attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + neonOnImg);
-                        // 霓虹灯灭图
-                        $(".zp_bg2").attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + neonOffImg);
-                    } else if (infoType == "3") {
-                        //我的礼包按钮
-                        bgImg = lotInfo.bgImg;
-                        $(".left_btn").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg + ")");
-                    } else if (infoType == "4") {
-                        //分享好友按钮
-                        bgImg = lotInfo.bgImg;
-                        $(".right_btn").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg + ")");
-                    } else if (infoType == "5") {
-                        //let { actRule } = lotInfo;
-                        actRule = lotInfo.actRule;
-                        if (actRule != null) {
-                            var arr1 = actRule.split("*");
-                            for (var i = 0; i < arr1.length; i++) {
-                                p = "";
-                                var arr2 = arr1[i].split("||");
-                                $('.hd_box_info').append('<span class="isGray' + i + '">' + arr2[0] + '</span>');
-                                for (var j = 1; j < arr2.length; j++) {
-                                    //p = "<p>"+arr2[j]+"</p>";
-                                    $(".isGray" + i).append('<p class="isGrayP' + j + '">' + arr2[j] + '</p>');
-                                    $(".isGray" + i).css("font-weight", "bold");
-                                    $(".isGrayP" + j).css("font-weight", "normal");
-                                }
-                            }
-                        } else {
-                            $(".hd_box_info").append("<span class=\"isGray\">一、活动时间</span><br>\n" +
-                                "                2018年4月21日起，本活动分期开展，通过联通手机营业厅客户端公布具体的活动时间和活动规则。</br>\n" +
-                                "                <span class=\"isGray\">二、活动规则</span><br>\n" +
-                                "\n" +
-                                "                1.同一用户，活动期间每天有3次（当日有效）免费抽奖机会,抽奖机会使用有效期至当日24时;</br>\n" +
-                                "                2.天天抽奖活动仅限中国联通手机用户参与;</br>\n" +
-                                "                3.参加活动用户获得的奖品，需在奖品有效期内领取、使用；</br>\n" +
-                                "                4.福利积分奖品可前往【发现】-【福利】查看、使用；</br>\n" +
-                                "                5.金币奖品前往【我的】-【我的金币】查看、使用；</br>\n" +
-                                "                6.其他类型奖品具体领取及使用方式以联通手机营业厅客户端【我的】－【我的礼包】奖品说明为准;</br>\n" +
-                                "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>")
-                        }
-                        havenFive = false;
-                    } else if (infoType == "6") {
-                        //弹幕样式
-                        bgColor = "#" + lotInfo.bgColor;
-                        fontColor = "#" + lotInfo.fontColor;
-                        bgOpacity = lotInfo.bgOpacity;
-                        var bgrgb = colorRgb(bgColor, bgOpacity);
-
-                        //颜色转换方法
-                        function colorRgb(color, opc) {
-                            var sColor = color.toLowerCase();
-                            //十六进制颜色值的正则表达式
-                            var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-                            // 如果是16进制颜色
-                            if (sColor && reg.test(sColor)) {
-                                if (sColor.length === 4) {
-                                    var sColorNew = "#";
-                                    for (var i = 1; i < 4; i += 1) {
-                                        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
-                                    }
-                                    sColor = sColorNew;
-                                }
-                                //处理六位的颜色值
-                                var sColorChange = [];
-                                for (var i = 1; i < 7; i += 2) {
-                                    sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
-                                }
-                                return "(" + sColorChange.join(",") + "," + (opc) + ")";
-                            }
-                            return sColor;
-                        };
-                        var rgba = 'rgba' + bgrgb;
-                        //弹屏滚动通知
-                        $(".danmu").each(function () {
-                            (function (_this) {
-                                clearTimeout(timeouter);
-                                var timer = time_range(),//第一次随便给个时间间隔
-                                    timeouter;
-                                zhuan();
-
-                                function zhuan() {
-                                    timeouter = setTimeout(function () {
-
-                                        var random = arrayTOTAL.getRandomItem();
-                                        var li = '<li class="crr" style=" background-color:' + rgba + ';color:' + fontColor + ';"><img style="border-radius: 50%;"  src="' + random.split('|')[3] + '">' + random.split('|')[0] + '的' + random.split('|')[1] + '中了' + random.split('|')[2] + '，' + random.split('|')[4] + 's前</li>';
-
-                                        if ($(_this).find('.tongzhi li').length < 3) {
-                                            $(_this).find('ul').append(li);
-                                        } else {
-                                            $(_this).find('ul li').first().remove();
-                                            $(_this).find('ul').append(li);
-                                        }
-//                  timer = Math.round(Math.random() * 1000 + 1000);
-                                        zhuan();
-                                    }, timer)
-
-                                }
-                            })(this)
-                        })
-                        havenSix = false;
-                    } else if (infoType == "8") {
-                    }
-                }
-                if (havenOne) {
-                    $(".container_header_img").attr("src", "/images/container_header_img8.jpg");
-                }
-                if (havenFive) {
-                    $(".hd_box_info").append("<span class=\"isGray\">一、活动时间</span><br>\n" +
-                        "                2018年4月21日起，本活动分期开展，通过联通手机营业厅客户端公布具体的活动时间和活动规则。</br>\n" +
-                        "                <span class=\"isGray\">二、活动规则</span><br>\n" +
-                        "\n" +
-                        "                1.同一用户，活动期间每天有3次（当日有效）免费抽奖机会,抽奖机会使用有效期至当日24时;</br>\n" +
-                        "                2.天天抽奖活动仅限中国联通手机用户参与;</br>\n" +
-                        "                3.参加活动用户获得的奖品，需在奖品有效期内领取、使用；</br>\n" +
-                        "                4.福利积分奖品可前往【发现】-【福利】查看、使用；</br>\n" +
-                        "                5.金币奖品前往【我的】-【我的金币】查看、使用；</br>\n" +
-                        "                6.其他类型奖品具体领取及使用方式以联通手机营业厅客户端【我的】－【我的礼包】奖品说明为准;</br>\n" +
-                        "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>")
-                }
-                if (havenSix) {
-                    //弹屏滚动通知
-                    $(".danmu").each(function () {
-                        (function (_this) {
-                            clearTimeout(timeouter);
-                            var timer = time_range(),//第一次随便给个时间间隔
-                                timeouter;
-                            zhuan();
-
-                            function zhuan() {
-                                timeouter = setTimeout(function () {
-
-                                    var random = arrayTOTAL.getRandomItem();
-                                    var li = '<li class="crr"><img style="border-radius: 50%;"  src="' + random.split('|')[3] + '">' + random.split('|')[0] + '的' + random.split('|')[1] + '中了' + random.split('|')[2] + '，' + random.split('|')[4] + 's前</li>';
-
-                                    if ($(_this).find('.tongzhi li').length < 3) {
-                                        $(_this).find('ul').append(li);
-                                    } else {
-                                        $(_this).find('ul li').first().remove();
-                                        $(_this).find('ul').append(li);
-                                    }
-//                  timer = Math.round(Math.random() * 1000 + 1000);
-                                    zhuan();
-                                }, timer)
-
-                            }
-                        })(this)
-                    })
-                }
-            } else {
-                $(".container_header_img").attr("src", "/images/container_header_img8.jpg");
-                $(".hd_box_info").append("<span class=\"isGray\">一、活动时间</span><br>\n" +
-                    "                2018年4月21日起，本活动分期开展，通过联通手机营业厅客户端公布具体的活动时间和活动规则。</br>\n" +
-                    "                <span class=\"isGray\">二、活动规则</span><br>\n" +
-                    "\n" +
-                    "                1.同一用户，活动期间每天有3次（当日有效）免费抽奖机会,抽奖机会使用有效期至当日24时;</br>\n" +
-                    "                2.天天抽奖活动仅限中国联通手机用户参与;</br>\n" +
-                    "                3.参加活动用户获得的奖品，需在奖品有效期内领取、使用；</br>\n" +
-                    "                4.福利积分奖品可前往【发现】-【福利】查看、使用；</br>\n" +
-                    "                5.金币奖品前往【我的】-【我的金币】查看、使用；</br>\n" +
-                    "                6.其他类型奖品具体领取及使用方式以联通手机营业厅客户端【我的】－【我的礼包】奖品说明为准;</br>\n" +
-                    "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>")
-                //弹屏滚动通知
-                $(".danmu").each(function () {
-                    (function (_this) {
-                        clearTimeout(timeouter);
-                        var timer = time_range(),//第一次随便给个时间间隔
-                            timeouter;
-                        zhuan();
-
-                        function zhuan() {
-                            timeouter = setTimeout(function () {
-
-                                var random = arrayTOTAL.getRandomItem();
-                                var li = '<li class="crr"><img style="border-radius: 50%;"  src="' + random.split('|')[3] + '">' + random.split('|')[0] + '的' + random.split('|')[1] + '中了' + random.split('|')[2] + '，' + random.split('|')[4] + 's前</li>';
-
-                                if ($(_this).find('.tongzhi li').length < 3) {
-                                    $(_this).find('ul').append(li);
-                                } else {
-                                    $(_this).find('ul li').first().remove();
-                                    $(_this).find('ul').append(li);
-                                }
-//                  timer = Math.round(Math.random() * 1000 + 1000);
-                                zhuan();
-                            }, timer)
-
-                        }
-                    })(this)
-                })
-            }
-        }
-    });
-    })
-    ;
 
     function time_range() {
         //第一时间段开始

@@ -279,12 +279,12 @@ public class LuckdrawController {
         ReturnData ret = ReturnData.newInstance();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         TbPrize luckdraw = luckdrawService.luckdraw(aid, token);
+        ret.setSuccess();
         if (luckdraw == null || luckdraw.getId() == 0) {
             ret.setInfo("未中奖哦，再抽一次吧！");
         } else {
-            ret.setInfo(luckdraw.getPrizeName());
+            ret.setInfo(luckdraw);
         }
-        ret.setSuccess();
         return ret;
     }
 
