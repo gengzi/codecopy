@@ -21,7 +21,6 @@ import java.util.List;
 @Repository
 public interface AwardeeDao extends JpaRepository<TbAwardee, Integer> {
 
-
     /**
      * 返回当前最新的五条获奖信息
      *
@@ -31,5 +30,14 @@ public interface AwardeeDao extends JpaRepository<TbAwardee, Integer> {
     @Cacheable(cacheManager = "loclRedisCacheManagers", value = "LUCKDRAW_ACTIVITY_AWARDEE_LIMIT5", key = "#activityId", sync = true)
     @Query(value = "SELECT * FROM tb_awardee t WHERE t.activity_id = :activityId ORDER BY awardee_time LIMIT  0,5", nativeQuery = true)
     List<TbAwardee> qryTbAwardeeInfoByActivityIdAndDateNew(String activityId);
+
+
+    /**
+     * 根据活动id和获奖人id，查询获奖信息
+     * @param activityId 活动id
+     * @param awardeeId 获奖人id
+     * @return
+     */
+    List<TbAwardee> findTbAwardeeByActivityIdAndAwardeeIdOrderByAwardeeTime(String activityId,String awardeeId);
 
 }

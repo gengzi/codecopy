@@ -64,5 +64,14 @@ public interface LuckdrawService {
      */
     List<AwardeeVo> getAwardeeInfo(String activityid);
 
+    /**
+     * 根据活动id和用户id，查询我的奖品信息
+     *
+     * @param activityid 活动id
+     * @param uid        用户id
+     * @return {@link  List<AwardeeVo>} 用户活动积分信息
+     */
+    List<MyAwardeeVo> getMyPrizeInfo(String activityid, String uid);
+
 
 }

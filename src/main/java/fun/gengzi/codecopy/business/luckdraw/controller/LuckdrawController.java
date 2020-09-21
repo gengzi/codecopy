@@ -107,6 +107,31 @@ public class LuckdrawController {
     @Autowired
     private RedisUtil redisUtil;
 
+    @ApiOperation(value = "获取我的奖品信息", notes = "获取我的奖品信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aid", value = "aid", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @GetMapping("/start/getMyPrizeInfo")
+    @ResponseBody
+    public ReturnData getMyPrizeInfo(@RequestParam("aid") String aid, HttpServletRequest request) {
+        logger.info("获取我的奖品信息，入参:{}", aid);
+        // 从token 中获取用户信息
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
+        SysUser sysUser = (SysUser) redisUtil.get(userinfokey);
+        List<MyAwardeeVo> myPrizeInfo = luckdrawService.getMyPrizeInfo(aid, sysUser.getUid());
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setInfo(myPrizeInfo);
+        logger.info("获取我的奖品信息，出参:{}", myPrizeInfo);
+        return ret;
+    }
+
     @ApiOperation(value = "获取当前的获奖人信息", notes = "获取当前的获奖人信息，返回五条")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "aid", value = "aid", required = true)})
@@ -118,6 +143,7 @@ public class LuckdrawController {
             "\t}\n")})
     @GetMapping("/getAwardeeInfo")
     @ResponseBody
+    @LuckdrawServiceLimit(limitType = LuckdrawServiceLimit.LimitType.IP)
     public ReturnData getAwardeeInfo(@RequestParam("aid") String aid) {
         logger.info("获取当前活动获奖人最新信息，入参:{}", aid);
         List<AwardeeVo> awardeeInfo = luckdrawService.getAwardeeInfo(aid);

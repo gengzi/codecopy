@@ -342,5 +342,24 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         return awardeeVos;
     }
 
+    /**
+     * 根据活动id和用户id，查询我的奖品信息
+     *
+     * @param activityid 活动id
+     * @param uid        用户id
+     * @return {@link  List<AwardeeVo>} 用户活动积分信息
+     */
+    @Override
+    public List<MyAwardeeVo> getMyPrizeInfo(String activityid, String uid) {
+        List<TbAwardee> tbAwardees = awardeeDao.findTbAwardeeByActivityIdAndAwardeeIdOrderByAwardeeTime(activityid, uid);
+        ArrayList<MyAwardeeVo> myAwardeeVos = new ArrayList<>(tbAwardees.size());
+        MyAwardeeVo myAwardeeVo = new MyAwardeeVo();
+        tbAwardees.forEach(tbAwardee -> {
+            BeanUtils.copyProperties(tbAwardee, myAwardeeVo);
+            myAwardeeVos.add(myAwardeeVo);
+        });
+        return myAwardeeVos;
+    }
+
 
 }

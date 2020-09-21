@@ -30,7 +30,7 @@ public enum CacheRedisConfigEnum {
     PRODUCT_INFO_ID_NOPREFIX(500, ChronoUnit.SECONDS, false,false),
 
     // 获取当前的活动获奖人信息，返回五条
-    LUCKDRAW_ACTIVITY_AWARDEE_LIMIT5(-1, ChronoUnit.SECONDS, true,true),
+    LUCKDRAW_ACTIVITY_AWARDEE_LIMIT5(60, ChronoUnit.SECONDS, true,true),
 
     // 解决缓存雪崩-对于一组数据，设置过期时间在10-20秒，不导致在同一时间，一组数据的所有key都失效
     PRODUCT_INFO_ID_CACHE_AVALANCHE1(10, ChronoUnit.SECONDS, true,false),
