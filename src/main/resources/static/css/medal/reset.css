@@ -1,0 +1,181 @@
+@charset "utf-8";
+/* 站点说明： 中国联通手机客户端
+ * 开发时间： 2011-04-14
+ * 开发者： 宁玉波   
+ * 维护者： 宁玉波
+ *
+ * 样式版本： v1.1
+ * 版本时间： 2011-04-14
+ * 注意事项： 初始化样式,如果此样式未对网页产生影响尽量不要修改
+ */
+
+/*YUI reset css*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,article,aside,dialog,footer,header,section,footer,nav,figure,menu { 
+	margin:0;
+	padding:0;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,img { 
+	border:0;
+}
+address,caption,cite,code,dfn,em,strong,th,var {
+	font-style:normal;
+	font-weight:normal;
+}
+ol,ul,li {
+	list-style:none;
+}
+caption,th {
+	text-align:left;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+q:before,q:after {
+	content:'';
+}
+abbr,acronym { border:0;
+}
+
+.pointer{cursor:pointer;}
+.wrap{word-break:break-all; word-wrap:break-word;}
+
+a{text-decoration: none; color:#333;}
+.a_line{color:#00f; text-decoration:underline;}
+
+/*float/display/ap*/
+.fl{float:left;}
+.fr{float:right;}
+.clr{clear:both!important;}
+
+.dis_none{display:none;}
+.dis_block{display:block;}
+.dis_inline{display:inline;}
+.dis_inline-block{display:inline-block;}
+.overHidden{overflow:hidden!important;}
+.overScroll{overflow:scroll!important;}
+
+.ap{position:relative;}
+.ap5{position:relative; z-index:5;}
+.ap10{position:relative; z-index:10;}
+.ab{position:absolute;}
+.ab5{position:absolute; z-index:5;}
+.ab10{position:absolute; z-index:10;}
+
+/*test*/
+.BorF00{border:1px solid #f00;}
+.BorCCC{border:1px solid #ccc;}
+.OutF00{outline:1px solid #f00;}
+.OutCCC{outline:1px solid #f00;}
+
+/*line*/
+.lineMain{border-bottom:1px solid #ccc;}
+
+/*font*/
+.tc{text-align:center!important;}
+.tl{text-align:left!important;}
+.tr{text-align:right!important;}
+.vt{vertical-align:top!important;}
+.vm{vertical-align:middle!important;}
+.vb{vertical-align:bottom!important;}
+.bold{font-weight:bold;}
+.normal{font-weight:normal!important;}
+.fontHeight000{font-weight:bold; color:#000!important;}
+/*.fontHeightC00{font-weight:bold; color:#C00!important;}*/
+
+.f12{font-size:12px;}
+.f14{font-size:14px;}
+.f16{font-size:16px;}
+
+
+.em1{text-indent:1em;}
+.em2{text-indent:2em;}
+
+.lineH22{line-height:22px;}
+.lineH180{line-height:180%;}
+.lineH190{line-height:190%;}
+
+/*color*/
+.colCCC{color:#ccc;}
+.col666{color:#666;}
+.col999{color:#999;}
+.colRed{color:#ea1010!important;}
+.colBlue{color:blue;}
+.colBlack{color:black;}
+.colWhite{color:white;}
+
+
+.bgcFFF{background:#fff!important;}
+
+/*margin/padding/space*/
+.mar0{margin:0!important;}
+.mar_10{margin:10px;}
+.mar_center{margin:0 auto;}
+.mar_l_10{margin-left:10px;}
+.mar_r_10{margin-right:10px;}
+.mar_b_10{margin-bottom:10px!important;}
+.mar_t_10{margin-top:10px;}
+
+.pad_0{padding:0!important;}
+.pad_0_10{padding:0 10px!important;}
+.pad_10{padding:10px;}
+.pad_l_10{padding-left:10px;}
+.pad_r_10{padding-right:10px;}
+.pad_b_10{padding-bottom:10px;}
+.pad_t_10{padding-top:10px;}
+
+.wid28{width:28px; margin:0 4px;}/*跳转专用*/
+.wid_38{width:38px;!important;}
+.wid_48{width:48%!important;}
+.wid_49{width:49%!important;}
+.wid_99{width:99%!important;}
+.wid_100{width:100%!important;}
+.wid200{width:200px;}
+.input_code{width:40px; text-align:center; margin-right:8px;}
+
+.space_05{height:5px; overflow:hidden;}
+.space_10{height:10px; overflow:hidden;}
+.space_20{height:20px; overflow:hidden;}
+.space_30{height:30px; overflow:hidden;}
+
+.overflow-hidden, .oh {
+	overflow:hidden!important;
+}
+.overflow-scroll, .os {
+	overflow:scroll!important;
+}
+.overflow-auto, .oa {
+	overflow:auto!important;
+}/*HTML5 Tag styles*/
+article,aside,dialog,footer,header,section,footer,nav,figure,menu{display:block}
+aside {}
+command {}
+details {}
+figcaption {}
+figure {}
+footer {}
+header {}
+hgroup {}
+mark {}
+meter {}
+nav {}
+progress {}
+ruby {}
+rt {}
+rp {}
+section {}
+time {}
+summary {}
+wbr {}
+
+
+/*--------2013.10.29     王静    友情提示页面---------*/
+.f15{ font-size:15px;}
+.cold3181f{ color:#d3181f;}
+.color-f39800{ color:#f39800;}
+.color-e60012{color:#e60012;}
+.color-0168b7{ color:#0168b7;}
