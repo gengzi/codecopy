@@ -1,0 +1,1682 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>天天抽奖</title>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/tiantian_cj.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/animate.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/swiper.min.css"/>
+    <script src="/js/jquery-1.7.1.min.js"></script>
+    <script src="/js/public640.js"></script>
+    <script src="/js/tiantian.js"></script>
+    <script type="text/javascript" src="/js/jquery.rotate.min.js"></script>
+    <link rel="stylesheet" href="/css/medal/reset.css"/>
+    <link rel="stylesheet" href="/css/medal/xunzhang.css"/>
+    <link rel="stylesheet" href="/css/medal/swiper.min.css"/>
+    <script src="/js/medal/tanceng.js"></script>
+</head>
+<style type="text/css">
+    .danmu {
+        text-align: center;
+        width: 5rem;
+        height: .83rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        position: relative;
+        top: 7.9rem;
+        left: 50%;
+        margin-left: -2.5rem;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        z-index: 10;
+    }
+
+    .tongzhi {
+        position: absolute;
+        top: 0rem;
+        left: 0rem;
+        width: 100%;
+        height: .83rem;
+        overflow: hidden;
+    }
+
+    .tongzhi li {
+        width: 96%;
+        font-size: .17rem;
+        color: #fff;
+        transition: all 0.5s;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: .05rem;
+        margin-bottom: 2px;
+        display: none;
+        position: absolute;
+        padding: 0.06rem .1rem;
+        white-space: nowrap;
+    }
+
+    .tongzhi ul {
+        padding-top: .2rem;
+        position: absolute;
+        width: 100%;
+    }
+
+    .tongzhi ul.aaa {
+        transition: all .6s;
+    }
+
+    .tongzhi li img {
+        width: .31rem;
+        vertical-align: middle;
+        margin-top: -.06rem;
+        margin-right: .04rem;
+    }
+
+    .tongzhi li.active {
+    / / opacity: 0;
+    }
+
+    .tongzhi ul.gun {
+        margin-top: -.4rem;
+    }
+
+    .zheceng {
+        opacity: .3;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: .4rem;
+    }
+
+    .tongzhi li.crr {
+        display: block;
+        animation: tongzhi 3s linear;
+        -moz-animation: tongzhi 3s linear;
+        -webkit-animation: tongzhi 3s linear;
+        -o-animation: tongzhi 3s linear;
+        animation-fill-mode: forwards;
+        -moz-animation-fill-mode: forwards;
+        -webkit-animation-fill-mode: forwards;
+        -o-animation-fill-mode: forwards;
+    }
+
+    .crr1 {
+        opacity: 0;
+    }
+
+    /*通知滚动特效*/
+    @-moz-keyframes tongzhi {
+        0% {
+            opacity: 0.4;
+            bottom: -1rem;
+        }
+        50% {
+            opacity: 1;
+            bottom: -.4rem;
+        }
+        75% {
+            opacity: 0;
+            bottom: -.2rem;
+        }
+        100% {
+            opacity: 0;
+            bottom: .4rem;
+        }
+    }
+
+    @-webkit-keyframes tongzhi {
+        0% {
+            opacity: 0.4;
+            bottom: -1rem;
+        }
+        50% {
+            opacity: 1;
+            bottom: -.4rem;
+        }
+        75% {
+            opacity: 0;
+            bottom: -.2rem;
+        }
+        100% {
+            opacity: 0;
+            bottom: .4rem;
+        }
+    }
+
+    @-o-keyframes tongzhi {
+        0% {
+            opacity: 0.4;
+            bottom: -1rem;
+        }
+        50% {
+            opacity: 1;
+            bottom: -.4rem;
+        }
+        75% {
+            opacity: 0;
+            bottom: -.2rem;
+        }
+        100% {
+            opacity: 0;
+            bottom: .4rem;
+        }
+    }
+
+    @keyframes tongzhi {
+        0% {
+            opacity: 0.4;
+            bottom: -1rem;
+        }
+        50% {
+            opacity: 1;
+            bottom: -.4rem;
+        }
+        75% {
+            opacity: 0;
+            bottom: -.2rem;
+        }
+        100% {
+            opacity: 0;
+            bottom: .4rem;
+        }
+    }
+
+    .xianjaitanbox {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, .8);
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 999;
+        display: none;
+    }
+
+    /*新加下落动画*/
+    .leafContainer {
+        position: fixed;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        top: -0.20rem;
+        overflow: hidden;
+    }
+
+    .leafContainer > div {
+        position: absolute;
+        max-width: 0.15rem;
+        max-height: 0.20rem;
+        -webkit-animation-iteration-count: infinite, infinite;
+        -webkit-animation-direction: normal, normal;
+        -webkit-animation-timing-function: linear, ease-in;
+    }
+
+    .leafContainer > div > img {
+        width: 100%;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-direction: alternate;
+        -webkit-animation-timing-function: ease-in-out;
+        -webkit-transform-origin: 50% -100%;
+    }
+
+    .xinjiabox {
+        width: 100%;
+        height: auto;
+        position: relative;
+        margin-top: .5rem;
+        /*z-index: 99;*/
+    }
+
+    .xinjiaimg {
+        width: 3.4rem;
+        height: 3.4rem;
+        margin: 0.8rem auto 0;
+    }
+
+    .xinjiaimg img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .xinjiafenxing {
+        width: 93%;
+        z-index: 99;
+        position: absolute;
+        bottom: -1.3rem;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .xinjiafenxing span {
+        width: 2.05rem;
+        height: 0.52rem;
+    }
+
+    .xinjiafenxing span img {
+        width: 2.4rem;
+        height: 0.68rem;
+    }
+
+    .guang {
+        width: 7.05rem;
+        position: absolute;
+        left: 50%;
+        z-index: -1;
+        margin-left: -3.525rem;
+        top: 0.2rem;
+    }
+
+    /*新加下落动画*/
+    .leafContainer {
+        position: fixed;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        top: -0.20rem;
+        overflow: hidden;
+    }
+
+    .leafContainer > div {
+        position: absolute;
+        max-width: 0.15rem;
+        max-height: 0.20rem;
+        -webkit-animation-iteration-count: infinite, infinite;
+        -webkit-animation-direction: normal, normal;
+        -webkit-animation-timing-function: linear, ease-in;
+    }
+
+    .leafContainer > div > img {
+        width: 100%;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-direction: alternate;
+        -webkit-animation-timing-function: ease-in-out;
+        -webkit-transform-origin: 50% -100%;
+    }
+
+    @-webkit-keyframes fade {
+        0% {
+            opacity: 1;
+        }
+        95% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+
+    @-webkit-keyframes drop {
+        0% {
+            -webkit-transform: translate(0px, -50px);
+        }
+        100% {
+            -webkit-transform: translate(0px, 1000px);
+        }
+    }
+
+    @-webkit-keyframes clockwiseSpin {
+        0% {
+            -webkit-transform: rotate(-50deg);
+        }
+        100% {
+            -webkit-transform: rotate(50deg);
+        }
+    }
+
+    @-webkit-keyframes counterclockwiseSpinAndFlip {
+        0% {
+            -webkit-transform: scale(-1, 1) rotate(50deg);
+        }
+        100% {
+            -webkit-transform: scale(-1, 1) rotate(-50deg);
+        }
+    }
+</style>
+<script>
+    var NUMBER_OF_LEAVES = 400;//更改个数
+    function init() {
+        var container = document.getElementsByClassName('leafContainer')[0];
+        for (var i = 0; i < NUMBER_OF_LEAVES; i++) {
+            container.appendChild(createALeaf());
+        }
+    }
+
+    function randomInteger(low, high) {
+        return low + Math.floor(Math.random() * (high - low));
+    }
+
+    function randomFloat(low, high) {
+        return low + Math.random() * (high - low);
+    }
+
+    function pixelValue(value) {
+        return value + 'px';
+    }
+
+    function durationValue(value) {
+        return value + 's';
+    }
+
+    function createALeaf() {
+        var leafDiv = document.createElement('div');
+        var image = document.createElement('img');
+        image.src = '/images/medal/image' + randomInteger(1, 5) + '.png';
+        leafDiv.style.top = "-20px";
+        leafDiv.style.left = pixelValue(randomInteger(0, 1000));
+        var spinAnimationName = (Math.random() < 0.5) ? 'clockwiseSpin' : 'counterclockwiseSpinAndFlip';
+        leafDiv.style.webkitAnimationName = 'fade, drop';
+        image.style.webkitAnimationName = spinAnimationName;
+        var fadeAndDropDuration = durationValue(randomFloat(5, 11));
+        var spinDuration = durationValue(randomFloat(4, 8));
+        leafDiv.style.webkitAnimationDuration = fadeAndDropDuration + ', ' + fadeAndDropDuration;
+        var leafDelay = durationValue(randomFloat(0, 5));
+        leafDiv.style.webkitAnimationDelay = leafDelay + ', ' + leafDelay;
+        image.style.webkitAnimationDuration = spinDuration;
+        leafDiv.appendChild(image);
+        return leafDiv;
+    }
+
+    window.addEventListener('load', init);
+</script>
+<script>
+    var phoneid = "7d1300cffb536a6c3aea78b1aa175016";
+    var areaId = "076";
+    var mobile = "17630530305";
+    var JiFenflag = "2";
+</script>
+
+<link href="http://img.client.10010.com/noad2.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript">
+    var medalShareTitle = "抽奖锦鲤";
+    var medalShareContent = "我获得了新的勋章，你也快来手厅获取吧！";
+    var medalSharePic = "medal/xz_jl.png";
+    var medalShareUrl;
+
+    $(function () {
+        if (JiFenflag == "1") {
+            $.ajax({
+                type: 'POST',
+                url: "/dailylottery/static/integral/getshare?phoneid=" + phoneid,
+                timeout: 50000, //超时时间设置，单位毫秒
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                dataType: 'json',
+                async: false,
+                data: {
+                    areaCode: areaId
+                },
+                success: function (msg) {
+                    shareTitle = msg.shareTitle;
+                    shareContent = msg.shareContent;
+                    sharePic = msg.sharePic;
+                    shareMobileUrl = msg.shareMobileUrl;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("分享信息找不到了！");
+                }
+            });
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: "/dailylottery/static/doubleball/getshare?phoneid=" + phoneid,
+                timeout: 50000, //超时时间设置，单位毫秒
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                dataType: 'json',
+                async: false,
+                data: {
+                    areaCode: areaId
+                },
+                success: function (msg) {
+                    shareTitle = msg.shareTitle;
+                    shareContent = msg.shareContent;
+                    sharePic = msg.sharePic;
+                    shareMobileUrl = msg.shareMobileUrl;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("分享信息找不到了！");
+                }
+            });
+        }
+    });
+    var uautil = {
+        getuserAgent: function () {//获取客户端UA信息
+            return navigator.userAgent.toLowerCase();
+        },
+        getagent: function () {//获取客户端类型
+            var agent = uautil.getuserAgent();
+            if (/android/.test(agent)) {
+                return 'android';
+            } else if (/iphone/.test(agent)) {
+                return 'iphone';
+            } else {
+                return 'other';
+            }
+        },
+        getversion: function () {
+            var versionStr = null;
+            var agent = uautil.getagent();
+            if (agent == 'android') {
+                versionStr = uautil.getuserAgent().match('unicom\\{version:([A-Za-z_]*@+[0-9]+.+[0-9]+),desmobile:[0-9]*\\}');
+            } else if (agent == 'iphone') {
+                versionStr = uautil.getuserAgent().match('unicom\\{version:([A-Za-z_]*@+[0-9]+.+[0-9]+)\\}');
+            }
+            return versionStr != null ? versionStr[1] : '';
+        }
+    };
+    var mobileVersion = uautil.getversion();
+
+    //      shareJson ="{\"shareType\":\"url\",\"shareTitle\":\""+shareTitle+"\",\"shareContent\":\""+shareContent+"\",\"shareURL\":\""+shareMobileUrl+"\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/"+sharePic+"\"}";
+    function getMenuConfig_Local() {
+        //var shareJson ="{\"shareType\":\"url\",\"shareTitle\":\""+shareTitle+"\",\"shareContent\":\"我在玩红包雨，小伙伴们快快一起来玩，得免费流量哦！\",\"shareURL\":\""+shareMobileUrl+"\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/"+sharePic+"\"}";
+        var shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent + "\",\"shareURL\":\"" + shareMobileUrl + "?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"miniProgramShare\":\"1\",\"miniProgramType\":\"0\",\"miniProgramUserName\":\"gh_2bab3e2deed1\",\"miniProgramPath\":\"/pages/ttcj/ttcj?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + sharePic + "\"}";
+
+
+        var shareJson1 = "{\"shareQrcodeURL\":\"http://img.client.10010.com/activitys/wheel/dailylottery/images/footer_erweima_a.jpg"
+            + "\",\"shareId\":\"201804110944\",\"shareURL\":\"" + shareMobileUrl
+            + "\",\"shareShortURL\":\"" + shareMobileUrl + "\",\"shareTitle\":\"" + shareTitle
+            + "\",\"shareName\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent
+            + "\",\"shareIconURL\":\"" + sharePic + "\",\"shareType\":\"longScreenshot\"}";
+
+        return "{\"config\" : [{\"code\":\"fenxiang\",\"title\":\"分享\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"desc\":\"" + shareContent + "" + shareMobileUrl + "\",\"shareJson\":" + shareJson + "}," +
+            "{\"code\":\"jietufenxiang\",\"title\":\"截图分享\",\"shareList\":\"wechat,wechatmoments,qq,qzone\",\"desc\":\""
+            + shareContent
+            + ""
+            + shareMobileUrl
+            + "\",\"shareJson\":"
+            + shareJson1
+            + "}," +
+            "{\"code\":\"tucao\",\"title\":\"新版吐槽\",\"desc\":\"新版吐槽\"}," +
+            "{\"code\":\"shouye\",\"title\":\"回到首页\",\"desc\":\"回到首页\"}" +
+            "]}";
+    }
+
+    function shareClient(flag) {
+        var shareJson;
+        var in1 = "in1";
+        var timexz = new Date().Format("yyyy-MM-dd");
+//var newshareContent = shareContent.replace('XXX', ee);
+//var shareJson ="{\"shareType\":\"url\",\"shareTitle\":\""+shareTitle+"\",\"shareContent\":\""+newshareContent+"\",\"shareURL\":\""+shareMobileUrl+"\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/"+sharePic+"\"}";
+        if (flag == "1") {
+            shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent + "\",\"shareURL\":\"" + shareMobileUrl + "?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"miniProgramShare\":\"1\",\"miniProgramType\":\"0\",\"miniProgramUserName\":\"gh_2bab3e2deed1\",\"miniProgramPath\":\"/pages/ttcj/ttcj?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + sharePic + "\"}";
+        } else if (flag == "2") {
+            //长地址变短地址
+            $.ajax({
+                type: 'POST',
+                url: "/dailylottery/static/doubleball/getShortAddress?phoneid=" + phoneid,
+                timeout: 50000, //超时时间设置，单位毫秒
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    medalShareUrl = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("分享信息");
+                }
+            });
+            shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + medalShareTitle + "\",\"shareContent\":\"" + medalShareContent + "\",\"shareURL\":\"" + medalShareUrl + "\",\"shareIconURL\":\"/images/" + medalSharePic + "\"}";
+        }
+        if (mobileVersion.indexOf('3.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('3.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('3.3') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.3') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.3') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.4') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.5') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.6') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.7') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.8') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.9') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('6.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('6.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('6.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('7.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('7.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('2.4') != -1) {
+            window.location.href = "http://wap.10010.com/t/wap/upload/khd.jsp";
+        } else {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "" + shareMobileUrl + "\"}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "" + shareMobileUrl + "\"}");
+            }
+        }
+    }
+
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+</script>
+
+<body>
+<img src="/images/liangduan1.png" alt="" class="liangduan">
+<div class="container">
+    <div class="goldDiv">
+        <img src="/images/goldIcon.png" class="goldIcon fl">
+        <span class="goldNum" id="ebtotalnm">118</span>
+    </div>
+    <div class="container_header">
+        <img class="container_header_img" src=""/>
+
+        <img class="huodongGzImg" src="/images/huodongGzImg2.png"/>
+        <div class="header_timer_index">
+
+
+            <p class="time_info">
+                <span class="info_span" style="
+    margin-top: 0.35rem">今天还可免费抽奖<span class="cs_num"
+                                       id="changevalue">2</span>次</span>
+
+            </p>
+        </div>
+
+        <div class="zhuanpan_box_index">
+            <img src="/images/zp_bg3_1.png" class="zp_bg" id="zhuanpan_1" alt=""/>
+            <img src="/images/zp_bg3_2.png" class="zp_bg2" style="display: none" id="zhuanpan_2" alt=""/>
+            <div class="quan">
+                <div class="dazp" id="goodsInfo">
+
+
+                    <div class="zpjp_div div_1">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20190723/3a8d85c5827347a08f2342d83c5cbc27.png"
+                             class="zpjp_div_pic1"/>
+                        <p class="jiangpin_info1 a"
+                           style="color: #fa682e;">5MB</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_2">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20190723/4a3d1fd058944bc4ae3f7a30e8b2b4da.png"
+                             class="zpjp_div_pic2"/>
+                        <p class="jiangpin_info2 a"
+                           style="color: #fa682e;">0.1元话费</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_3">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20200714/4b77e11ce6cd4f54ba4e990c45fa0dd4.png"
+                             class="zpjp_div_pic3"/>
+                        <p class="jiangpin_info3 a"
+                           style="color: #fa682e;">书旗会员</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_4">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20191213/9036449e6ab64869adf1b9a7383f3192.png"
+                             class="zpjp_div_pic4"/>
+                        <p class="jiangpin_info4 a"
+                           style="color: #fa682e;">10活动积分</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_5">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20200208/25872276c2064343ae54bf5719314500.png"
+                             class="zpjp_div_pic5"/>
+                        <p class="jiangpin_info5 a"
+                           style="color: #fa682e;">2MB</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_6">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20190723/e3c8080e62ef44f9ada3f518fd5981b9.png"
+                             class="zpjp_div_pic6"/>
+                        <p class="jiangpin_info6 a"
+                           style="color: #fa682e;">9.85折充值折扣券</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_7">
+
+                        <img src="https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/20190723/5ca06363cd114669bfd560b0d1227f4b.png"
+                             class="zpjp_div_pic7"/>
+                        <p class="jiangpin_info7 a"
+                           style="color: #fa682e;">0.5元话费</p>
+
+                    </div>
+
+
+                    <div class="zpjp_div div_8">
+                        <img src="/images/xx_img.png" class="zpjp_div_pic8" alt=""/>
+                        <p class="jiangpin_info8 a">谢谢参与</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nei_quan">
+                <input type="button" name="name" class="zhiz" value="">
+                <img src="/images/zhizhen4.png" class="zhiz_img" style="display:none;" alt=""/>
+            </div>
+
+        </div>
+
+
+        <div class="danmu">
+            <div class="tongzhi">
+                <div class="zheceng"></div>
+                <ul>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container_btns">
+            <a href="https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin">
+                <div class="left_btn">
+                    我的礼包
+                </div>
+            </a>
+            <p class="right_btn" id="sharebutton">分享好友</p>
+        </div>
+    </div>
+
+
+</div>
+
+<!--弹层-->
+
+
+<div class="tc_bg">
+    <div class="yizj_neitc">
+        <img src="/images/zhongjiangli.png" class="zhongj"/>
+        <div class="jiang">
+            <span id="zhongjiang_info_tanceng"></span>
+            <img src="" id="prize_img" class="jiangjqun"/>
+        </div>
+        <a href="https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin"><img
+                src="/images/zj_an.png" class="nei_but_cg"/></a>
+    </div>
+    <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods" data-clipboard-action="copy"
+         data-clipboard-target="#dhm"/>
+</div>
+
+<!--福利积分-->
+<div class="tc_bg_jifen">
+    <div class="yizj_neitc">
+        <img src="/images/zhongjiangli.png" class="zhongj"/>
+        <div class="jiang">
+            <span id="zhongjiang_info_tanceng_jifen"></span>
+            <img src="" id="prize_img_jifen" class="jiangjqun"/>
+        </div>
+        <a href="https://u.10010.cn/qAKaX"><img
+                src="/images/zj_use.png" class="nei_but_cg"/></a>
+    </div>
+    <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods_jifen" data-clipboard-action="copy"
+         data-clipboard-target="#dhm"/>
+</div>
+<!--签到金币-->
+<div class="tc_bg_signcoin">
+    <div class="yizj_neitc">
+        <img src="/images/zhongjiangli.png" class="zhongj"/>
+        <div class="jiang">
+            <span id="zhongjiang_info_tanceng_signcoin"></span>
+            <img src="" id="prize_img_signcoin" class="jiangjqun"/>
+        </div>
+        <a href="https://u.10010.cn/qAKax"><img
+                src="/images/zj_use.png" class="nei_but_cg"/></a>
+    </div>
+    <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods_signcoin" data-clipboard-action="copy"
+         data-clipboard-target="#dhm"/>
+</div>
+<!--温馨提示-->
+
+
+<div class="tc_wenxin">
+    <div class="weizj_neitc">
+        <img src="/images/touxiang.png" class="tou_img"/>
+        <h6 class="wenzz" id="reminder"></h6>
+        <img src="/images/tanc_a.png" class="nei_but"/>
+    </div>
+    <img src="/images/tt_guanbi_icon.png" class="wenxin_guanbi"/>
+</div>
+
+<!--温馨提示 兑换-->
+<div class="tc_wenxin_four">
+    <div class="wenxin_box_two">
+        <img class="xiaoziren" src="/images/xiaoziren.png"/>
+        <p class="wenxin_info_two" id="hint">
+
+        </p>
+        <p class="wenxin_btn_two" id="gosign">去签到</p>
+        <p class="wenxin_btn1" id="cancel">取消</p>
+        <div class="clear_float"></div>
+    </div>
+    <img class="wenxin_guanbi_four" src="/images/tt_guanbi_img.png"/>
+</div>
+
+
+<!--温馨提示--异常提示-->
+<div class="tc_wenxin_three">
+    <div class="wenxin_box_three">
+        <img class="xiaoziren" src="/images/xiaoziren.png"/>
+        <p class="wenxin_info_three" id="markedword"></p>
+
+        <p class="wenxin_btn_three">我知道了</p>
+    </div>
+    <img class="wenxin_guanbi_three" src="/images/tt_guanbi_img.png"/>
+</div>
+
+<!--提示兑换--温馨提示-->
+<div class="tc_wenxin_two">
+    <div class="wenxin_box_two">
+        <img class="xiaoziren" src="/images/xiaoziren.png"/>
+        <p class="wenxin_info_two">
+            您已没有抽奖机会，您是否消耗<span>10</span>个金币增加一次抽奖机会。
+        </p>
+        <p class="wenxin_btn_two" id="abandon">放弃抽奖</p>
+        <p class="wenxin_btn1" id="expenditure">立即抽奖</p>
+        <div class="clear_float"></div>
+    </div>
+    <img class="wenxin_guanbi_two" src="/images/tt_guanbi_img.png"/>
+</div>
+
+
+<!--活动规则谈层-->
+<div class="hd_guize_mengceng" style="display: none;">
+    <div class="hd_guize_box">
+        <p class="hd_guize_box_p">
+            <img class="xiaoziren_img" src="/images/tt_huodong_info1.png"/>
+        </p>
+        <div class="hd_p_box">
+            <p class="hd_box_info">
+
+            </p>
+
+        </div>
+        <img class="jbs" src="/images/jbs_img.png"/>
+        <img class="guanbi_icon" src="/images/tt_guanbi_img.png"/>
+    </div>
+</div>
+<!--中奖弹层-->
+<div class="zj_tanceng">
+    <img src="/images/tt_guanbi_icon.png" class="zj_guanbi"/>
+    <div class="zj_mei">
+        <p class="zj_tis">恭喜您获得神秘礼包</p>
+        <div class="hezi">
+            <img src="/images/gaizi.png" class="gaizi"/>
+            <div class="jiangp">
+                <p class="zj_t"></p>
+                <img src="" class="zj_img"/>
+            </div>
+            <img src="/images/xiahezi.png" class="xia_he"/>
+        </div>
+        <a href="https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin">
+            <img src="/images/wodelibao.png" class="choujiang"/></a>
+    </div>
+</div>
+<!--勋章墙弹框-->
+<div class="xianjaitanbox">
+    <div class="leafContainer"></div>
+    <div class="white_contentss" style="position: relative;">
+        <div class="xinjiabox">
+            <p style="color: #fff6cd;font-size: 0.35rem;text-align: center;">恭喜您获得新勋章</p>
+            <div style="width: 60%;margin: 0 auto;"><img style="width: 100%;margin: 0.20rem auto;display: flex;"
+                                                         src="/images/medal/xinjiaxzx.png" alt=""/></div>
+            <div class="xinjiaimg">
+                <img src="/images/medal/xz_jl.png" alt=""/>
+            </div>
+            <p style="color: #fff6cd;font-size: .38rem;text-align: center;margin-top: 0.5rem;">抽奖锦鲤</p>
+            <div class="xinjiafenxing">
+                <span class="aaaa"><img src="/images/medal/xinjiafenxiang.png" alt=""/></span>
+                <span class="bbbb"><img src="/images/medal/xinjiajinru.png" alt=""/></span>
+            </div>
+        </div>
+        <img class="guang" src="/images/medal/gaung.png" alt=""/>
+        <div class="guan"
+             style="margin-top: 1rem;position: absolute;z-index: 99;left: 50%;margin-left: -0.245rem;bottom: -3.1rem;">
+            <img src="/images/medal/xinjiagaunbi.png"/>
+        </div>
+    </div>
+</div>
+<div id="randomid" style="display: none"></div>
+<span id="total" style="display: none"></span>
+<span id="da_num" style="display: none">10</span>
+<span id="da_ban" style="display: none">10</span>
+<span id="isexchange" style="display: none">yes</span>
+</body>
+<script src="/js/swiper.min.js"></script>
+<script>
+    var exchangeflag = true;
+    $("#expenditure").click(function () {
+        var da_ban = $('#da_ban').text();//从后台拿到最大兑换次数
+        var da_num = $('#da_num').text();//从后台拿到每次兑换消耗金币数
+        var ebtotalnm = $('#ebtotalnm').text();//从后天拿到用户金币总数
+        if (exchangeflag) {
+            exchangeflag = false;
+            if (parseInt(da_num) <= parseInt(ebtotalnm)) {
+
+                $.ajax({
+                    type: 'GET',
+                    url: "/dailylottery/static/doubleball/duihuan?goldnumber=" + da_num + "&banrate=" + da_ban + "&usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016",
+                    timeout: 50000, //超时时间设置，单位毫秒
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                    dataType: 'json',
+                    success: function (msg) {
+                        if ('3000' == msg.code) {
+
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: "/dailylottery/static/doubleball/choujiang?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016&flag=convert",
+                                timeout: 15000, //超时时间设置，单位毫秒
+                                async: true,
+                                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                                dataType: 'json',
+                                success: function (data) {
+                                    $('#ebtotalnm').text(parseInt($('#ebtotalnm').text()) - parseInt($('#da_num').text()));
+                                    if (data.Rsptype == "5555") {
+                                        rotateFunc(8, 22, "谢谢参与", "x_n");
+                                    } else if (data.Rsptype == "6666") {
+                                        rotateFunc(8, 22, "谢谢参与", "x_n");
+                                    } else if (data.RspCode == "9999") {
+                                        rotateFunc(8, 22, "谢谢参与", "x_n");
+                                    } else {
+                                        $(this).attr("disabled", "disabled");
+                                        $(".zhiz_img").css("display", "block");
+                                        clickfunc(data);
+                                    }
+                                    exchangeflag = true;
+
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    $('#reminder').text("哎呀，没有奖品出没~");
+                                    $('.tc_wenxin').show();
+                                    /*$('body,html').addClass('ovfHiden');*/
+                                    rotateFunc(8, 22, "谢谢参与", "x_n");
+                                    exchangeflag = true;
+                                },
+                                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                                    if (status == 'error') {
+                                        rotateFunc(8, 22, "谢谢参与", "x_n", '9');
+                                    }
+                                    exchangeflag = true;
+                                }
+                            });
+                        } else if ('3001' == msg.code) {
+                            $('#markedword').text('抱歉，金币兑换失败！请您稍后再试。');
+                            $('.tc_wenxin_three').show();
+                            exchangeflag = true;
+                        } else if ('3002' == msg.code) {
+                            $('#markedword').text('金币不足，请前往签到获取金币。');
+                            $('.tc_wenxin_three').show();
+                            exchangeflag = true;
+                        } else if ('3003' == msg.code) {
+                            $('#markedword').text('金币抽奖次数已达到上限，请您明天再来抽奖。');
+                            $('.tc_wenxin_three').show();
+                            exchangeflag = true;
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $('#markedword').text('抱歉，金币兑换失败！请您稍后再试。');
+                        $('.tc_wenxin_three').show();
+                        exchangeflag = true;
+                    }
+                });
+            } else {
+                $('#hint').text("金币不足，请前往签到获取金币。");
+                $('.tc_wenxin_four').show();
+                exchangeflag = true;
+            }
+        }
+    })
+
+</script>
+
+
+<script>
+    var times1 = 0;
+    $('#sharebutton').click(function () {
+        //分享
+        //判断计时器是否处于关闭状态
+        if (times1 == 0) {
+            times1 = 5; //设定间隔时间（秒）
+            //启动计时器，倒计时time秒后自动关闭计时器。
+            var index = setInterval(function () {
+                times1--;
+                if (times1 == 0) {
+                    clearInterval(index);
+                }
+            }, 500);
+            var usernumberofjsp = "7d1300cffb536a6c3aea78b1aa175016";
+            //分享监控ajax
+            $.ajax({
+                type: 'GET',
+                url: "/dailylottery/static/share/sharepagelog?usernumberofjsp=" + usernumberofjsp,
+                timeout: 50000, //超时时间设置，单位毫秒
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                dataType: 'json',
+                success: function (msg) {
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                }
+            });
+            shareClient("1");
+        }
+    });
+    $('.aaaa').click(function () {
+        //分享
+        shareClient("2");
+    });
+    $('.bbbb').click(function () {
+        //分享
+        window.location.href = "http://m.client.10010.com/mobileService/unicomUserMedal/UnicomUserMedal.htm";
+    });
+</script>
+<script>
+    var bgColor = "";
+    var fontColor = "";
+    var medal = "";
+    //下面是大转盘部分
+    var $btn = $('.zhiz');
+    var playnum = 100; //初始次数，由后台传入
+    $('.cj_num').html(playnum);
+    var isture = 0;
+    var clickfunc = function (data) {
+        //data为随机出来的结果，根据概率后的结果
+        //后台传入的奖品下标
+        var index = parseInt(data.prizecount);
+        var prizename = data.RspMsg;
+        var smlbbs = data.smlbbs;
+        var jifen = data.WelfareIntegral;
+        var signcoin = data.signcoin;
+        medal = data.medal;
+        if (index != 8) {
+            if (smlbbs == '1') {
+                $('.zj_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+                $('.zj_t').text(prizename);
+            } else if (jifen == "1") {
+                $('#prize_img_jifen').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+            } else if (signcoin == "1") {
+                $('#prize_img_signcoin').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+            } else {
+                $('#prize_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
+            }
+        }
+        if (index != null && prizename != null) {
+            if (jifen == "1") {
+                $('#zhongjiang_info_tanceng_jifen').text(prizename);
+            } else if (signcoin == "1") {
+                $('#zhongjiang_info_tanceng_signcoin').text(prizename);
+            } else {
+                $('#zhongjiang_info_tanceng').text(prizename);
+            }
+            switch (index) {
+                case 1:
+                    rotateFunc(1, 338, prizename, "x_n", smlbbs, jifen, signcoin);
+                    break;
+                case 2:
+                    rotateFunc(2, 293, prizename, "s_w", smlbbs, jifen, signcoin);
+                    break;
+                case 3:
+                    rotateFunc(3, 248, prizename, "x_n", smlbbs, jifen, signcoin);
+                    break;
+                case 4:
+                    rotateFunc(4, 203, prizename, "wzj", smlbbs, jifen, signcoin);
+                    break;
+                case 5:
+                    rotateFunc(5, 158, prizename, "x_n", smlbbs, jifen, signcoin);
+                    break;
+                case 6:
+                    rotateFunc(6, 110, prizename, "x_n", smlbbs, jifen, signcoin);
+                    break;
+                case 7:
+                    rotateFunc(7, 65, prizename, "x_n", smlbbs, jifen, signcoin);
+                    break;
+                case 8:
+                    rotateFunc(8, 22, "谢谢参与", "x_n", smlbbs, jifen, signcoin);
+                    break;
+            }
+        } else {
+            $('#reminder').text("哎呀，没有奖品出没~");
+            $('.tc_wenxin').show();
+            /*$('body,html').addClass('ovfHiden');*/
+            rotateFunc(8, 22, "谢谢参与", "x_n");
+        }
+    }
+    $btn.click(function () {
+
+        var total = $('#total').text();
+        //未中奖随机弹窗
+        /*var randomnumber = Math.round(Math.random() * (parseInt(total) - 1) + 1);
+        var headline = $('#' + randomnumber).text();
+        var ranvalue = $('#' + randomnumber + '_' + randomnumber).text();*/
+
+        /*$('#randominfo').html('<a style="color: #f5c543;" href=' + ranvalue + '>' + headline + '>></a>');*/
+
+        var flag = true;
+        if (flag) {
+            flag = false;
+            //获取剩余机会
+            var changevalue = parseInt($('#changevalue').text());
+            if (changevalue > 0) {
+                $(this).attr("disabled", "disabled");
+                $(".zhiz_img").css("display", "block");
+                $(".dazp").rotate({
+                    angle: 0,
+                    duration: 100000, //旋转时间
+                    animateTo: 360000
+                });
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: "/dailylottery/static/doubleball/choujiang?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016",
+                    timeout: 15000, //超时时间设置，单位毫秒
+                    async: true,
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Rsptype == "5555") {
+                            rotateFunc(8, 22, "谢谢参与", "x_n");
+                            $('#changevalue').text(changevalue - 1);
+                            if (data.RspCount != null && parseInt(data.RspCount) <= 0) {
+                                $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
+                                $(".zhiz_img,.zhiz").attr("disabled", "disabled");
+
+                            }
+                        } else if (data.Rsptype == "6666") {
+                            rotateFunc(8, 22, "谢谢参与", "x_n");
+                            $('#changevalue').text(changevalue - 1);
+                            if (data.RspCount != null && parseInt(data.RspCount) <= 0) {
+                                $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
+                                $(".zhiz_img,.zhiz").attr("disabled", "disabled");
+
+                            }
+                        } else if (data.RspCode == "9999") {
+                            rotateFunc(8, 22, "谢谢参与", "x_n");
+                        } else {
+                            $(this).attr("disabled", "disabled");
+                            $(".zhiz_img").css("display", "block");
+                            clickfunc(data);
+                            flag = true;
+                            $('#changevalue').text(changevalue - 1);
+                            if (data.RspCount != null && parseInt(data.RspCount) <= 0) {
+                                $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
+                                $(".zhiz_img,.zhiz").attr("disabled", "disabled");
+
+                            } else {
+                                if (parseInt($('#changevalue').text()) <= 0) {
+                                    $('.info_span').text('亲,使用10金币可参与一次抽奖！ ');
+                                    $(".zhiz_img,.zhiz").attr("disabled", "disabled");
+                                }
+                            }
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        /*$('body,html').addClass('ovfHiden');*/
+                        rotateFunc(8, 22, "谢谢参与", "x_n", "9");
+                    },
+                    complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                        if (status == 'error') {
+                            rotateFunc(8, 22, "谢谢参与", "x_n", '9');
+                        }
+                    }
+                });
+            } else {
+                var isexchange = $('#isexchange').text();
+                if (isexchange == 'yes') {
+                    if (exchangeflag) {
+                        $('.tc_wenxin_two').show();
+                    }
+                } else {
+                    $('#reminder').text("您的机会次数不足~");
+                    $('.tc_wenxin').show();
+                }
+
+                /*$('body,html').addClass('ovfHiden');*/
+            }
+        }
+    });
+
+    function shf() {
+        location.href = 'https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin';
+    }
+
+    function fff() {
+
+        location.href = '/dailylottery/static/doubleball/wodejiangpin?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016';
+
+    }
+
+    function qmc() {
+        location.href = 'https://m.client.10010.com/mobileService/openPlatform/openPlatLine.htm?to_url=https://upay.10010.com/npfwap/npfMobWeb/intimatepayfee/init';
+    }
+
+    function yuan() {
+        location.href = 'https://m.client.10010.com/mobileService/businessTransact/YoukuFlow/query.htm';
+    }
+
+    function worldcup() {
+        location.href = 'http://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/worldcup/static/textdl/userLogin';
+    }
+
+    $('#gosign').click(function () {
+        location.href = 'https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://act.10010.com/SigninApp/signin/querySigninActivity.htm%3FcUrl=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin';
+    })
+
+    $(function () {
+        $('.kzzf').each(function () {
+            var maxwidth = 4;
+            if ($(this).text().length > maxwidth) {
+                $(this).text($(this).text().substring(0, maxwidth));
+                $(this).html($(this).html() + '…');
+            }
+        })
+    })
+
+    if ($('.swiper-wrapper').children().length != 1) {
+        var swiper = new Swiper('.swiper-container', {
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            // Disable preloading of all images
+            preloadImages: false,
+            // Enable lazy loading
+            lazyLoading: false,
+            loop: true,
+            autoplay: 1500,
+            autoplayDisableOnInteraction: false
+        });
+        $('.swiper-lazy-preloader-white').remove();
+    } else {
+        $('.swiper-lazy-preloader-white').remove();
+    }
+
+    $('.wenxin_btn,.nei_but').click(function () {
+        $('.tc_wenxin').hide();
+        $('body,html').removeClass('overF');
+    });
+    $('.wenxin_guanbi').click(function () {
+        $('.tc_wenxin').hide();
+        $('body,html').removeClass('overF');
+        if (medal == "666") {
+            $(".xianjaitanbox").css({"display": "block"});
+        }
+    });
+    $(".zj_guanbi").click(function () {
+        $(".zj_tanceng").hide();
+    });
+    //勋章墙
+    $(".guan").on("click", function () {
+        $(".xianjaitanbox").css({"display": "none"});
+        medal = "222";
+    });
+    //关闭按钮
+    $('.tt_guanbi_img').click(function () {
+        $('.tc_bg').hide();
+        $('.tc_bg_jifen').hide();
+        $('.tc_bg_signcoin').hide();
+        $("body,html").removeClass('overF');
+        if (medal == "666") {
+            $(".xianjaitanbox").css({"display": "block"});
+        }
+    });
+</script>
+<script>
+    var arrayTOTAL = new Array();
+    $(function () {
+        $.ajax({
+            type: 'GET',
+            url: "/dailylottery/static/outdailylottery/getRandomGoodsAndInfo",
+            timeout: 50000, //超时时间设置，单位毫秒
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            async: false,
+            dataType: 'json',
+            data: {
+                areaCode: areaId
+            },
+            success: function (data) {
+                $.each(data.randomGoodsList, function (i, item) {
+                    arrayTOTAL[i] = item.barrage_area + '|' + item.barrage_name + '|' + item.barrage_goods + '|' + item.barrage_heads + '|' + item.barrage_randomnum;
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
+        //获取随机的数组
+        Array.prototype.getRandomItem = function () {
+            return this[Math.floor(Math.random() * this.length)]
+        }
+
+        /* 动态变化活动信息 */
+        $.ajax({
+            url: "/dailylottery/static/active/findActivityInfo",
+            type: 'GET',
+            data: {
+                areaCode: areaId,
+                groupByType: "",
+                mobile: phoneid
+            },
+            success: function (data) {
+                //let { lotInfos } = data;
+                if (data.lotInfos != null) {
+                    havenOne = true;
+                    havenFive = true;
+                    havenSix = true;
+                    for (var lotInfo of data.lotInfos) {
+                        infoType = lotInfo.infoType;
+                        /*
+                            1：背景图
+                            2：抽奖按钮 *
+                            3：我的礼包按钮
+                            4：分享好友按钮
+                            5：活动规则 *
+                            6：弹幕样式
+                            7：分享页背景图 *
+                            8：分享页领取按钮
+                         */
+                        if (infoType == "1") {
+                            //主页背景图
+                            bgImg = lotInfo.bgImg;
+                            if (bgImg != null) {
+                                $(".container_header_img").attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg);
+                            } else {
+                                $(".container_header_img").attr("src", "/images/container_header_img8.jpg");
+                            }
+                            havenOne = false;
+                        } else if (infoType == "2") {
+                            /* 背景图、抽奖按钮图、霓虹灯带图、霓虹灯亮图、霓虹灯灭图 */
+                            //let { bgImg, lotImg, neonBeltImg, neonOnImg, neonOffImg } = lotInfo;
+                            bgImg = lotInfo.bgImg;
+                            lotImg = lotInfo.lotImg;
+                            neonBeltImg = lotInfo.neonBeltImg;
+                            neonOnImg = lotInfo.neonOnImg;
+                            neonOffImg = lotInfo.neonOffImg;
+                            // 背景图
+                            //todo 此处ctx应该为ctxwing
+                            $("#goodsInfo").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg + ")");
+                            // 抽奖按钮图
+                            $(".zhiz").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + lotImg + ")");
+                            $(".zhiz_img").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + lotImg + ")");
+                            // 霓虹灯带图
+                            $(".zhuanpan_box_index").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + neonBeltImg + ")");
+                            // TODO 不太确定.zp_bg与.zp_bg2哪个是霓虹灯亮图哪个霓虹灯灭图
+                            // 霓虹灯亮图
+                            $(".zp_bg").attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + neonOnImg);
+                            // 霓虹灯灭图
+                            $(".zp_bg2").attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + neonOffImg);
+                        } else if (infoType == "3") {
+                            //我的礼包按钮
+                            bgImg = lotInfo.bgImg;
+                            $(".left_btn").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg + ")");
+                        } else if (infoType == "4") {
+                            //分享好友按钮
+                            bgImg = lotInfo.bgImg;
+                            $(".right_btn").css("background-image", "url(https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + bgImg + ")");
+                        } else if (infoType == "5") {
+                            //let { actRule } = lotInfo;
+                            actRule = lotInfo.actRule;
+                            if (actRule != null) {
+                                var arr1 = actRule.split("*");
+                                for (var i = 0; i < arr1.length; i++) {
+                                    p = "";
+                                    var arr2 = arr1[i].split("||");
+                                    $('.hd_box_info').append('<span class="isGray' + i + '">' + arr2[0] + '</span>');
+                                    for (var j = 1; j < arr2.length; j++) {
+                                        //p = "<p>"+arr2[j]+"</p>";
+                                        $(".isGray" + i).append('<p class="isGrayP' + j + '">' + arr2[j] + '</p>');
+                                        $(".isGray" + i).css("font-weight", "bold");
+                                        $(".isGrayP" + j).css("font-weight", "normal");
+                                    }
+                                }
+                            } else {
+                                $(".hd_box_info").append("<span class=\"isGray\">一、活动时间</span><br>\n" +
+                                    "                2018年4月21日起，本活动分期开展，通过联通手机营业厅客户端公布具体的活动时间和活动规则。</br>\n" +
+                                    "                <span class=\"isGray\">二、活动规则</span><br>\n" +
+                                    "\n" +
+                                    "                1.同一用户，活动期间每天有3次（当日有效）免费抽奖机会,抽奖机会使用有效期至当日24时;</br>\n" +
+                                    "                2.天天抽奖活动仅限中国联通手机用户参与;</br>\n" +
+                                    "                3.参加活动用户获得的奖品，需在奖品有效期内领取、使用；</br>\n" +
+                                    "                4.福利积分奖品可前往【发现】-【福利】查看、使用；</br>\n" +
+                                    "                5.金币奖品前往【我的】-【我的金币】查看、使用；</br>\n" +
+                                    "                6.其他类型奖品具体领取及使用方式以联通手机营业厅客户端【我的】－【我的礼包】奖品说明为准;</br>\n" +
+                                    "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>")
+                            }
+                            havenFive = false;
+                        } else if (infoType == "6") {
+                            //弹幕样式
+                            bgColor = "#" + lotInfo.bgColor;
+                            fontColor = "#" + lotInfo.fontColor;
+                            bgOpacity = lotInfo.bgOpacity;
+                            var bgrgb = colorRgb(bgColor, bgOpacity);
+
+                            //颜色转换方法
+                            function colorRgb(color, opc) {
+                                var sColor = color.toLowerCase();
+                                //十六进制颜色值的正则表达式
+                                var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+                                // 如果是16进制颜色
+                                if (sColor && reg.test(sColor)) {
+                                    if (sColor.length === 4) {
+                                        var sColorNew = "#";
+                                        for (var i = 1; i < 4; i += 1) {
+                                            sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+                                        }
+                                        sColor = sColorNew;
+                                    }
+                                    //处理六位的颜色值
+                                    var sColorChange = [];
+                                    for (var i = 1; i < 7; i += 2) {
+                                        sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
+                                    }
+                                    return "(" + sColorChange.join(",") + "," + (opc) + ")";
+                                }
+                                return sColor;
+                            };
+                            var rgba = 'rgba' + bgrgb;
+                            //弹屏滚动通知
+                            $(".danmu").each(function () {
+                                (function (_this) {
+                                    clearTimeout(timeouter);
+                                    var timer = time_range(),//第一次随便给个时间间隔
+                                        timeouter;
+                                    zhuan();
+
+                                    function zhuan() {
+                                        timeouter = setTimeout(function () {
+
+                                            var random = arrayTOTAL.getRandomItem();
+                                            var li = '<li class="crr" style=" background-color:' + rgba + ';color:' + fontColor + ';"><img style="border-radius: 50%;"  src="' + random.split('|')[3] + '">' + random.split('|')[0] + '的' + random.split('|')[1] + '中了' + random.split('|')[2] + '，' + random.split('|')[4] + 's前</li>';
+
+                                            if ($(_this).find('.tongzhi li').length < 3) {
+                                                $(_this).find('ul').append(li);
+                                            } else {
+                                                $(_this).find('ul li').first().remove();
+                                                $(_this).find('ul').append(li);
+                                            }
+//                  timer = Math.round(Math.random() * 1000 + 1000);
+                                            zhuan();
+                                        }, timer)
+
+                                    }
+                                })(this)
+                            })
+                            havenSix = false;
+                        } else if (infoType == "8") {
+                        }
+                    }
+                    if (havenOne) {
+                        $(".container_header_img").attr("src", "/images/container_header_img8.jpg");
+                    }
+                    if (havenFive) {
+                        $(".hd_box_info").append("<span class=\"isGray\">一、活动时间</span><br>\n" +
+                            "                2018年4月21日起，本活动分期开展，通过联通手机营业厅客户端公布具体的活动时间和活动规则。</br>\n" +
+                            "                <span class=\"isGray\">二、活动规则</span><br>\n" +
+                            "\n" +
+                            "                1.同一用户，活动期间每天有3次（当日有效）免费抽奖机会,抽奖机会使用有效期至当日24时;</br>\n" +
+                            "                2.天天抽奖活动仅限中国联通手机用户参与;</br>\n" +
+                            "                3.参加活动用户获得的奖品，需在奖品有效期内领取、使用；</br>\n" +
+                            "                4.福利积分奖品可前往【发现】-【福利】查看、使用；</br>\n" +
+                            "                5.金币奖品前往【我的】-【我的金币】查看、使用；</br>\n" +
+                            "                6.其他类型奖品具体领取及使用方式以联通手机营业厅客户端【我的】－【我的礼包】奖品说明为准;</br>\n" +
+                            "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>")
+                    }
+                    if (havenSix) {
+                        //弹屏滚动通知
+                        $(".danmu").each(function () {
+                            (function (_this) {
+                                clearTimeout(timeouter);
+                                var timer = time_range(),//第一次随便给个时间间隔
+                                    timeouter;
+                                zhuan();
+
+                                function zhuan() {
+                                    timeouter = setTimeout(function () {
+
+                                        var random = arrayTOTAL.getRandomItem();
+                                        var li = '<li class="crr"><img style="border-radius: 50%;"  src="' + random.split('|')[3] + '">' + random.split('|')[0] + '的' + random.split('|')[1] + '中了' + random.split('|')[2] + '，' + random.split('|')[4] + 's前</li>';
+
+                                        if ($(_this).find('.tongzhi li').length < 3) {
+                                            $(_this).find('ul').append(li);
+                                        } else {
+                                            $(_this).find('ul li').first().remove();
+                                            $(_this).find('ul').append(li);
+                                        }
+//                  timer = Math.round(Math.random() * 1000 + 1000);
+                                        zhuan();
+                                    }, timer)
+
+                                }
+                            })(this)
+                        })
+                    }
+                } else {
+                    $(".container_header_img").attr("src", "/images/container_header_img8.jpg");
+                    $(".hd_box_info").append("<span class=\"isGray\">一、活动时间</span><br>\n" +
+                        "                2018年4月21日起，本活动分期开展，通过联通手机营业厅客户端公布具体的活动时间和活动规则。</br>\n" +
+                        "                <span class=\"isGray\">二、活动规则</span><br>\n" +
+                        "\n" +
+                        "                1.同一用户，活动期间每天有3次（当日有效）免费抽奖机会,抽奖机会使用有效期至当日24时;</br>\n" +
+                        "                2.天天抽奖活动仅限中国联通手机用户参与;</br>\n" +
+                        "                3.参加活动用户获得的奖品，需在奖品有效期内领取、使用；</br>\n" +
+                        "                4.福利积分奖品可前往【发现】-【福利】查看、使用；</br>\n" +
+                        "                5.金币奖品前往【我的】-【我的金币】查看、使用；</br>\n" +
+                        "                6.其他类型奖品具体领取及使用方式以联通手机营业厅客户端【我的】－【我的礼包】奖品说明为准;</br>\n" +
+                        "                7.活动期间如因市场、运营等实际情况，需要对活动规则、活动奖品作变更时，将通过相关渠道予以通知。</br>")
+                    //弹屏滚动通知
+                    $(".danmu").each(function () {
+                        (function (_this) {
+                            clearTimeout(timeouter);
+                            var timer = time_range(),//第一次随便给个时间间隔
+                                timeouter;
+                            zhuan();
+
+                            function zhuan() {
+                                timeouter = setTimeout(function () {
+
+                                    var random = arrayTOTAL.getRandomItem();
+                                    var li = '<li class="crr"><img style="border-radius: 50%;"  src="' + random.split('|')[3] + '">' + random.split('|')[0] + '的' + random.split('|')[1] + '中了' + random.split('|')[2] + '，' + random.split('|')[4] + 's前</li>';
+
+                                    if ($(_this).find('.tongzhi li').length < 3) {
+                                        $(_this).find('ul').append(li);
+                                    } else {
+                                        $(_this).find('ul li').first().remove();
+                                        $(_this).find('ul').append(li);
+                                    }
+//                  timer = Math.round(Math.random() * 1000 + 1000);
+                                    zhuan();
+                                }, timer)
+
+                            }
+                        })(this)
+                    })
+                }
+            }
+        });
+    });
+
+    function time_range() {
+        //第一时间段开始
+        var b = new Date();
+        //第一时间段结束
+        var e = new Date();
+
+        //第二时间段开始
+        var two_s = new Date();
+        //第二时间段结束
+        var two_e = new Date();
+
+        //第三时间段开始
+        var three_s = new Date();
+        //第三时间段结束
+        var three_e = new Date();
+
+
+        var n = new Date();
+
+        b.setHours(6);
+        b.setMinutes(00);
+        e.setHours(8);
+        e.setMinutes(30);
+
+        two_s.setHours(12);
+        two_s.setMinutes(00);
+        two_e.setHours(13);
+        two_e.setMinutes(00);
+
+        three_s.setHours(1);
+        three_s.setMinutes(30);
+        three_e.setHours(5);
+        three_e.setMinutes(00);
+
+        if (n.getTime() - b.getTime() > 0 && n.getTime() - e.getTime() < 0) {
+            return 1300;
+        } else if (n.getTime() - two_s.getTime() > 0 && n.getTime() - two_e.getTime() < 0) {
+            return 1400;
+        } else if (n.getTime() - three_s.getTime() > 0 && n.getTime() - three_e.getTime() < 0) {
+            return 4000;
+        } else {
+            return 2800;
+        }
+    }
+</script>
+</html>
