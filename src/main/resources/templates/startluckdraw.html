@@ -667,7 +667,7 @@
             <p class="time_info">
                 <span class="info_span" style="
     margin-top: 0.35rem">今天还可免费抽奖<span class="cs_num"
-                                       id="changevalue">2</span>次</span>
+                                       id="changevalue">100</span>次</span>
 
             </p>
         </div>
@@ -677,84 +677,55 @@
             <img src="/images/zp_bg3_2.png" class="zp_bg2" style="display: none" id="zhuanpan_2" alt=""/>
             <div class="quan">
                 <div class="dazp" id="goodsInfo">
-
-
                     <div class="zpjp_div div_1">
-
                         <img src="/images/3a8d85c5827347a08f2342d83c5cbc27.png"
                              class="zpjp_div_pic1"/>
                         <p class="jiangpin_info1 a"
                            style="color: #fa682e;">5MB</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_2">
-
                         <img src="/images/4a3d1fd058944bc4ae3f7a30e8b2b4da.png"
                              class="zpjp_div_pic2"/>
                         <p class="jiangpin_info2 a"
                            style="color: #fa682e;">0.1元话费</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_3">
-
                         <img src="/images/4b77e11ce6cd4f54ba4e990c45fa0dd4.png"
                              class="zpjp_div_pic3"/>
                         <p class="jiangpin_info3 a"
                            style="color: #fa682e;">书旗会员</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_4">
-
                         <img src="/images/9036449e6ab64869adf1b9a7383f3192.png"
                              class="zpjp_div_pic4"/>
                         <p class="jiangpin_info4 a"
                            style="color: #fa682e;">10活动积分</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_5">
-
                         <img src="/images/25872276c2064343ae54bf5719314500.png"
                              class="zpjp_div_pic5"/>
                         <p class="jiangpin_info5 a"
                            style="color: #fa682e;">2MB</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_6">
-
                         <img src="/images/e3c8080e62ef44f9ada3f518fd5981b9.png"
                              class="zpjp_div_pic6"/>
                         <p class="jiangpin_info6 a"
                            style="color: #fa682e;">9.85折充值折扣券</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_7">
-
                         <img src="/images/5ca06363cd114669bfd560b0d1227f4b.png"
                              class="zpjp_div_pic7"/>
                         <p class="jiangpin_info7 a"
                            style="color: #fa682e;">0.5元话费</p>
-
                     </div>
-
-
                     <div class="zpjp_div div_8">
                         <img src="/images/xx_img.png" class="zpjp_div_pic8" alt=""/>
                         <p class="jiangpin_info8 a">谢谢参与</p>
                     </div>
                 </div>
             </div>
+            <!--抽奖-->
             <div class="nei_quan">
                 <input type="button" name="name" class="zhiz" value="">
                 <img src="/images/zhizhen4.png" class="zhiz_img" style="display:none;" alt=""/>
@@ -949,7 +920,6 @@
 </body>
 <script src="/js/swiper.min.js"></script>
 <script>
-
     /* 刷新图片验证码 */
     function flushValidateCode() {
         var aid = $.getUrlParam('aid');
@@ -965,7 +935,6 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             }
         });
-
     }
 
 
@@ -1094,6 +1063,8 @@
         window.location.href = "http://m.client.10010.com/mobileService/unicomUserMedal/UnicomUserMedal.htm";
     });
 </script>
+
+
 <script>
     var bgColor = "";
     var fontColor = "";
@@ -1108,9 +1079,9 @@
         //data为随机出来的结果，根据概率后的结果
         //后台传入的奖品下标
         var index = parseInt(data.info.id);
-        alert(index)
+        console.log("奖项id：" + index)
         var prizename = data.info.prizeName;
-        alert(prizename)
+        console.log("奖项名称：" + prizename)
         var smlbbs = "xx";
         var jifen = "xx";
         var signcoin = "xx";
@@ -1128,7 +1099,6 @@
         //     }
         // }
         if (index != null && prizename != null) {
-            alert("xx"+index)
             // if (jifen == "1") {
             //     $('#zhongjiang_info_tanceng_jifen').text(prizename);
             // } else if (signcoin == "1") {
@@ -1137,7 +1107,6 @@
             //     $('#zhongjiang_info_tanceng').text(prizename);
             // }
             switch (index) {
-
                 case 1:
                     rotateFunc(1, 338, prizename, "x_n", smlbbs, jifen, signcoin);
                     break;
@@ -1170,13 +1139,13 @@
             rotateFunc(8, 22, "谢谢参与", "x_n");
         }
     }
-    // 抽奖
+    // 抽奖按钮触发
     $btn.click(function () {
         var total = $('#total').text();
         var flag = true;
         if (flag) {
             flag = false;
-            //获取剩余机会
+            // 获取剩余机会
             var changevalue = parseInt($('#changevalue').text());
             if (changevalue > 0) {
                 $(this).attr("disabled", "disabled");
