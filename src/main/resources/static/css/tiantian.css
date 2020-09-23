@@ -63,7 +63,7 @@ body{
   height: 1.65rem;
 }
 .songliuliangDiv{
-  margin: 10.25rem 0.15rem 0;
+  margin: 4.25rem  0.15rem 0;
   /*border-top: 1px solid #eb9640;*/
   text-align: center;
 }
@@ -445,10 +445,11 @@ body{
 }
 .header_timer_index{
     position: absolute;
-    left: 50%;
+    left: 49%;
     top:2.05rem;
     transform:translate(-50%,-50%);
     font-size:0.24rem;
+    margin-top:1.25rem;
     color:#ff4c15
 }
 .header_timer img{

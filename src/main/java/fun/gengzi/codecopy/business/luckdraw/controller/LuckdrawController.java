@@ -200,6 +200,35 @@ public class LuckdrawController {
         return "data:image/png;base64," + captcha.getImageBase64();
     }
 
+    @ApiOperation(value = "验证图片验证码", notes = "验证图片验证码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "aid", value = "aid", required = true),
+            @ApiImplicitParam(name = "VerificationVo", value = "verificationVo", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/checkLoginCode")
+    @ResponseBody
+    public ReturnData checkLoginCode(@RequestParam("aid") String aid, @RequestBody VerificationVo verificationVo) {
+        ReturnData ret = ReturnData.newInstance();
+        if (verificationVo != null && StringUtils.isAnyBlank(verificationVo.getCode(), verificationVo.getValidCode())) {
+            ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
+            return ret;
+        }
+        // 仅校验一下随机验证码
+        String validCodeByRedis = (String) redisUtil.get(String.format(LuckdrawContants.VALIDCODEKEY, verificationVo.getCode()));
+        if (!verificationVo.getValidCode().equals(validCodeByRedis)) {
+            ret.setFailure(LuckdrawEnum.ERROR_PAGE_VALIDCODE.getMsg());
+            return ret;
+        }
+        //TODO 发送短信验证码
+        ret.setSuccess();
+        return ret;
+    }
+
 
     /**
      * 本地地址
@@ -366,7 +395,8 @@ public class LuckdrawController {
      */
     @ApiOperation(value = "验证用户信息", notes = "验证用户信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "VerificationVo", value = "VerificationVo", required = true)})
+            @ApiImplicitParam(name = "VerificationVo", value = "VerificationVo", required = true),
+            @ApiImplicitParam(name = "aid", value = "aid", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
             "\t    \"status\": 200,\n" +
             "\t    \"info\": {\n" +

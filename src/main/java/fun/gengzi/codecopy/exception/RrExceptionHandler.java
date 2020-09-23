@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy.exception;
 
+import fun.gengzi.codecopy.constant.RspCodeEnum;
+import fun.gengzi.codecopy.vo.ReturnData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -19,22 +21,26 @@ public class RrExceptionHandler {
      * 自定义异常
      */
     @ExceptionHandler(RrException.class)
-    public Result handleRRException(RrException e) {
-        Result r = new Result();
-        r.put("code", e.getCode());
-        r.put("msg", e.getMessage());
-        return r;
+    public ReturnData handleRRException(RrException e) {
+        ReturnData returnData = ReturnData.newInstance();
+        returnData.setFailure(e.getMessage());
+        return returnData;
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public Result handleDuplicateKeyException(DuplicateKeyException e) {
+    public ReturnData handleDuplicateKeyException(DuplicateKeyException e) {
         logger.error(e.getMessage(), e);
-        return Result.error("数据库中已存在该记录");
+        ReturnData returnData = ReturnData.newInstance();
+        returnData.setFailure("数据库中已存在该记录！");
+        return returnData;
     }
 
     @ExceptionHandler(Exception.class)
-    public Result handleException(Exception e) {
+    public ReturnData handleException(Exception e) {
         logger.error(e.getMessage(), e);
-        return Result.error();
+        ReturnData returnData = ReturnData.newInstance();
+        returnData.setFailure("未知异常，请稍等再试！");
+        returnData.setStatus(RspCodeEnum.ERROR_SYSTEM.getCode());
+        return returnData;
     }
 }

@@ -18,6 +18,7 @@ public enum RspCodeEnum {
     //【推荐】如果变量值仅在一个固定范围内变化用 enum 类型来定义。
     SUCCESS(200, "success"),
     ERROR(0, "error"),
+    ERROR_SYSTEM(500, "system error"),
     FAILURE(1000, "failure"),
     SHARDING_DB_FAILURE(7000, "sharding jdbc ：分库键值无效，请检查是否提交该参数"),
     SHARDING_TABLE_FAILURE(7001, "sharding jdbc ： 分表键值无效，请检查是否提交该参数"),
