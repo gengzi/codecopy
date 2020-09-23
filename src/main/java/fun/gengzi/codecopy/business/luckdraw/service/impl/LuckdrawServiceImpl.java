@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawLock;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawLockKey;
+import fun.gengzi.codecopy.business.luckdraw.config.UserSessionThreadLocal;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.dao.AwardeeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.IntergralDao;
@@ -89,6 +90,11 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                 // 从缓存中获得用户积分
                 final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
                 SysUser sysUser = (SysUser) redisUtil.get(userinfokey);
+
+                // TODO 测试UserSessionThreadLocal 能否正常使用
+                SysUser user = UserSessionThreadLocal.getUser();
+                logger.info("threadloacl 获取到的用户信息:", user);
+
                 final String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
                 long integral = redisUtil.incr(onleyintegralkey, 0);
                 // 冻结积分信息
@@ -145,7 +151,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                 }
 
             } else {
-                logger.info("奖品信息概率有误");
+                logger.error("奖品信息概率有误");
             }
         }
         return null;

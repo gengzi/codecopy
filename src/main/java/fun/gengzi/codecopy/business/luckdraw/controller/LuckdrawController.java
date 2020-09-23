@@ -281,7 +281,7 @@ public class LuckdrawController {
         TbPrize luckdraw = luckdrawService.luckdraw(aid, token);
         ret.setSuccess();
         if (luckdraw == null || luckdraw.getId() == 0) {
-            ret.setInfo("未中奖哦，再抽一次吧！");
+            ret.setInfo("积分不足哦！");
         } else {
             ret.setInfo(luckdraw);
         }

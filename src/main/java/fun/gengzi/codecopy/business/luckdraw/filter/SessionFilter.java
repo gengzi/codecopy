@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.luckdraw.filter;
 
+import fun.gengzi.codecopy.business.luckdraw.config.UserSessionThreadLocal;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
@@ -69,6 +70,8 @@ public class SessionFilter implements Filter {
                 String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, aidStr, sysUser.getUid());
                 long integral = redisUtil.incr(onleyintegralkey, 0);
                 if (integral > 0) {
+                    // 将用户信息设置到 threadloacl 中
+                    UserSessionThreadLocal.setUser(sysUser);
                     chain.doFilter(request, response);
                     return;
                 } else {
