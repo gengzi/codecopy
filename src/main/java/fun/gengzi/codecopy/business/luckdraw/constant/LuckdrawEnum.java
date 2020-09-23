@@ -13,6 +13,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum LuckdrawEnum {
 
+    SUCCESS_DEFAULT(0, "SUCCESS", "成功"),
+
     ERROR_DEFAULT(1000, "LUCKDRAW_DEFAULT", "服务异常，请稍后再试哟！"),
     ERROR_SERVICE_LIMIT(1000, "SERVICE_LIMIT", "请稍等，您访问的太快了！"),
     ERROR_PAGE_VALIDCODE(1002, "ERROR_PAGE_VALIDCODE", "随机验证码错误，请重试！"),

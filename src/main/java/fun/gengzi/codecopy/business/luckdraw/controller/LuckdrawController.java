@@ -290,6 +290,73 @@ public class LuckdrawController {
 
 
     /**
+     * 引入消息队列的版本
+     *
+     * @param aid
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "luckdraw", notes = "luckdraw")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "TbActivity", value = "TbActivity", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/start/mq")
+    @ResponseBody
+    @LuckdrawServiceLimit(limitType = LuckdrawServiceLimit.LimitType.IP)
+    public ReturnData startByKafka(@RequestParam("aid") String aid, HttpServletRequest request) {
+        logger.info("startByKafka quest param ,aid:{} ", aid);
+        ReturnData ret = ReturnData.newInstance();
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        TbPrize luckdraw = luckdrawService.luckdraw(aid, token);
+        ret.setSuccess();
+        if (luckdraw == null || luckdraw.getId() == 0) {
+            ret.setInfo("积分不足哦！");
+        } else {
+            ret.setInfo(luckdraw);
+        }
+        return ret;
+    }
+
+
+    /**
+     * 查询抽奖结果
+     *
+     * @param aid
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "luckdraw", notes = "luckdraw")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "TbActivity", value = "TbActivity", required = true)})
+    @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
+            "\t    \"status\": 200,\n" +
+            "\t    \"info\": {\n" +
+            "\t		}\n" +
+            "\t    \"message\": \"信息\",\n" +
+            "\t}\n")})
+    @PostMapping("/start/qryLuckdrawResult")
+    @ResponseBody
+    public ReturnData qryLuckdrawResult(@RequestParam("aid") String aid, HttpServletRequest request) {
+        logger.info("qryLuckdrawResult quest param ,aid:{} ", aid);
+        ReturnData ret = ReturnData.newInstance();
+
+
+        ret.setSuccess();
+//        if (luckdraw == null || luckdraw.getId() == 0) {
+//            ret.setInfo("未中奖哦！");
+//        } else {
+//            ret.setInfo(luckdraw);
+//        }
+        return ret;
+    }
+
+
+    /**
      * 使用手机号，验证码来进入抽奖页面
      *
      * @param aid

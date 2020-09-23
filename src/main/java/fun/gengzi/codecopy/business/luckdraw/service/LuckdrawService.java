@@ -1,6 +1,7 @@
 package fun.gengzi.codecopy.business.luckdraw.service;
 
 
+import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
 
 import java.util.List;
@@ -19,6 +20,23 @@ public interface LuckdrawService {
      * @return {@link TbPrize}  获得的奖品信息
      */
     TbPrize luckdraw(String activityid, String token);
+
+    /**
+     * 根据活动id，抽奖- Mq 方式
+     *
+     * @param activityid 活动id
+     * @param token      用户的token 信息
+     * @return {@link LuckdrawEnum}  返回的响应信息
+     */
+    LuckdrawEnum luckdrawByMq(String activityid, String token);
+
+    /**
+     * 查询奖品信息
+     *
+     * @param activityid 活动id
+     * @return {@link TbPrize}  获得的奖品信息
+     */
+    TbPrize qryLuckdrawResult(String activityid);
 
     /**
      * 根据活动id，抽奖 测试方法

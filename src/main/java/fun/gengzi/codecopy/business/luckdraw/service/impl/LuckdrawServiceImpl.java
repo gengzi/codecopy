@@ -1,17 +1,20 @@
 package fun.gengzi.codecopy.business.luckdraw.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawLock;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawLockKey;
 import fun.gengzi.codecopy.business.luckdraw.config.UserSessionThreadLocal;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
+import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.dao.AwardeeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.IntergralDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.PrizeDao;
 import fun.gengzi.codecopy.business.luckdraw.dao.SysUserDao;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
 import fun.gengzi.codecopy.business.luckdraw.service.AysncLuckdrawService;
+import fun.gengzi.codecopy.business.luckdraw.service.KafkaService;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.exception.RrException;
@@ -21,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +63,9 @@ public class LuckdrawServiceImpl implements LuckdrawService {
 
     @Autowired
     private AysncLuckdrawService aysncLuckdrawService;
+
+    @Autowired
+    private KafkaService kafkaService;
 
     /**
      * 根据活动id，抽奖
@@ -154,6 +161,67 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                 logger.error("奖品信息概率有误");
             }
         }
+        return null;
+    }
+
+    /**
+     * 根据活动id，抽奖- Mq 方式
+     *
+     * @param activityid 活动id
+     * @param token      用户的token 信息
+     */
+    @Override
+    public LuckdrawEnum luckdrawByMq(String activityid, String token) {
+
+
+        logger.info("抽奖开始");
+        List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
+        if (CollectionUtils.isNotEmpty(tbPrizes)) {
+            logger.info("校验奖品概率");
+            boolean flag = this.checkPrizeProbability(tbPrizes);
+            logger.info("校验奖品概率不超过1：{}", flag);
+            if (flag) {
+                SysUser sysUser = UserSessionThreadLocal.getUser();
+                logger.info("threadloacl 获取到的用户信息:", sysUser);
+                // 从缓存中获得用户积分
+                final String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
+                long integral = redisUtil.incr(onleyintegralkey, 0);
+                // 冻结积分信息
+                logger.info("校验用户积分是否足够，现在积分：{}", integral);
+                if ((integral - 30) >= 0) {
+                    // 构造一个mq 实体，考虑幂等性
+                    KafkaLuckdrawEntity kafkaLuckdrawEntity = new KafkaLuckdrawEntity();
+                    kafkaLuckdrawEntity.setActivityId(activityid);
+                    kafkaLuckdrawEntity.setSysUser(sysUser);
+                    kafkaLuckdrawEntity.setIdempotencyFiled(activityid + "" + System.currentTimeMillis());
+                    // 调用kafka 服务
+                    kafkaService.sendLuckdrawMsgInfo(kafkaLuckdrawEntity);
+                } else {
+                    logger.info("积分不足哦！");
+                    return LuckdrawEnum.ERROR_INTEGRAL_LITTLE;
+                }
+            } else {
+                logger.error("奖品信息概率有误");
+                return LuckdrawEnum.ERROR_DEFAULT;
+            }
+        }
+        return LuckdrawEnum.SUCCESS_DEFAULT;
+    }
+
+    /**
+     * 查询奖品信息
+     *
+     * @param activityid 活动id
+     * @return {@link TbPrize}  获得的奖品信息
+     */
+    @Override
+    public TbPrize qryLuckdrawResult(String activityid) {
+        // 调用redis ，查询当前获奖信息
+        // redis 的key  用户id+活动id  存的数据 奖品信息
+        // 返回
+
+
+
         return null;
     }
 
