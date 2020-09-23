@@ -1,6 +1,5 @@
 <html>
 <head>
-
     <meta charset="utf-8"/>
     <meta name="format-detection" content="telephone=no"/>
     <meta name="viewport"
@@ -15,11 +14,13 @@
 
 <body>
 <div class="warpAll">
+    <!--头部-->
     <div class="header_timer_index">
         <p class="time_info">
             <span class="info_span" style="margin-top: 0.35rem">马上登陆，即可<span class="cs_num" id="changevalue">抽奖</span>哦！</span>
         </p>
     </div>
+    <!--登陆模块-->
     <div class="songliuliangDiv">
         <div class="inputAreaWarp">
             <div class="inputArea">
@@ -45,70 +46,25 @@
             <span class="errorTips" id="tip_message">*请输入正确的短信验证码</span>
         </div>
     </div>
+    <!--登陆按钮-->
     <img src="/images/btn1.png" class="lqjlBtn">
 </div>
 <!-- 弹层 -->
 <div class="mc"></div>
 <div class="hdgzMc"></div>
-
-<!-- 自己领取自己分享的弹层 -->
-<div class="selfGetDiv">
-    <img src="/images/closebtn1.png" class="tcCloseBtn selfTcClose">
-    <img src="/images/tcLogo.png" class="tcLogo">
-    <p class="tcTips1">您自己分享的链接，无法领取奖励哦～</p>
-    <div class="selfGetIKnowe tcKnoweBtn marginT40">我知道了</div>
-</div>
-
-<!-- 非联通号码的弹层 -->
-<div class="phoneErrorDiv">
-    <img src="/images/closebtn1.png" class="tcCloseBtn phoneErrorTcClose">
-    <img src="/images/tcLogo.png" class="tcLogo">
-    <p class="tcTips1">该活动仅限联通手机用户参与！</p>
-    <div class="phoneErrorBtn tcKnoweBtn marginT40">我知道了</div>
-</div>
-
-<!-- 重复领取弹层提示 -->
-<div class="againGetDiv">
-    <img src="/images/closebtn1.png" class="tcCloseBtn againTcClose">
-    <img src="/images/tcLogo.png" class="tcLogo">
-    <div class="tcContent">
-        <p class="tcTips1">您已领取过该奖励，不能重复领取哦～</p>
-        <p class="tcTip2">您可以参与抽奖，抽取更多豪礼</p>
-        <div class="tcKnoweBtn marginT38">
-            <div class="againCancel fl">取消</div>
-            <a href="http://u.10010.cn/qAAmF">
-                <div class="goChoujiang fl">参与抽奖</div>
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- 获得奖励弹层 -->
-<div class="getGiftDiv">
-    <img src="/images/closebtn1.png" class="tcCloseBtn getGiftTcClose">
-    <img src="/images/tcLogo.png" class="tcLogo">
-    <div class="tcContent">
-        <p class="tcTips1 colorff7744">恭喜您获得<span id="flownumber"></span>MB流量奖励</p>
-        <p class="tcTip2 color666">可登录联通手机营业厅，进入活动页面，</p>
-        <p class="tcTip2 color666">点击“我的账户”查看奖励</p>
-        <div class="tcKnoweBtn marginT38">
-            <div class="getGiftCancel fl">取消</div>
-            <a href="http://u.10010.cn/qAAmF">
-                <div class="goJiangpin fl">去看看</div>
-            </a>
-        </div>
-    </div>
-</div>
-<!-- 异常弹层 -->
+<!-- 全局异常弹层 -->
 <div class="acErrorDiv">
     <img src="/images/closebtn1.png" class="tcCloseBtn acErrorTcClose">
     <img src="/images/tcLogo.png" class="tcLogo">
     <p class="tcTips1">哎呀，系统异常，请稍后再试哦~</p>
     <div class="acErrorBtn tcKnoweBtn marginT40">我知道了</div>
 </div>
+
+<!--js部分-->
 <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
 <script type="text/javascript">
     (function ($) {
+        // 获取路径中的参数
         $.getUrlParam = function (name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
             var r = window.location.search.substr(1).match(reg);
@@ -117,6 +73,13 @@
         }
     })(jQuery);
 
+    //异常的弹层关闭
+    $('.acErrorBtn,.acErrorTcClose').click(function () {
+        $('body,html').removeClass('overFlowHide');
+        $('.mc,.acErrorDiv').hide();
+        $("body").unbind("touchmove");
+        window.location.reload();
+    })
 
     //手机号限制输入数字
     var thisOldValue = '';//输入前的值
@@ -167,14 +130,6 @@
     });
 
 
-    //异常的弹层关闭
-    $('.acErrorBtn,.acErrorTcClose').click(function () {
-        $('body,html').removeClass('overFlowHide');
-        $('.mc,.acErrorDiv').hide();
-        $("body").unbind("touchmove");
-        window.location.reload();
-    })
-
     //禁止滚动
     function JinzMove() {
         $("body").bind("touchmove", function (e) {
@@ -183,27 +138,6 @@
     }
 </script>
 <script>
-    flushValidateCode();//进入页面就刷新生成验证码
-    $("#dx_yzm").click(function () {
-        if (!$("#dx_yzm").hasClass('disabled')) {
-            sendRandom();
-        }
-    });
-
-    $("#luckdrawstart").click(function () {
-        alert("抽奖");
-    });
-
-
-    //异常的弹层关闭
-    $('.acErrorBtn,.acErrorTcClose').click(function () {
-        $('body,html').removeClass('overFlowHide');
-        $('.mc,.acErrorDiv').hide();
-        $("body").unbind("touchmove");
-        window.location.reload();
-    })
-
-    var codeBydate;
 
     /* 刷新图片验证码 */
     function flushValidateCode() {
@@ -221,51 +155,67 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             }
         });
-
     }
+
+    //进入页面就刷新生成验证码
+    flushValidateCode();
+    // 获取验证码按钮事件
+    $("#dx_yzm").click(function () {
+        if (!$("#dx_yzm").hasClass('disabled')) {
+            sendRandom();
+        }
+    });
+
+
+    // 图片验证码的code
+    var codeBydate;
+
 
     //提交请求
     function submit() {
         if (checkMobile() && checkRandom()) {
+            var aid = $.getUrlParam('aid');
             $(".lqjlBtn").unbind("click");
             var mobile = $("#mobile").val().replace(/\s+/g, "");
             var random = $("#message").val();
-            var url = '/dailylottery/static/smslogin/checkRandomCode';
+            var image = $('#img_message').val();
+            var cdata = {
+                "code": codeBydate + "",
+                "phone": mobile,
+                "phoneValidCode": random,
+                "validCode": image
+            }
+            var url = '/luckdraw/verificationUserInfo?aid=' + aid;
             $.ajax({
-                dataType: 'text',
-                data: {
-                    mobile: mobile,
-                    random: random
-                },
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                data: JSON.stringify(cdata),
                 url: url,
                 async: true,
                 type: 'POST',
-                success: function (data) {
-                    if (data == 'PHONENUMERROR') {
+                complete: function (xhr,resultdata) {
+                    var data =  xhr.responseJSON;
+                    if (data.status == 1001 || data.status == 1002) {
+                        $("#tip_message").text("请输入正确的短信验证码");
                         $("#tip_phoneNum").show();
                         $('.lqjlBtn').bind("click", function () {
                             submit();
                         });
-                    } else if (data == 'PARAMERROR') {
-                        $("#tip_message").text("请输入正确的短信验证码");
-                        $("#tip_message").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
-                    } else if (data == 'NOTSEND') {
-                        $("#tip_message").text("验证码失效，请重新获取");
-                        $("#tip_message").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
-                    } else if (data == 'FAIL') {
-                        $("#tip_message").text("请输入正确的短信验证码");
-                        $("#tip_message").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
+                    } else if (data.status == 200) {
+                        // 解析token 进入下一个页面
+                        var info = data.info;
+                        var uname = info.uname;
+                        var Integral = info.Integral;
+
+                        //window.location.href = "/luckdraw/start/toPage?aid=" + aid;
+                        var token = xhr.getResponseHeader('Authorization');
+                        console.log(token)
+
                     } else {
-                        choujiang(data);
+                        $("#tip_img_message").show();
+                        $('.lqjlBtn').bind("click", function () {
+                            submit();
+                        });
                     }
                 },
                 error: function () {
@@ -276,112 +226,24 @@
         }
     }
 
-    //提交请求
-    function choujiang() {
-        if (checkMobile() && checkRandom()) {
-            $(".lqjlBtn").unbind("click");
-            var mobile = $("#mobile").val().replace(/\s+/g, "");
-            var random = $("#message").val();
-            var url = "/dailylottery/static/share/sharelottery?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016";
-            $.ajax({
-                dataType: 'json',
-                data: {
-                    robusernumber: mobile,
-                    random: random
-                },
-                url: url,
-                async: false,
-                type: 'GET',
-                success: function (data) {
-                    if (data.Rsptype == 'PHONENUMERROR') {
-                        $("#tip_phoneNum").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
-                    } else if (data.Rsptype == 'PARAMERROR') {
-                        $("#tip_message").text("请输入正确的短信验证码");
-                        $("#tip_message").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
-                    } else if (data.Rsptype == 'NOTSEND') {
-                        $("#tip_message").text("验证码失效，请重新获取");
-                        $("#tip_message").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
-                    } else if (data.Rsptype == 'FAIL') {
-                        $("#tip_message").text("请输入正确的短信验证码");
-                        $("#tip_message").show();
-                        $('.lqjlBtn').bind("click", function () {
-                            submit();
-                        });
-                    } else {
-                        if ('newuser' == data.backcode) {
-                            $('#flownumber').text(100);
-                            $('.mc,.getGiftDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        } else if ('olduser' == data.backcode) {
-                            $('#flownumber').text(10);
-                            $('.mc,.getGiftDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        } else if ('1112' == data.backcode) {
-                            $('.mc,.selfGetDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        } else if ('1113' == data.backcode) {
-                            $('.mc,.againGetDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        } else if ('1114' == data.backcode) {
-                            $('.mc,.phoneErrorDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        } else if ('1111' == data.backcode) {
-                            $('.mc,.acErrorDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        } else {
-                            $('.mc,.acErrorDiv').show();
-                            $('body,html').addClass('overFlowHide');
-                            JinzMove();
-                            $('.lqjlBtn').bind("click", function () {
-                                submit();
-                            });
-                        }
-                    }
-                },
-                error: function () {
-                    $('.mc,.acErrorDiv').show();
-                    $('body,html').addClass('overFlowHide');
-                    JinzMove();
-                }
-            });
-            flushValidateCode();
+    function standardPost (url, args)
+    {
+        var form = $("<form method='post'></form>");
+        form.attr({"action":url});
+        for (arg in args)
+        {
+            var input = $("<input type='hidden'>");
+            input.attr({"name":arg});
+            input.val(args[arg]);
+            form.append(input);
         }
+        $("html").append(form);
+        form.submit();
     }
+    //调用
 
-    //下发短信验证码
+
+    //发送短信验证码
     function sendRandom() {
         if (checkMobile() && checkImg()) {
         }
@@ -417,6 +279,7 @@
                     flushValidateCode();
                     result = false;
                 } else if (data.status == 200) {
+                    $("#tip_img_message").hide();
                     result = true;
                 } else if (data.status == 500) {
                     $('.mc,.acErrorDiv').show();

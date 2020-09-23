@@ -276,7 +276,7 @@ public class LuckdrawController {
             "\t		}\n" +
             "\t    \"message\": \"信息\",\n" +
             "\t}\n")})
-    @GetMapping("/activity/start")
+    @PostMapping("/start/toPage")
     public String activityToPageLuckdraw(@RequestParam("aid") String aid, HttpServletRequest request) {
         return "startluckdraw";
     }
