@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50720
-Source Host           : localhost:3306
+Source Server         : 114.116.21.8
+Source Server Version : 50729
+Source Host           : 114.116.21.8:3309
 Source Database       : luckdraw_db
 
 Target Server Type    : MYSQL
-Target Server Version : 50720
+Target Server Version : 50729
 File Encoding         : 65001
 
-Date: 2020-09-17 17:00:03
+Date: 2020-09-24 22:37:50
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -57,6 +57,7 @@ CREATE TABLE `sys_user` (
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1', 'zhangsan', '1', '110', '2020-09-01 10:23:14', '2020-09-02 10:23:18');
 INSERT INTO `sys_user` VALUES ('2', 'test', '1', '111', '2020-09-17 09:53:54', '2020-09-17 09:53:54');
+INSERT INTO `sys_user` VALUES ('3', '大丸子', '1', '17839166574', '2020-09-17 09:53:54', '2020-09-17 09:53:54');
 
 -- ----------------------------
 -- Table structure for tb_activity
@@ -106,7 +107,7 @@ CREATE TABLE `tb_awardee` (
   `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5901 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5954 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of tb_awardee
@@ -2666,6 +2667,59 @@ INSERT INTO `tb_awardee` VALUES ('5897', 'hd_001', null, '3', '积分8888', null
 INSERT INTO `tb_awardee` VALUES ('5898', 'hd_001', null, '5', '现金500元', null, '5', null, '1', '1', null, null, '2020-09-17 00:00:00', null);
 INSERT INTO `tb_awardee` VALUES ('5899', 'hd_001', null, '5', '现金500元', null, '2', null, '1', '1', null, null, '2020-09-17 00:00:00', null);
 INSERT INTO `tb_awardee` VALUES ('5900', 'hd_001', null, '5', '现金500元', null, '76', null, '1', '1', null, null, '2020-09-17 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5901', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5902', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5903', 'hd_001', null, '3', '积分8888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5904', 'hd_001', null, '3', '积分8888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5905', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5906', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5907', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5908', 'hd_001', null, '3', '积分8888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5909', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5910', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5911', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5912', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5913', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5914', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5915', 'hd_001', null, '3', '积分8888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5916', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5917', 'hd_001', null, '3', '积分8888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5918', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5919', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5920', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5921', 'hd_001', null, '2', '积分888', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5922', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5923', 'hd_001', null, '1', '积分88', null, 'zhangsan', null, '1', '1', null, null, '2020-09-21 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5924', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5925', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5926', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5927', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5928', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5929', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5930', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5931', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5932', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5933', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5934', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5935', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5936', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5937', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5938', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5939', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5940', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5941', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5942', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5943', 'hd_001', null, '3', '积分8888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5944', 'hd_001', null, '2', '积分888', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5945', 'hd_001', null, '1', '积分88', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5946', 'hd_001', null, '1', '10积分', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5947', 'hd_001', null, '3', 'QQ会员', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5948', 'hd_001', null, '3', 'QQ会员', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5949', 'hd_001', null, '1', '10积分', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5950', 'hd_001', null, '4', '1积分', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5951', 'hd_001', null, '6', '9.85折充值折扣券', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5952', 'hd_001', null, '2', '0.1元', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
+INSERT INTO `tb_awardee` VALUES ('5953', 'hd_001', null, '6', '9.85折充值折扣券', null, '大丸子', null, '1', '1', null, null, '2020-09-24 00:00:00', null);
 
 -- ----------------------------
 -- Table structure for tb_integral
@@ -2680,110 +2734,110 @@ CREATE TABLE `tb_integral` (
   `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of tb_integral
 -- ----------------------------
-INSERT INTO `tb_integral` VALUES ('1', '1', 'hd_001', 'zhangsan', '10', '2020-09-17 16:51:06', '2020-09-17 16:51:06');
-INSERT INTO `tb_integral` VALUES ('2', '2', 'hd_001', 'test', '10', '2020-09-17 16:50:58', '2020-09-17 16:50:58');
-INSERT INTO `tb_integral` VALUES ('3', '3', 'hd_001', 't_3', '10', '2020-09-17 16:51:00', '2020-09-17 16:51:00');
-INSERT INTO `tb_integral` VALUES ('4', '4', 'hd_001', 't_4', '10', '2020-09-17 16:51:09', '2020-09-17 16:51:09');
-INSERT INTO `tb_integral` VALUES ('5', '5', 'hd_001', 't_5', '10', '2020-09-17 16:51:09', '2020-09-17 16:51:09');
-INSERT INTO `tb_integral` VALUES ('6', '6', 'hd_001', 't_6', '10', '2020-09-17 16:51:01', '2020-09-17 16:51:01');
-INSERT INTO `tb_integral` VALUES ('7', '7', 'hd_001', 't_7', '10', '2020-09-17 16:51:10', '2020-09-17 16:51:10');
-INSERT INTO `tb_integral` VALUES ('8', '8', 'hd_001', 't_8', '10', '2020-09-17 16:51:23', '2020-09-17 16:51:23');
-INSERT INTO `tb_integral` VALUES ('9', '9', 'hd_001', 't_9', '10', '2020-09-17 16:51:06', '2020-09-17 16:51:06');
-INSERT INTO `tb_integral` VALUES ('10', '10', 'hd_001', 't_10', '10', '2020-09-17 16:50:58', '2020-09-17 16:50:58');
-INSERT INTO `tb_integral` VALUES ('11', '11', 'hd_001', 't_11', '10', '2020-09-17 16:51:04', '2020-09-17 16:51:04');
-INSERT INTO `tb_integral` VALUES ('12', '12', 'hd_001', 't_12', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('13', '13', 'hd_001', 't_13', '10', '2020-09-17 16:51:11', '2020-09-17 16:51:11');
-INSERT INTO `tb_integral` VALUES ('14', '14', 'hd_001', 't_14', '10', '2020-09-17 16:50:53', '2020-09-17 16:50:53');
-INSERT INTO `tb_integral` VALUES ('15', '15', 'hd_001', 't_15', '10', '2020-09-17 16:51:08', '2020-09-17 16:51:08');
-INSERT INTO `tb_integral` VALUES ('16', '16', 'hd_001', 't_16', '10', '2020-09-17 16:51:12', '2020-09-17 16:51:12');
-INSERT INTO `tb_integral` VALUES ('17', '17', 'hd_001', 't_17', '10', '2020-09-17 16:51:17', '2020-09-17 16:51:17');
-INSERT INTO `tb_integral` VALUES ('18', '18', 'hd_001', 't_18', '10', '2020-09-17 16:51:02', '2020-09-17 16:51:02');
-INSERT INTO `tb_integral` VALUES ('19', '19', 'hd_001', 't_19', '10', '2020-09-17 16:51:03', '2020-09-17 16:51:03');
-INSERT INTO `tb_integral` VALUES ('20', '20', 'hd_001', 't_20', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('21', '21', 'hd_001', 't_21', '10', '2020-09-17 16:51:02', '2020-09-17 16:51:02');
-INSERT INTO `tb_integral` VALUES ('22', '22', 'hd_001', 't_22', '10', '2020-09-17 16:50:58', '2020-09-17 16:50:58');
-INSERT INTO `tb_integral` VALUES ('23', '23', 'hd_001', 't_23', '10', '2020-09-17 16:50:55', '2020-09-17 16:50:55');
-INSERT INTO `tb_integral` VALUES ('24', '24', 'hd_001', 't_24', '10', '2020-09-17 16:50:58', '2020-09-17 16:50:58');
-INSERT INTO `tb_integral` VALUES ('25', '25', 'hd_001', 't_25', '10', '2020-09-17 16:51:00', '2020-09-17 16:51:00');
-INSERT INTO `tb_integral` VALUES ('26', '26', 'hd_001', 't_26', '10', '2020-09-17 16:51:04', '2020-09-17 16:51:04');
-INSERT INTO `tb_integral` VALUES ('27', '27', 'hd_001', 't_27', '10', '2020-09-17 16:51:12', '2020-09-17 16:51:12');
-INSERT INTO `tb_integral` VALUES ('28', '28', 'hd_001', 't_28', '10', '2020-09-17 16:51:07', '2020-09-17 16:51:07');
-INSERT INTO `tb_integral` VALUES ('29', '29', 'hd_001', 't_29', '10', '2020-09-17 16:51:14', '2020-09-17 16:51:14');
-INSERT INTO `tb_integral` VALUES ('30', '30', 'hd_001', 't_30', '10', '2020-09-17 16:50:54', '2020-09-17 16:50:54');
-INSERT INTO `tb_integral` VALUES ('31', '31', 'hd_001', 't_31', '10', '2020-09-17 16:50:56', '2020-09-17 16:50:56');
-INSERT INTO `tb_integral` VALUES ('32', '32', 'hd_001', 't_32', '10', '2020-09-17 16:51:10', '2020-09-17 16:51:10');
-INSERT INTO `tb_integral` VALUES ('33', '33', 'hd_001', 't_33', '10', '2020-09-17 16:51:04', '2020-09-17 16:51:04');
-INSERT INTO `tb_integral` VALUES ('34', '34', 'hd_001', 't_34', '10', '2020-09-17 16:51:08', '2020-09-17 16:51:08');
-INSERT INTO `tb_integral` VALUES ('35', '35', 'hd_001', 't_35', '10', '2020-09-17 16:51:01', '2020-09-17 16:51:01');
-INSERT INTO `tb_integral` VALUES ('36', '36', 'hd_001', 't_36', '10', '2020-09-17 16:51:06', '2020-09-17 16:51:06');
-INSERT INTO `tb_integral` VALUES ('37', '37', 'hd_001', 't_37', '10', '2020-09-17 16:51:01', '2020-09-17 16:51:01');
-INSERT INTO `tb_integral` VALUES ('38', '38', 'hd_001', 't_38', '10', '2020-09-17 16:50:57', '2020-09-17 16:50:57');
-INSERT INTO `tb_integral` VALUES ('39', '39', 'hd_001', 't_39', '10', '2020-09-17 16:51:16', '2020-09-17 16:51:16');
-INSERT INTO `tb_integral` VALUES ('40', '40', 'hd_001', 't_40', '10', '2020-09-17 16:51:01', '2020-09-17 16:51:01');
-INSERT INTO `tb_integral` VALUES ('41', '41', 'hd_001', 't_41', '10', '2020-09-17 16:51:11', '2020-09-17 16:51:11');
-INSERT INTO `tb_integral` VALUES ('42', '42', 'hd_001', 't_42', '10', '2020-09-17 16:51:12', '2020-09-17 16:51:12');
-INSERT INTO `tb_integral` VALUES ('43', '43', 'hd_001', 't_43', '10', '2020-09-17 16:51:14', '2020-09-17 16:51:14');
-INSERT INTO `tb_integral` VALUES ('44', '44', 'hd_001', 't_44', '10', '2020-09-17 16:51:05', '2020-09-17 16:51:05');
-INSERT INTO `tb_integral` VALUES ('45', '45', 'hd_001', 't_45', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('46', '46', 'hd_001', 't_46', '10', '2020-09-17 16:50:55', '2020-09-17 16:50:55');
-INSERT INTO `tb_integral` VALUES ('47', '47', 'hd_001', 't_47', '10', '2020-09-17 16:51:04', '2020-09-17 16:51:04');
-INSERT INTO `tb_integral` VALUES ('48', '48', 'hd_001', 't_48', '10', '2020-09-17 16:51:00', '2020-09-17 16:51:00');
-INSERT INTO `tb_integral` VALUES ('49', '49', 'hd_001', 't_49', '10', '2020-09-17 16:51:04', '2020-09-17 16:51:04');
-INSERT INTO `tb_integral` VALUES ('50', '50', 'hd_001', 't_50', '10', '2020-09-17 16:51:07', '2020-09-17 16:51:07');
-INSERT INTO `tb_integral` VALUES ('51', '51', 'hd_001', 't_51', '10', '2020-09-17 16:51:10', '2020-09-17 16:51:10');
-INSERT INTO `tb_integral` VALUES ('52', '52', 'hd_001', 't_52', '10', '2020-09-17 16:51:09', '2020-09-17 16:51:09');
-INSERT INTO `tb_integral` VALUES ('53', '53', 'hd_001', 't_53', '10', '2020-09-17 16:51:20', '2020-09-17 16:51:20');
-INSERT INTO `tb_integral` VALUES ('54', '54', 'hd_001', 't_54', '10', '2020-09-17 16:51:00', '2020-09-17 16:51:00');
-INSERT INTO `tb_integral` VALUES ('55', '55', 'hd_001', 't_55', '10', '2020-09-17 16:50:52', '2020-09-17 16:50:52');
-INSERT INTO `tb_integral` VALUES ('56', '56', 'hd_001', 't_56', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('57', '57', 'hd_001', 't_57', '10', '2020-09-17 16:50:54', '2020-09-17 16:50:54');
-INSERT INTO `tb_integral` VALUES ('58', '58', 'hd_001', 't_58', '10', '2020-09-17 16:51:12', '2020-09-17 16:51:12');
-INSERT INTO `tb_integral` VALUES ('59', '59', 'hd_001', 't_59', '10', '2020-09-17 16:51:10', '2020-09-17 16:51:10');
-INSERT INTO `tb_integral` VALUES ('60', '60', 'hd_001', 't_60', '10', '2020-09-17 16:51:05', '2020-09-17 16:51:05');
-INSERT INTO `tb_integral` VALUES ('61', '61', 'hd_001', 't_61', '10', '2020-09-17 16:50:53', '2020-09-17 16:50:53');
-INSERT INTO `tb_integral` VALUES ('62', '62', 'hd_001', 't_62', '10', '2020-09-17 16:51:03', '2020-09-17 16:51:03');
-INSERT INTO `tb_integral` VALUES ('63', '63', 'hd_001', 't_63', '10', '2020-09-17 16:51:15', '2020-09-17 16:51:15');
-INSERT INTO `tb_integral` VALUES ('64', '64', 'hd_001', 't_64', '10', '2020-09-17 16:51:31', '2020-09-17 16:51:31');
-INSERT INTO `tb_integral` VALUES ('65', '65', 'hd_001', 't_65', '10', '2020-09-17 16:50:55', '2020-09-17 16:50:55');
-INSERT INTO `tb_integral` VALUES ('66', '66', 'hd_001', 't_66', '10', '2020-09-17 16:50:54', '2020-09-17 16:50:54');
-INSERT INTO `tb_integral` VALUES ('67', '67', 'hd_001', 't_67', '10', '2020-09-17 16:50:52', '2020-09-17 16:50:52');
-INSERT INTO `tb_integral` VALUES ('68', '68', 'hd_001', 't_68', '10', '2020-09-17 16:51:03', '2020-09-17 16:51:03');
-INSERT INTO `tb_integral` VALUES ('69', '69', 'hd_001', 't_69', '10', '2020-09-17 16:50:58', '2020-09-17 16:50:58');
-INSERT INTO `tb_integral` VALUES ('70', '70', 'hd_001', 't_70', '10', '2020-09-17 16:51:01', '2020-09-17 16:51:01');
-INSERT INTO `tb_integral` VALUES ('71', '71', 'hd_001', 't_71', '10', '2020-09-17 16:51:05', '2020-09-17 16:51:05');
-INSERT INTO `tb_integral` VALUES ('72', '72', 'hd_001', 't_72', '10', '2020-09-17 16:51:06', '2020-09-17 16:51:06');
-INSERT INTO `tb_integral` VALUES ('73', '73', 'hd_001', 't_73', '10', '2020-09-17 16:51:02', '2020-09-17 16:51:02');
-INSERT INTO `tb_integral` VALUES ('74', '74', 'hd_001', 't_74', '10', '2020-09-17 16:51:10', '2020-09-17 16:51:10');
-INSERT INTO `tb_integral` VALUES ('75', '75', 'hd_001', 't_75', '10', '2020-09-17 16:51:05', '2020-09-17 16:51:05');
-INSERT INTO `tb_integral` VALUES ('76', '76', 'hd_001', 't_76', '10', '2020-09-17 16:51:07', '2020-09-17 16:51:07');
-INSERT INTO `tb_integral` VALUES ('77', '77', 'hd_001', 't_77', '10', '2020-09-17 16:51:34', '2020-09-17 16:51:34');
-INSERT INTO `tb_integral` VALUES ('78', '78', 'hd_001', 't_78', '10', '2020-09-17 16:50:56', '2020-09-17 16:50:56');
-INSERT INTO `tb_integral` VALUES ('79', '79', 'hd_001', 't_79', '10', '2020-09-17 16:51:04', '2020-09-17 16:51:04');
-INSERT INTO `tb_integral` VALUES ('80', '80', 'hd_001', 't_80', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('81', '81', 'hd_001', 't_81', '10', '2020-09-17 16:51:03', '2020-09-17 16:51:03');
-INSERT INTO `tb_integral` VALUES ('82', '82', 'hd_001', 't_82', '10', '2020-09-17 16:51:11', '2020-09-17 16:51:11');
-INSERT INTO `tb_integral` VALUES ('83', '83', 'hd_001', 't_83', '10', '2020-09-17 16:50:53', '2020-09-17 16:50:53');
-INSERT INTO `tb_integral` VALUES ('84', '84', 'hd_001', 't_84', '10', '2020-09-17 16:50:57', '2020-09-17 16:50:57');
-INSERT INTO `tb_integral` VALUES ('85', '85', 'hd_001', 't_85', '10', '2020-09-17 16:51:09', '2020-09-17 16:51:09');
-INSERT INTO `tb_integral` VALUES ('86', '86', 'hd_001', 't_86', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('87', '87', 'hd_001', 't_87', '10', '2020-09-17 16:51:00', '2020-09-17 16:51:00');
-INSERT INTO `tb_integral` VALUES ('88', '88', 'hd_001', 't_88', '10', '2020-09-17 16:51:05', '2020-09-17 16:51:05');
-INSERT INTO `tb_integral` VALUES ('89', '89', 'hd_001', 't_89', '10', '2020-09-17 16:51:10', '2020-09-17 16:51:10');
-INSERT INTO `tb_integral` VALUES ('90', '90', 'hd_001', 't_90', '10', '2020-09-17 16:50:56', '2020-09-17 16:50:56');
-INSERT INTO `tb_integral` VALUES ('91', '91', 'hd_001', 't_91', '10', '2020-09-17 16:50:53', '2020-09-17 16:50:53');
-INSERT INTO `tb_integral` VALUES ('92', '92', 'hd_001', 't_92', '10', '2020-09-17 16:51:11', '2020-09-17 16:51:11');
-INSERT INTO `tb_integral` VALUES ('93', '93', 'hd_001', 't_93', '10', '2020-09-17 16:51:02', '2020-09-17 16:51:02');
-INSERT INTO `tb_integral` VALUES ('94', '94', 'hd_001', 't_94', '10', '2020-09-17 16:50:57', '2020-09-17 16:50:57');
-INSERT INTO `tb_integral` VALUES ('95', '95', 'hd_001', 't_95', '10', '2020-09-17 16:50:59', '2020-09-17 16:50:59');
-INSERT INTO `tb_integral` VALUES ('96', '96', 'hd_001', 't_96', '10', '2020-09-17 16:51:03', '2020-09-17 16:51:03');
-INSERT INTO `tb_integral` VALUES ('97', '97', 'hd_001', 't_97', '10', '2020-09-17 16:50:55', '2020-09-17 16:50:55');
-INSERT INTO `tb_integral` VALUES ('98', '98', 'hd_001', 't_98', '10', '2020-09-17 16:51:12', '2020-09-17 16:51:12');
-INSERT INTO `tb_integral` VALUES ('99', '99', 'hd_001', 't_99', '10', '2020-09-17 16:51:18', '2020-09-17 16:51:18');
+INSERT INTO `tb_integral` VALUES ('1', '1', 'hd_001', 'zhangsan', '9550', '2020-09-21 15:52:45', '2020-09-21 15:52:45');
+INSERT INTO `tb_integral` VALUES ('2', '2', 'hd_001', 'test', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('4', '4', 'hd_001', 't_4', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('5', '5', 'hd_001', 't_5', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('6', '6', 'hd_001', 't_6', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('7', '7', 'hd_001', 't_7', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('8', '8', 'hd_001', 't_8', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('9', '9', 'hd_001', 't_9', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('10', '10', 'hd_001', 't_10', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('11', '11', 'hd_001', 't_11', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('12', '12', 'hd_001', 't_12', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('13', '13', 'hd_001', 't_13', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('14', '14', 'hd_001', 't_14', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('15', '15', 'hd_001', 't_15', '400', '2020-09-17 14:46:30', '2020-09-17 14:46:30');
+INSERT INTO `tb_integral` VALUES ('16', '16', 'hd_001', 't_16', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('17', '17', 'hd_001', 't_17', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('18', '18', 'hd_001', 't_18', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('19', '19', 'hd_001', 't_19', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('20', '20', 'hd_001', 't_20', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('21', '21', 'hd_001', 't_21', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('22', '22', 'hd_001', 't_22', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('23', '23', 'hd_001', 't_23', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('24', '24', 'hd_001', 't_24', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('25', '25', 'hd_001', 't_25', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('26', '26', 'hd_001', 't_26', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('27', '27', 'hd_001', 't_27', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('28', '28', 'hd_001', 't_28', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('29', '29', 'hd_001', 't_29', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('30', '30', 'hd_001', 't_30', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('31', '31', 'hd_001', 't_31', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('32', '32', 'hd_001', 't_32', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('33', '33', 'hd_001', 't_33', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('34', '34', 'hd_001', 't_34', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('35', '35', 'hd_001', 't_35', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('36', '36', 'hd_001', 't_36', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('37', '37', 'hd_001', 't_37', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('38', '38', 'hd_001', 't_38', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('39', '39', 'hd_001', 't_39', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('40', '40', 'hd_001', 't_40', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('41', '41', 'hd_001', 't_41', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('42', '42', 'hd_001', 't_42', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('43', '43', 'hd_001', 't_43', '400', '2020-09-17 14:46:31', '2020-09-17 14:46:31');
+INSERT INTO `tb_integral` VALUES ('44', '44', 'hd_001', 't_44', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('45', '45', 'hd_001', 't_45', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('46', '46', 'hd_001', 't_46', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('47', '47', 'hd_001', 't_47', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('48', '48', 'hd_001', 't_48', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('49', '49', 'hd_001', 't_49', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('50', '50', 'hd_001', 't_50', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('51', '51', 'hd_001', 't_51', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('52', '52', 'hd_001', 't_52', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('53', '53', 'hd_001', 't_53', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('54', '54', 'hd_001', 't_54', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('55', '55', 'hd_001', 't_55', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('56', '56', 'hd_001', 't_56', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('57', '57', 'hd_001', 't_57', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('58', '58', 'hd_001', 't_58', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('59', '59', 'hd_001', 't_59', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('60', '60', 'hd_001', 't_60', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('61', '61', 'hd_001', 't_61', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('62', '62', 'hd_001', 't_62', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('63', '63', 'hd_001', 't_63', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('64', '64', 'hd_001', 't_64', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('65', '65', 'hd_001', 't_65', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('66', '66', 'hd_001', 't_66', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('67', '67', 'hd_001', 't_67', '400', '2020-09-17 14:46:32', '2020-09-17 14:46:32');
+INSERT INTO `tb_integral` VALUES ('68', '68', 'hd_001', 't_68', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('69', '69', 'hd_001', 't_69', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('70', '70', 'hd_001', 't_70', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('71', '71', 'hd_001', 't_71', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('72', '72', 'hd_001', 't_72', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('73', '73', 'hd_001', 't_73', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('74', '74', 'hd_001', 't_74', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('75', '75', 'hd_001', 't_75', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('76', '76', 'hd_001', 't_76', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('77', '77', 'hd_001', 't_77', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('78', '78', 'hd_001', 't_78', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('79', '79', 'hd_001', 't_79', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('80', '80', 'hd_001', 't_80', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('81', '81', 'hd_001', 't_81', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('82', '82', 'hd_001', 't_82', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('83', '83', 'hd_001', 't_83', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('84', '84', 'hd_001', 't_84', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('85', '85', 'hd_001', 't_85', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('86', '86', 'hd_001', 't_86', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('87', '87', 'hd_001', 't_87', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('88', '88', 'hd_001', 't_88', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('89', '89', 'hd_001', 't_89', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('90', '90', 'hd_001', 't_90', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('91', '91', 'hd_001', 't_91', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('92', '92', 'hd_001', 't_92', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('93', '93', 'hd_001', 't_93', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('94', '94', 'hd_001', 't_94', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('95', '95', 'hd_001', 't_95', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('96', '96', 'hd_001', 't_96', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('97', '97', 'hd_001', 't_97', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('98', '98', 'hd_001', 't_98', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('99', '99', 'hd_001', 't_99', '400', '2020-09-17 14:46:33', '2020-09-17 14:46:33');
+INSERT INTO `tb_integral` VALUES ('100', '3', 'hd_001', '大丸子', '8650', '2020-09-24 14:23:51', '2020-09-24 14:23:51');
 
 -- ----------------------------
 -- Table structure for tb_prize
@@ -2801,13 +2855,15 @@ CREATE TABLE `tb_prize` (
   `createtime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of tb_prize
 -- ----------------------------
-INSERT INTO `tb_prize` VALUES ('1', '积分88', '积分88', '0', null, null, '0.5500000000', 'hd_001', '2020-09-17 16:51:14', '2020-09-17 16:51:14');
-INSERT INTO `tb_prize` VALUES ('2', '积分888', '积分888', '0', null, null, '0.3000000000', 'hd_001', '2020-09-17 16:51:41', '2020-09-17 16:51:41');
-INSERT INTO `tb_prize` VALUES ('3', '积分8888', '积分8888', '0', null, null, '0.1000000000', 'hd_001', '2020-09-17 16:52:16', '2020-09-17 16:52:16');
-INSERT INTO `tb_prize` VALUES ('4', '现金100元', '现金100元', '0', null, null, '0.0100000000', 'hd_001', '2020-09-17 16:51:44', '2020-09-17 16:51:44');
-INSERT INTO `tb_prize` VALUES ('5', '现金500元', '现金500元', '0', null, null, '0.0010000000', 'hd_001', '2020-09-17 16:52:34', '2020-09-17 16:52:34');
+INSERT INTO `tb_prize` VALUES ('1', '10积分', '10积分', '100998', null, null, '0.2500000000', 'hd_001', '2020-09-24 14:21:45', '2020-09-24 14:21:45');
+INSERT INTO `tb_prize` VALUES ('2', '0.1元', '0.1元', '9999', null, null, '0.2000000000', 'hd_001', '2020-09-24 14:21:54', '2020-09-24 14:21:54');
+INSERT INTO `tb_prize` VALUES ('3', 'QQ会员', 'QQ会员', '99998', null, null, '0.1000000000', 'hd_001', '2020-09-24 14:21:40', '2020-09-24 14:21:40');
+INSERT INTO `tb_prize` VALUES ('4', '1积分', '1积分', '19999', null, null, '0.0100000000', 'hd_001', '2020-09-24 14:21:48', '2020-09-24 14:21:48');
+INSERT INTO `tb_prize` VALUES ('5', '会员', '会员', '500', null, null, '0.0010000000', 'hd_001', '2020-09-24 14:09:22', '2020-09-24 14:09:22');
+INSERT INTO `tb_prize` VALUES ('6', '9.85折充值折扣券', '9.85折充值折扣券', '99998', '', null, '0.1000000000', 'hd_001', '2020-09-24 14:23:51', '2020-09-24 14:23:51');
+INSERT INTO `tb_prize` VALUES ('7', '0.5元', '0.5元', '100000', '', null, '0.1000000000', 'hd_001', '2020-09-24 14:09:09', '2020-09-24 14:09:09');

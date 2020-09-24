@@ -1,4 +1,4 @@
-var rotateFunc = function (awards, angle, text, tc, smlbbs,jifen,signcoin) {
+var rotateFunc = function (awards, angle, text, tc, smlbbs) {
     isture = true;
     $(".dazp").stopRotate();
     $(".dazp").rotate({
@@ -19,14 +19,7 @@ var rotateFunc = function (awards, angle, text, tc, smlbbs,jifen,signcoin) {
                     $('#reminder').text("哎呀，没有奖品出没~");
                     $('.tc_wenxin').show();
                 }
-                /*$('body,html').addClass('ovfHiden');*/
-            } else if (smlbbs == '1') {
-                $('.zj_tanceng').show();
-            } else if(jifen == "1"){
-                $('.tc_bg_jifen').show();//执行弹层
-            }else if(signcoin == "1"){
-                $('.tc_bg_signcoin').show();//执行弹层
-            }else {
+            } else {
                 $('.tc_bg').show();//执行弹层
             }
             var height1 = $(document).height();
@@ -34,7 +27,8 @@ var rotateFunc = function (awards, angle, text, tc, smlbbs,jifen,signcoin) {
             var scroll_h = $(window).scrollTop();
             var tc_h = $("#" + tc + "").height();
             var tc_top = (height2 - tc_h) / 2 + scroll_h;
-            $(".zj_jp_mes").text(text);
+            $("#info").text(text);
+            $("#prize_img").attr('src',$(".zpjp_div_pic"+awards)[0].src);
             $("#" + tc + "").css("top", tc_top + "px").show();
             $(".mc").height(height1).show();
             $(".caidai").show().animate({

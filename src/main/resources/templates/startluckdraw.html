@@ -2,7 +2,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="format-detection" content="telephone=no"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>天天抽奖</title>
@@ -17,14 +18,27 @@
     <link rel="stylesheet" href="/css/medal/reset.css"/>
     <link rel="stylesheet" href="/css/medal/xunzhang.css"/>
     <link rel="stylesheet" href="/css/medal/swiper.min.css"/>
+    <link rel="stylesheet" href="/css/index.css"/>
     <script src="/js/medal/tanceng.js"></script>
 </head>
 <script>
+
+    (function ($) {
+        // 获取路径中的参数
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    })(jQuery);
+
     sessionStorage.getItem("uname")
     sessionStorage.getItem("integral")
-    var token  = sessionStorage.getItem("Authorization")
-    if(token == null || token == ""){
-        window.location.href = "/luckdraw//activity?aid=" + aid;
+    var token = sessionStorage.getItem("Authorization")
+    if (token == null || token == "") {
+        var aid = $.getUrlParam('aid');
+        window.location.href = "/luckdraw/activity?aid=" + aid;
     }
     var NUMBER_OF_LEAVES = 400;//更改个数
     function init() {
@@ -72,7 +86,6 @@
     window.addEventListener('load', init);
 </script>
 
-<link href="http://img.client.10010.com/noad2.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript">
     var medalShareTitle = "抽奖锦鲤";
     var medalShareContent = "我获得了新的勋章，你也快来手厅获取吧！";
@@ -113,37 +126,11 @@
     };
     var mobileVersion = uautil.getversion();
 
-    //      shareJson ="{\"shareType\":\"url\",\"shareTitle\":\""+shareTitle+"\",\"shareContent\":\""+shareContent+"\",\"shareURL\":\""+shareMobileUrl+"\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/"+sharePic+"\"}";
-    function getMenuConfig_Local() {
-        //var shareJson ="{\"shareType\":\"url\",\"shareTitle\":\""+shareTitle+"\",\"shareContent\":\"我在玩红包雨，小伙伴们快快一起来玩，得免费流量哦！\",\"shareURL\":\""+shareMobileUrl+"\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/"+sharePic+"\"}";
-        var shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent + "\",\"shareURL\":\"" + shareMobileUrl + "?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"miniProgramShare\":\"1\",\"miniProgramType\":\"0\",\"miniProgramUserName\":\"gh_2bab3e2deed1\",\"miniProgramPath\":\"/pages/ttcj/ttcj?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + sharePic + "\"}";
-
-
-        var shareJson1 = "{\"shareQrcodeURL\":\"http://img.client.10010.com/activitys/wheel/dailylottery/images/footer_erweima_a.jpg"
-            + "\",\"shareId\":\"201804110944\",\"shareURL\":\"" + shareMobileUrl
-            + "\",\"shareShortURL\":\"" + shareMobileUrl + "\",\"shareTitle\":\"" + shareTitle
-            + "\",\"shareName\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent
-            + "\",\"shareIconURL\":\"" + sharePic + "\",\"shareType\":\"longScreenshot\"}";
-
-        return "{\"config\" : [{\"code\":\"fenxiang\",\"title\":\"分享\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"desc\":\"" + shareContent + "" + shareMobileUrl + "\",\"shareJson\":" + shareJson + "}," +
-            "{\"code\":\"jietufenxiang\",\"title\":\"截图分享\",\"shareList\":\"wechat,wechatmoments,qq,qzone\",\"desc\":\""
-            + shareContent
-            + ""
-            + shareMobileUrl
-            + "\",\"shareJson\":"
-            + shareJson1
-            + "}," +
-            "{\"code\":\"tucao\",\"title\":\"新版吐槽\",\"desc\":\"新版吐槽\"}," +
-            "{\"code\":\"shouye\",\"title\":\"回到首页\",\"desc\":\"回到首页\"}" +
-            "]}";
-    }
 
     function shareClient(flag) {
         var shareJson;
         var in1 = "in1";
         var timexz = new Date().Format("yyyy-MM-dd");
-//var newshareContent = shareContent.replace('XXX', ee);
-//var shareJson ="{\"shareType\":\"url\",\"shareTitle\":\""+shareTitle+"\",\"shareContent\":\""+newshareContent+"\",\"shareURL\":\""+shareMobileUrl+"\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/"+sharePic+"\"}";
         if (flag == "1") {
             shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent + "\",\"shareURL\":\"" + shareMobileUrl + "?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"miniProgramShare\":\"1\",\"miniProgramType\":\"0\",\"miniProgramUserName\":\"gh_2bab3e2deed1\",\"miniProgramPath\":\"/pages/ttcj/ttcj?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + sharePic + "\"}";
         } else if (flag == "2") {
@@ -324,63 +311,57 @@
     }
 
 </script>
-
 <body>
 <img src="/images/liangduan1.png" alt="" class="liangduan">
 <div class="container">
     <div class="goldDiv">
         <img src="/images/goldIcon.png" class="goldIcon fl">
-        <span class="goldNum" id="ebtotalnm">118</span>
+        <!-- 积分数-->
+        <span class="goldNum" id="ebtotalnm">0</span>
     </div>
     <div class="container_header">
         <img class="container_header_img" src="/images/container_header_img8.jpg"/>
-
         <img class="huodongGzImg" src="/images/huodongGzImg2.png"/>
         <div class="header_timer_index">
-
-
             <p class="time_info">
-                <span class="info_span" style="
-    margin-top: 0.35rem">今天还可免费抽奖<span class="cs_num"
-                                       id="changevalue">100</span>次</span>
-
+                <span class="info_span" style="margin-top: 0.35rem">(<span id="username"></span>)您还可抽奖<span
+                        class="cs_num" id="changevalue">0</span>次</span>
             </p>
         </div>
-
         <div class="zhuanpan_box_index">
             <img src="/images/zp_bg3_1.png" class="zp_bg" id="zhuanpan_1" alt=""/>
             <img src="/images/zp_bg3_2.png" class="zp_bg2" style="display: none" id="zhuanpan_2" alt=""/>
             <div class="quan">
                 <div class="dazp" id="goodsInfo">
                     <div class="zpjp_div div_1">
-                        <img src="/images/3a8d85c5827347a08f2342d83c5cbc27.png"
+                        <img src="/images/3a8d85c5827347a08f2342d83c5cbc271.png"
                              class="zpjp_div_pic1"/>
                         <p class="jiangpin_info1 a"
-                           style="color: #fa682e;">5MB</p>
+                           style="color: #fa682e;">10积分</p>
                     </div>
                     <div class="zpjp_div div_2">
                         <img src="/images/4a3d1fd058944bc4ae3f7a30e8b2b4da.png"
                              class="zpjp_div_pic2"/>
                         <p class="jiangpin_info2 a"
-                           style="color: #fa682e;">0.1元话费</p>
+                           style="color: #fa682e;">0.1元</p>
                     </div>
                     <div class="zpjp_div div_3">
-                        <img src="/images/4b77e11ce6cd4f54ba4e990c45fa0dd4.png"
+                        <img src="/images/4b77e11ce6cd4f54ba4e990c45fa0dd41.png"
                              class="zpjp_div_pic3"/>
                         <p class="jiangpin_info3 a"
-                           style="color: #fa682e;">书旗会员</p>
+                           style="color: #fa682e;">QQ会员</p>
                     </div>
                     <div class="zpjp_div div_4">
                         <img src="/images/9036449e6ab64869adf1b9a7383f3192.png"
                              class="zpjp_div_pic4"/>
                         <p class="jiangpin_info4 a"
-                           style="color: #fa682e;">10活动积分</p>
+                           style="color: #fa682e;">1积分</p>
                     </div>
                     <div class="zpjp_div div_5">
-                        <img src="/images/25872276c2064343ae54bf5719314500.png"
+                        <img src="/images/25872276c2064343ae54bf57193145001.png"
                              class="zpjp_div_pic5"/>
                         <p class="jiangpin_info5 a"
-                           style="color: #fa682e;">2MB</p>
+                           style="color: #fa682e;">会员</p>
                     </div>
                     <div class="zpjp_div div_6">
                         <img src="/images/e3c8080e62ef44f9ada3f518fd5981b9.png"
@@ -392,7 +373,7 @@
                         <img src="/images/5ca06363cd114669bfd560b0d1227f4b.png"
                              class="zpjp_div_pic7"/>
                         <p class="jiangpin_info7 a"
-                           style="color: #fa682e;">0.5元话费</p>
+                           style="color: #fa682e;">0.5元</p>
                     </div>
                     <div class="zpjp_div div_8">
                         <img src="/images/xx_img.png" class="zpjp_div_pic8" alt=""/>
@@ -405,10 +386,7 @@
                 <input type="button" name="name" class="zhiz" value="">
                 <img src="/images/zhizhen4.png" class="zhiz_img" style="display:none;" alt=""/>
             </div>
-
         </div>
-
-
         <div class="danmu">
             <div class="tongzhi">
                 <div class="zheceng"></div>
@@ -416,9 +394,8 @@
                 </ul>
             </div>
         </div>
-
         <div class="container_btns">
-            <a href="https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin">
+            <a href="#">
                 <div class="left_btn">
                     我的礼包
                 </div>
@@ -431,53 +408,20 @@
 </div>
 
 <!--弹层-->
-
-
 <div class="tc_bg">
     <div class="yizj_neitc">
         <img src="/images/zhongjiangli.png" class="zhongj"/>
         <div class="jiang">
-            <span id="zhongjiang_info_tanceng"></span>
+            <span id="info"></span>
             <img src="" id="prize_img" class="jiangjqun"/>
         </div>
-        <a href="https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin"><img
-                src="/images/zj_an.png" class="nei_but_cg"/></a>
+        <a href="#"><img src="/images/zj_an.png" class="nei_but_cg"/></a>
     </div>
     <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods" data-clipboard-action="copy"
          data-clipboard-target="#dhm"/>
 </div>
 
-<!--福利积分-->
-<div class="tc_bg_jifen">
-    <div class="yizj_neitc">
-        <img src="/images/zhongjiangli.png" class="zhongj"/>
-        <div class="jiang">
-            <span id="zhongjiang_info_tanceng_jifen"></span>
-            <img src="" id="prize_img_jifen" class="jiangjqun"/>
-        </div>
-        <a href="https://u.10010.cn/qAKaX"><img
-                src="/images/zj_use.png" class="nei_but_cg"/></a>
-    </div>
-    <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods_jifen" data-clipboard-action="copy"
-         data-clipboard-target="#dhm"/>
-</div>
-<!--签到金币-->
-<div class="tc_bg_signcoin">
-    <div class="yizj_neitc">
-        <img src="/images/zhongjiangli.png" class="zhongj"/>
-        <div class="jiang">
-            <span id="zhongjiang_info_tanceng_signcoin"></span>
-            <img src="" id="prize_img_signcoin" class="jiangjqun"/>
-        </div>
-        <a href="https://u.10010.cn/qAKax"><img
-                src="/images/zj_use.png" class="nei_but_cg"/></a>
-    </div>
-    <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods_signcoin" data-clipboard-action="copy"
-         data-clipboard-target="#dhm"/>
-</div>
 <!--温馨提示-->
-
-
 <div class="tc_wenxin">
     <div class="weizj_neitc">
         <img src="/images/touxiang.png" class="tou_img"/>
@@ -512,21 +456,6 @@
     </div>
     <img class="wenxin_guanbi_three" src="/images/tt_guanbi_img.png"/>
 </div>
-
-<!--提示兑换--温馨提示-->
-<div class="tc_wenxin_two">
-    <div class="wenxin_box_two">
-        <img class="xiaoziren" src="/images/xiaoziren.png"/>
-        <p class="wenxin_info_two">
-            您已没有抽奖机会，您是否消耗<span>10</span>个金币增加一次抽奖机会。
-        </p>
-        <p class="wenxin_btn_two" id="abandon">放弃抽奖</p>
-        <p class="wenxin_btn1" id="expenditure">立即抽奖</p>
-        <div class="clear_float"></div>
-    </div>
-    <img class="wenxin_guanbi_two" src="/images/tt_guanbi_img.png"/>
-</div>
-
 
 <!--活动规则谈层-->
 <div class="hd_guize_mengceng" style="display: none;">
@@ -591,229 +520,26 @@
 <span id="total" style="display: none"></span>
 <span id="da_num" style="display: none">10</span>
 <span id="da_ban" style="display: none">10</span>
-<span id="isexchange" style="display: none">yes</span>
 </body>
 <script src="/js/swiper.min.js"></script>
 <script>
-    /* 刷新图片验证码 */
-    function flushValidateCode() {
-        var aid = $.getUrlParam('aid');
-        var validateImgObject = document.getElementById("yz_img");
-        $.ajax({
-            type: 'GET',
-            url: "/luckdraw/getLoginCode?aid=" + aid + "&code=" + new Date().getTime(),
-            timeout: 50000, //超时时间设置，单位毫秒
-            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-            success: function (data) {
-                validateImgObject.src = data;
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            }
-        });
-    }
-
-
-    var exchangeflag = true;
-    $("#expenditure").click(function () {
-        var da_ban = $('#da_ban').text();//从后台拿到最大兑换次数
-        var da_num = $('#da_num').text();//从后台拿到每次兑换消耗金币数
-        var ebtotalnm = $('#ebtotalnm').text();//从后天拿到用户金币总数
-        if (exchangeflag) {
-            exchangeflag = false;
-            if (parseInt(da_num) <= parseInt(ebtotalnm)) {
-
-                $.ajax({
-                    type: 'GET',
-                    url: "/dailylottery/static/doubleball/duihuan?goldnumber=" + da_num + "&banrate=" + da_ban + "&usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016",
-                    timeout: 50000, //超时时间设置，单位毫秒
-                    contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-                    dataType: 'json',
-                    success: function (msg) {
-                        if ('3000' == msg.code) {
-
-                            jQuery.ajax({
-                                type: 'POST',
-                                url: "/dailylottery/static/doubleball/choujiang?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016&flag=convert",
-                                timeout: 15000, //超时时间设置，单位毫秒
-                                async: true,
-                                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-                                dataType: 'json',
-                                success: function (data) {
-                                    $('#ebtotalnm').text(parseInt($('#ebtotalnm').text()) - parseInt($('#da_num').text()));
-                                    if (data.Rsptype == "5555") {
-                                        rotateFunc(8, 22, "谢谢参与", "x_n");
-                                    } else if (data.Rsptype == "6666") {
-                                        rotateFunc(8, 22, "谢谢参与", "x_n");
-                                    } else if (data.RspCode == "9999") {
-                                        rotateFunc(8, 22, "谢谢参与", "x_n");
-                                    } else {
-                                        $(this).attr("disabled", "disabled");
-                                        $(".zhiz_img").css("display", "block");
-                                        clickfunc(data);
-                                    }
-                                    exchangeflag = true;
-
-                                },
-                                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                    $('#reminder').text("哎呀，没有奖品出没~");
-                                    $('.tc_wenxin').show();
-                                    /*$('body,html').addClass('ovfHiden');*/
-                                    rotateFunc(8, 22, "谢谢参与", "x_n");
-                                    exchangeflag = true;
-                                },
-                                complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
-                                    if (status == 'error') {
-                                        rotateFunc(8, 22, "谢谢参与", "x_n", '9');
-                                    }
-                                    exchangeflag = true;
-                                }
-                            });
-                        } else if ('3001' == msg.code) {
-                            $('#markedword').text('抱歉，金币兑换失败！请您稍后再试。');
-                            $('.tc_wenxin_three').show();
-                            exchangeflag = true;
-                        } else if ('3002' == msg.code) {
-                            $('#markedword').text('金币不足，请前往签到获取金币。');
-                            $('.tc_wenxin_three').show();
-                            exchangeflag = true;
-                        } else if ('3003' == msg.code) {
-                            $('#markedword').text('金币抽奖次数已达到上限，请您明天再来抽奖。');
-                            $('.tc_wenxin_three').show();
-                            exchangeflag = true;
-                        }
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        $('#markedword').text('抱歉，金币兑换失败！请您稍后再试。');
-                        $('.tc_wenxin_three').show();
-                        exchangeflag = true;
-                    }
-                });
-            } else {
-                $('#hint').text("金币不足，请前往签到获取金币。");
-                $('.tc_wenxin_four').show();
-                exchangeflag = true;
-            }
-        }
-    })
-
+    // 设置值
+    let item = sessionStorage.getItem("integral");
+    let uname = sessionStorage.getItem("uname");
+    // 设置积分数
+    $("#ebtotalnm").text(item);
+    // 计算抽奖次数
+    $("#changevalue").text(parseInt(item / 30));
+    // 设置用户名
+    $("#username").text(uname);
 </script>
 
-
+<!--抽奖js-->
 <script>
-    var times1 = 0;
-    $('#sharebutton').click(function () {
-        //分享
-        //判断计时器是否处于关闭状态
-        if (times1 == 0) {
-            times1 = 5; //设定间隔时间（秒）
-            //启动计时器，倒计时time秒后自动关闭计时器。
-            var index = setInterval(function () {
-                times1--;
-                if (times1 == 0) {
-                    clearInterval(index);
-                }
-            }, 500);
-            var usernumberofjsp = "7d1300cffb536a6c3aea78b1aa175016";
-            //分享监控ajax
-            $.ajax({
-                type: 'GET',
-                url: "/dailylottery/static/share/sharepagelog?usernumberofjsp=" + usernumberofjsp,
-                timeout: 50000, //超时时间设置，单位毫秒
-                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-                dataType: 'json',
-                success: function (msg) {
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                }
-            });
-            shareClient("1");
-        }
-    });
-    $('.aaaa').click(function () {
-        //分享
-        shareClient("2");
-    });
-    $('.bbbb').click(function () {
-        //分享
-        window.location.href = "http://m.client.10010.com/mobileService/unicomUserMedal/UnicomUserMedal.htm";
-    });
-</script>
-
-
-<script>
-    var bgColor = "";
-    var fontColor = "";
     var medal = "";
     //下面是大转盘部分
     var $btn = $('.zhiz');
-    var playnum = 100; //初始次数，由后台传入
-    $('.cj_num').html(playnum);
     var isture = 0;
-    var clickfunc = function (data) {
-
-        //data为随机出来的结果，根据概率后的结果
-        //后台传入的奖品下标
-        var index = parseInt(data.info.id);
-        console.log("奖项id：" + index)
-        var prizename = data.info.prizeName;
-        console.log("奖项名称：" + prizename)
-        var smlbbs = "xx";
-        var jifen = "xx";
-        var signcoin = "xx";
-        // medal = data.medal;
-        // if (index != 8) {
-        //     if (smlbbs == '1') {
-        //         $('.zj_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-        //         $('.zj_t').text(prizename);
-        //     } else if (jifen == "1") {
-        //         $('#prize_img_jifen').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-        //     } else if (signcoin == "1") {
-        //         $('#prize_img_signcoin').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-        //     } else {
-        //         $('#prize_img').attr("src", "https://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + data.RspImg);
-        //     }
-        // }
-        if (index != null && prizename != null) {
-            // if (jifen == "1") {
-            //     $('#zhongjiang_info_tanceng_jifen').text(prizename);
-            // } else if (signcoin == "1") {
-            //     $('#zhongjiang_info_tanceng_signcoin').text(prizename);
-            // } else {
-            //     $('#zhongjiang_info_tanceng').text(prizename);
-            // }
-            switch (index) {
-                case 1:
-                    rotateFunc(1, 338, prizename, "x_n", smlbbs, jifen, signcoin);
-                    break;
-                case 2:
-                    rotateFunc(2, 293, prizename, "s_w", smlbbs, jifen, signcoin);
-                    break;
-                case 3:
-                    rotateFunc(3, 248, prizename, "x_n", smlbbs, jifen, signcoin);
-                    break;
-                case 4:
-                    rotateFunc(4, 203, prizename, "wzj", smlbbs, jifen, signcoin);
-                    break;
-                case 5:
-                    rotateFunc(5, 158, prizename, "x_n", smlbbs, jifen, signcoin);
-                    break;
-                case 6:
-                    rotateFunc(6, 110, prizename, "x_n", smlbbs, jifen, signcoin);
-                    break;
-                case 7:
-                    rotateFunc(7, 65, prizename, "x_n", smlbbs, jifen, signcoin);
-                    break;
-                case 8:
-                    rotateFunc(8, 22, "谢谢参与", "x_n", smlbbs, jifen, signcoin);
-                    break;
-            }
-        } else {
-            $('#reminder').text("哎呀，没有奖品出没~");
-            $('.tc_wenxin').show();
-            /*$('body,html').addClass('ovfHiden');*/
-            rotateFunc(8, 22, "谢谢参与", "x_n");
-        }
-    }
     // 抽奖按钮触发
     $btn.click(function () {
         var total = $('#total').text();
@@ -837,7 +563,7 @@
                     timeout: 15000, //超时时间设置，单位毫秒
                     async: true,
                     headers: {
-                        'authorization': '8c685bac-2ebe-44f8-a0fd-eda36f63e83c'
+                        'authorization': sessionStorage.getItem("Authorization")
                     },
                     contentType: 'application/x-www-form-urlencoded; charset=utf-8',
                     dataType: 'json',
@@ -849,11 +575,13 @@
                             $(".zhiz_img").css("display", "block");
                             clickfunc(data);
                             flag = true;
+                            let ebtotalnmVal = $('#ebtotalnm').text()
+                            sessionStorage.setItem("integral", ebtotalnmVal - 30)
+                            $('#ebtotalnm').text(ebtotalnmVal - 30);
                             $('#changevalue').text(changevalue - 1);
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        /*$('body,html').addClass('ovfHiden');*/
                         rotateFunc(8, 22, "谢谢参与", "x_n", "9");
                     },
                     complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
@@ -863,46 +591,59 @@
                     }
                 });
             } else {
-                var isexchange = $('#isexchange').text();
-                if (isexchange == 'yes') {
-                    if (exchangeflag) {
-                        $('.tc_wenxin_two').show();
-                    }
-                } else {
-                    $('#reminder').text("您的机会次数不足~");
-                    $('.tc_wenxin').show();
-                }
-
-                /*$('body,html').addClass('ovfHiden');*/
+                $('#reminder').text("您的机会次数不足~");
+                $('.tc_wenxin').show();
             }
         }
     });
 
-    function shf() {
-        location.href = 'https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin';
+
+    var clickfunc = function (data) {
+        //data为随机出来的结果，根据概率后的结果
+        //后台传入的奖品下标
+        var index = parseInt(data.info.id);
+        console.log("奖项id：" + index)
+        var prizename = data.info.prizeName;
+        console.log("奖项名称：" + prizename)
+        var smlbbs = "xx";
+        medal = data.medal;
+        if (index != 8) {
+            // 中奖啦
+        }
+        if (index != null && prizename != null) {
+            switch (index) {
+                case 1:
+                    rotateFunc(1, 338, prizename, "x_n", smlbbs);
+                    break;
+                case 2:
+                    rotateFunc(2, 293, prizename, "s_w", smlbbs);
+                    break;
+                case 3:
+                    rotateFunc(3, 248, prizename, "x_n", smlbbs);
+                    break;
+                case 4:
+                    rotateFunc(4, 203, prizename, "wzj", smlbbs);
+                    break;
+                case 5:
+                    rotateFunc(5, 158, prizename, "x_n", smlbbs);
+                    break;
+                case 6:
+                    rotateFunc(6, 110, prizename, "x_n", smlbbs);
+                    break;
+                case 7:
+                    rotateFunc(7, 65, prizename, "x_n", smlbbs);
+                    break;
+                case 8:
+                    rotateFunc(8, 22, "谢谢参与", "x_n", smlbbs);
+                    break;
+            }
+        } else {
+            $('#reminder').text("哎呀，没有奖品出没~");
+            $('.tc_wenxin').show();
+            rotateFunc(8, 22, "谢谢参与", "x_n");
+        }
     }
 
-    function fff() {
-
-        location.href = '/dailylottery/static/doubleball/wodejiangpin?usernumberofjsp=7d1300cffb536a6c3aea78b1aa175016';
-
-    }
-
-    function qmc() {
-        location.href = 'https://m.client.10010.com/mobileService/openPlatform/openPlatLine.htm?to_url=https://upay.10010.com/npfwap/npfMobWeb/intimatepayfee/init';
-    }
-
-    function yuan() {
-        location.href = 'https://m.client.10010.com/mobileService/businessTransact/YoukuFlow/query.htm';
-    }
-
-    function worldcup() {
-        location.href = 'http://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/worldcup/static/textdl/userLogin';
-    }
-
-    $('#gosign').click(function () {
-        location.href = 'https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://act.10010.com/SigninApp/signin/querySigninActivity.htm%3FcUrl=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin';
-    })
 
     $(function () {
         $('.kzzf').each(function () {
@@ -963,6 +704,49 @@
         }
     });
 </script>
+
+
+<script>
+    var times1 = 0;
+    $('#sharebutton').click(function () {
+        // //分享
+        // //判断计时器是否处于关闭状态
+        // if (times1 == 0) {
+        //     times1 = 5; //设定间隔时间（秒）
+        //     //启动计时器，倒计时time秒后自动关闭计时器。
+        //     var index = setInterval(function () {
+        //         times1--;
+        //         if (times1 == 0) {
+        //             clearInterval(index);
+        //         }
+        //     }, 500);
+        //     var usernumberofjsp = "7d1300cffb536a6c3aea78b1aa175016";
+        //     //分享监控ajax
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: "/dailylottery/static/share/sharepagelog?usernumberofjsp=" + usernumberofjsp,
+        //         timeout: 50000, //超时时间设置，单位毫秒
+        //         contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        //         dataType: 'json',
+        //         success: function (msg) {
+        //         },
+        //         error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //         }
+        //     });
+        //     shareClient("1");
+        // }
+    });
+    $('.aaaa').click(function () {
+        //分享
+        shareClient("2");
+    });
+    $('.bbbb').click(function () {
+        //分享
+        window.location.href = "http://m.client.10010.com/mobileService/unicomUserMedal/UnicomUserMedal.htm";
+    });
+</script>
+
+
 <script>
     var arrayTOTAL = new Array();
     // $(function () {
@@ -989,52 +773,6 @@
     //获取随机的数组
     Array.prototype.getRandomItem = function () {
         return this[Math.floor(Math.random() * this.length)]
-    }
-
-
-    function time_range() {
-        //第一时间段开始
-        var b = new Date();
-        //第一时间段结束
-        var e = new Date();
-
-        //第二时间段开始
-        var two_s = new Date();
-        //第二时间段结束
-        var two_e = new Date();
-
-        //第三时间段开始
-        var three_s = new Date();
-        //第三时间段结束
-        var three_e = new Date();
-
-
-        var n = new Date();
-
-        b.setHours(6);
-        b.setMinutes(00);
-        e.setHours(8);
-        e.setMinutes(30);
-
-        two_s.setHours(12);
-        two_s.setMinutes(00);
-        two_e.setHours(13);
-        two_e.setMinutes(00);
-
-        three_s.setHours(1);
-        three_s.setMinutes(30);
-        three_e.setHours(5);
-        three_e.setMinutes(00);
-
-        if (n.getTime() - b.getTime() > 0 && n.getTime() - e.getTime() < 0) {
-            return 1300;
-        } else if (n.getTime() - two_s.getTime() > 0 && n.getTime() - two_e.getTime() < 0) {
-            return 1400;
-        } else if (n.getTime() - three_s.getTime() > 0 && n.getTime() - three_e.getTime() < 0) {
-            return 4000;
-        } else {
-            return 2800;
-        }
     }
 </script>
 </html>
