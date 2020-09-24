@@ -205,12 +205,15 @@
                         // 解析token 进入下一个页面
                         var info = data.info;
                         var uname = info.uname;
-                        var Integral = info.Integral;
-
-                        //window.location.href = "/luckdraw/start/toPage?aid=" + aid;
+                        var integral = info.integral;
                         var token = xhr.getResponseHeader('Authorization');
                         console.log(token)
-
+                        // 存入本地
+                        sessionStorage.setItem("uname", uname);
+                        sessionStorage.setItem("integral", integral);
+                        sessionStorage.setItem("Authorization", token);
+                        // 跳转页面
+                        window.location.href = "/luckdraw/activityMain?aid=" + aid;
                     } else {
                         $("#tip_img_message").show();
                         $('.lqjlBtn').bind("click", function () {
@@ -226,20 +229,6 @@
         }
     }
 
-    function standardPost (url, args)
-    {
-        var form = $("<form method='post'></form>");
-        form.attr({"action":url});
-        for (arg in args)
-        {
-            var input = $("<input type='hidden'>");
-            input.attr({"name":arg});
-            input.val(args[arg]);
-            form.append(input);
-        }
-        $("html").append(form);
-        form.submit();
-    }
     //调用
 
 

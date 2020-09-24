@@ -253,7 +253,7 @@ public class LuckdrawController {
     @GetMapping("/activity")
     public String activityToPage(@RequestParam("aid") String aid, HttpServletRequest request) {
         logger.info("luckdraw quest param ,aid:{} ", aid);
-        return "activityuckdraw";
+        return "activityLogin";
     }
 
     /**
@@ -276,7 +276,7 @@ public class LuckdrawController {
             "\t		}\n" +
             "\t    \"message\": \"信息\",\n" +
             "\t}\n")})
-    @PostMapping("/start/toPage")
+    @GetMapping("/activityMain")
     public String activityToPageLuckdraw(@RequestParam("aid") String aid, HttpServletRequest request) {
         return "startluckdraw";
     }
