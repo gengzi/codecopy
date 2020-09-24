@@ -28,10 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -79,13 +76,12 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      * 减少奖品数目
      *
      * @param activityid 活动id
-     * @param token      用户的token
      * @return {@link TbPrize}  获得的奖品信息
      */
     @Transactional
     @LuckdrawLock(name = LuckdrawLock.LockType.REDIS_LOCK)
     @Override
-    public TbPrize luckdraw(@LuckdrawLockKey String activityid, String token) {
+    public TbPrize luckdraw(@LuckdrawLockKey String activityid) {
 
         logger.info("抽奖开始");
         List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
@@ -95,12 +91,8 @@ public class LuckdrawServiceImpl implements LuckdrawService {
             logger.info("校验奖品概率不超过1：{}", flag);
             if (flag) {
                 // 从缓存中获得用户积分
-                final String userinfokey = String.format(LuckdrawContants.USERINFOKEY, token);
-                SysUser sysUser = (SysUser) redisUtil.get(userinfokey);
-
-                // TODO 测试UserSessionThreadLocal 能否正常使用
-                SysUser user = UserSessionThreadLocal.getUser();
-                logger.info("threadloacl 获取到的用户信息:", user);
+                SysUser sysUser = UserSessionThreadLocal.getUser();
+                logger.info("threadloacl 获取到的用户信息:", sysUser);
 
                 final String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
                 long integral = redisUtil.incr(onleyintegralkey, 0);
@@ -165,6 +157,86 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     }
 
     /**
+     * 根据活动id，mq抽奖
+     *
+     * @param kafkaLuckdrawEntity {@link KafkaLuckdrawEntity}  抽奖数据
+     * @return {@link TbPrize}  获得的奖品信息
+     */
+    @Override
+    public TbPrize mqLuckdraw(KafkaLuckdrawEntity kafkaLuckdrawEntity) {
+        String activityid = kafkaLuckdrawEntity.getActivityId();
+        SysUser sysUser = kafkaLuckdrawEntity.getSysUser();
+        logger.info("mq抽奖开始");
+        List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
+        if (CollectionUtils.isNotEmpty(tbPrizes)) {
+            logger.info("校验奖品概率");
+            boolean flag = this.checkPrizeProbability(tbPrizes);
+            logger.info("校验奖品概率不超过1：{}", flag);
+            if (flag) {
+                final String onleyintegralkey = String.format(LuckdrawContants.ONLEYINTEGRALKEY, activityid, sysUser.getUid());
+                long integral = redisUtil.incr(onleyintegralkey, 0);
+                // 冻结积分信息
+                logger.info("校验用户积分是否足够，现在积分：{}", integral);
+                if ((integral - 30) >= 0) {
+                    logger.info("积分足够，可以抽奖");
+                    // 允许抽奖
+                    // 扣积分
+                    redisUtil.decr(onleyintegralkey, 30);
+                    // db扣积分
+                    intergralDao.deductionIntergral(activityid, sysUser.getUid(), 30);
+                    // 抽奖返回奖项
+                    Integer algorithlm = startLuckdraw(activityid, tbPrizes);
+                    // 判断几等奖，扣奖品表的库存
+                    TbPrize tbPrize = tbPrizes.get(algorithlm);
+                    logger.info("jaingpin 信息：{}", tbPrize);
+
+                    // 预扣缓存库存
+                    String onleyprizekey = String.format(LuckdrawContants.ONLEYPRIZEKEY, activityid, tbPrize.getId());
+                    long decr = redisUtil.decr(onleyprizekey, 1);
+                    if (decr < 0) {
+                        // 直接阻断，返回未抽到
+                        // 减少额外请求，请求数据库
+                        // 这里可能出现，redis 预减缓存成功，db 失败。 导致redis的数据 与 库不一致。
+                        logger.info("未抽到！");
+                        return null;
+                    }
+
+                    // 减真实库存
+                    Integer integer = prizeDao.deductionPrizeNum(activityid, tbPrize.getId());
+                    if (integer <= 0) {
+                        return null;
+                    }
+                    // 减库存失败，就不需要记录发奖信息
+                    // 记录发奖信息
+                    logger.info("记录发奖信息开始");
+                    TbAwardee tbAwardee = new TbAwardee();
+                    tbAwardee.setActivityId(activityid);
+                    tbAwardee.setAwardeeName(sysUser.getUname());
+                    tbAwardee.setCreatetime(new Date());
+                    tbAwardee.setPrizeId(tbPrize.getId());
+                    tbAwardee.setPrizeName(tbPrize.getPrizeName());
+                    // 获奖数目 1
+                    tbAwardee.setPrizeNum(1);
+                    // 是否发放，奖品缺一个奖品类型字段
+                    short isGrant = 1;
+                    tbAwardee.setIsGrant(isGrant);
+                    awardeeDao.save(tbAwardee);
+                    logger.info("记录发奖信息结束");
+
+                    return tbPrize;
+                } else {
+                    logger.info("积分不足哦！");
+                }
+
+            } else {
+                logger.error("奖品信息概率有误");
+            }
+        }
+        return null;
+
+    }
+
+    /**
      * 根据活动id，抽奖- Mq 方式
      *
      * @param activityid 活动id
@@ -193,7 +265,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     KafkaLuckdrawEntity kafkaLuckdrawEntity = new KafkaLuckdrawEntity();
                     kafkaLuckdrawEntity.setActivityId(activityid);
                     kafkaLuckdrawEntity.setSysUser(sysUser);
-                    kafkaLuckdrawEntity.setIdempotencyFiled(activityid + "" + System.currentTimeMillis());
+                    kafkaLuckdrawEntity.setIdempotencyFiled(activityid + ":" + System.currentTimeMillis());
                     // 调用kafka 服务
                     kafkaService.sendLuckdrawMsgInfo(kafkaLuckdrawEntity);
                 } else {
@@ -219,7 +291,6 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         // 调用redis ，查询当前获奖信息
         // redis 的key  用户id+活动id  存的数据 奖品信息
         // 返回
-
 
 
         return null;
@@ -433,6 +504,23 @@ public class LuckdrawServiceImpl implements LuckdrawService {
             myAwardeeVos.add(myAwardeeVo);
         });
         return myAwardeeVos;
+    }
+
+    /**
+     * 根据活动id和用户id，查询我的奖品信息最新的一条
+     *
+     * @param activityid 活动id
+     * @return TbPrize 获得的奖品信息
+     */
+    @Override
+    public TbPrize getMyPrizeInfoByMq(String activityid) {
+        SysUser sysUser = UserSessionThreadLocal.getUser();
+        logger.info("threadloacl 获取到的用户信息:", sysUser);
+        TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndAwardeeIdOrderByAwardeeTime(activityid, sysUser.getUid());
+        Integer prizeId = tbAwardee.getPrizeId();
+        List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
+        Optional<TbPrize> optionalTbPrize = tbPrizes.stream().filter(tbPrize -> tbPrize.getId() == prizeId).findFirst();
+        return optionalTbPrize.orElseGet(null);
     }
 
 

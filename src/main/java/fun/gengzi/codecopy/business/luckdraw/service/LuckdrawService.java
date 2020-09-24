@@ -16,10 +16,17 @@ public interface LuckdrawService {
      * 根据活动id，抽奖
      *
      * @param activityid 活动id
-     * @param token      用户的token 信息
      * @return {@link TbPrize}  获得的奖品信息
      */
-    TbPrize luckdraw(String activityid, String token);
+    TbPrize luckdraw(String activityid);
+
+    /**
+     * 根据活动id，mq抽奖
+     *
+     * @param kafkaLuckdrawEntity {@link KafkaLuckdrawEntity}  抽奖数据
+     * @return {@link TbPrize}  获得的奖品信息
+     */
+    TbPrize mqLuckdraw(KafkaLuckdrawEntity kafkaLuckdrawEntity);
 
     /**
      * 根据活动id，抽奖- Mq 方式
@@ -90,6 +97,15 @@ public interface LuckdrawService {
      * @return {@link  List<AwardeeVo>} 用户活动积分信息
      */
     List<MyAwardeeVo> getMyPrizeInfo(String activityid, String uid);
+
+
+    /**
+     * 根据活动id和用户id，查询我的奖品信息
+     *
+     * @param activityid 活动id
+     * @return {@link  List<AwardeeVo>} 用户活动积分信息
+     */
+    TbPrize getMyPrizeInfoByMq(String activityid);
 
 
 }

@@ -75,7 +75,6 @@ import java.util.List;
  * redis 预减库存，会出现负数
  */
 
-
 /**
  * <h1>luckdraw</h1>
  *
@@ -93,8 +92,6 @@ public class LuckdrawController {
      * 查询当前用户的抽奖记录和发放记录
      * 查看当前用户获得的奖品
      */
-
-
     private Logger logger = LoggerFactory.getLogger(LuckdrawController.class);
 
     @Autowired
@@ -306,8 +303,7 @@ public class LuckdrawController {
     public ReturnData start(@RequestParam("aid") String aid, HttpServletRequest request) {
         logger.info("luckdraw quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        TbPrize luckdraw = luckdrawService.luckdraw(aid, token);
+        TbPrize luckdraw = luckdrawService.luckdraw(aid);
         ret.setSuccess();
         if (luckdraw == null || luckdraw.getId() == 0) {
             ret.setInfo("积分不足哦！");
@@ -341,19 +337,16 @@ public class LuckdrawController {
         logger.info("startByKafka quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        TbPrize luckdraw = luckdrawService.luckdraw(aid, token);
+        LuckdrawEnum luckdrawEnum = luckdrawService.luckdrawByMq(aid, token);
         ret.setSuccess();
-        if (luckdraw == null || luckdraw.getId() == 0) {
-            ret.setInfo("积分不足哦！");
-        } else {
-            ret.setInfo(luckdraw);
-        }
+        ret.setInfo(luckdrawEnum.getMsg());
+        ret.setStatus(luckdrawEnum.getCode());
         return ret;
     }
 
 
     /**
-     * 查询抽奖结果
+     * 查询抽奖结果,mq 的形式
      *
      * @param aid
      * @param request
@@ -373,14 +366,10 @@ public class LuckdrawController {
     public ReturnData qryLuckdrawResult(@RequestParam("aid") String aid, HttpServletRequest request) {
         logger.info("qryLuckdrawResult quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
-
-
+        TbPrize myPrizeInfoByMq = luckdrawService.getMyPrizeInfoByMq(aid);
+        // 注意设置 success 和 设置 info 的顺序，前者的构造，是会替换info 的数据
         ret.setSuccess();
-//        if (luckdraw == null || luckdraw.getId() == 0) {
-//            ret.setInfo("未中奖哦！");
-//        } else {
-//            ret.setInfo(luckdraw);
-//        }
+        ret.setInfo(myPrizeInfoByMq);
         return ret;
     }
 
@@ -422,7 +411,7 @@ public class LuckdrawController {
         // 移除随机验证码的缓存
         redisUtil.del(String.format(LuckdrawContants.VALIDCODEKEY, verificationVo.getCode()));
 
-        // TODO 默认校验成功
+        // TODO 默认校验短信验证码成功
         boolean flag = true;
         // 根据手机号获取用户信息
         if (flag) {

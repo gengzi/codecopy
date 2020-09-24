@@ -16,6 +16,11 @@ public interface KafkaService {
      */
     void sendLuckdrawMsgInfo(KafkaLuckdrawEntity kafkaLuckdrawEntity);
 
+    /**
+     * 消费kafka中的抽奖信息
+     * @param kafkaLuckdrawEntity
+     */
+    void receiveLuckdrawMsgInfo(KafkaLuckdrawEntity kafkaLuckdrawEntity);
 
 
 }

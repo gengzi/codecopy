@@ -40,4 +40,18 @@ public interface AwardeeDao extends JpaRepository<TbAwardee, Integer> {
      */
     List<TbAwardee> findTbAwardeeByActivityIdAndAwardeeIdOrderByAwardeeTime(String activityId,String awardeeId);
 
+    /**
+     * 根据活动id和获奖人id，查询最新一条数据
+     * @param activityId 活动id
+     * @param awardeeId 获奖人id
+     * @return
+     */
+    TbAwardee findTopByActivityIdAndAwardeeIdOrderByAwardeeTime(String activityId,String awardeeId);
+
+
+
+
+
+
+
 }
