@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,6 +74,24 @@ import java.util.List;
  * <p>
  * <p>
  * redis 预减库存，会出现负数
+ * <p>
+ * 2020年9月24日17:05:05
+ * activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
+ * 对于页面的跳转，尽管有些页面是需要加权限限制的
+ * <p>
+ * 2020年9月24日17:05:05
+ * activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
+ * 对于页面的跳转，尽管有些页面是需要加权限限制的
+ * <p>
+ * 2020年9月24日17:05:05
+ * activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
+ * 对于页面的跳转，尽管有些页面是需要加权限限制的
+ */
+
+/**
+ *  2020年9月24日17:05:05
+ *  activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
+ *  对于页面的跳转，尽管有些页面是需要加权限限制的
  */
 
 /**
@@ -431,14 +450,30 @@ public class LuckdrawController {
                     ret.setInfo(tokenInfoEntity);
                     return ret;
                 }
+            } else {
+                // 用户信息不存在修改为直接新增用户信息，初始化积分9000分
+                SysUser sysUser = new SysUser();
+                sysUser.setPhone(verificationVo.getPhone());
+                sysUser.setUtype(1);
+                sysUser.setUname(verificationVo.getPhone().substring(8, 11));
+                sysUser.setCreatetime(new Date());
+                SysUserDTO sysUserDTO = luckdrawService.initUserInfo(aid, sysUser);
+                // 返回token 其他数据
+                final TokenInfoEntity tokenInfoEntity = new TokenInfoEntity();
+                tokenInfoEntity.setUname(sysUserDTO.getUname());
+                tokenInfoEntity.setIntegral(String.valueOf(sysUserDTO.getIntegral()));
+                // 设置响应头 token
+                response.setHeader(HttpHeaders.AUTHORIZATION, sysUserDTO.getToken());
+                ret.setSuccess();
+                ret.setInfo(tokenInfoEntity);
+                return ret;
             }
-            ret.setFailure(LuckdrawEnum.ERROR_DEFAULT.getMsg());
+            ret.setFailure(LuckdrawEnum.ERROR_VALIDCODE.getMsg());
             return ret;
         } else {
             ret.setFailure(LuckdrawEnum.ERROR_VALIDCODE.getMsg());
             return ret;
         }
-
     }
 
 

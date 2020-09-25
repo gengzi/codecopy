@@ -45,7 +45,7 @@ public class TbAwardee {
     //获奖个数
     @Column(name = "prize_num")
     private Integer prizeNum;
-//奖品是否发放 1 以发放 0 未发放
+    //奖品是否发放 1 以发放 0 未发放
     @Column(name = "is_grant")
     private short isGrant;
     //发放时间

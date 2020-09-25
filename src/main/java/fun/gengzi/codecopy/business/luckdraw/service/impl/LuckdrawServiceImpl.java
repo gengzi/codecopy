@@ -523,5 +523,37 @@ public class LuckdrawServiceImpl implements LuckdrawService {
         return optionalTbPrize.orElseGet(null);
     }
 
+    /**
+     * 初始化用户积分
+     *
+     * @param activityid 活动id
+     * @param sysUser    {@link SysUser}
+     * @return
+     */
+    @Override
+    public SysUserDTO initUserInfo(String activityid, SysUser sysUser) {
+        SysUser user = sysUserDao.save(sysUser);
+        TbIntegral tbIntegral = new TbIntegral();
+        tbIntegral.setActivityid(activityid);
+        tbIntegral.setCreatetime(new Date());
+        tbIntegral.setUid(user.getUid());
+        tbIntegral.setUname(user.getUname());
+        tbIntegral.setIntegral(9000);
+        TbIntegral saveTbIntegral = intergralDao.save(tbIntegral);
+        // 创建token
+        String token = IdUtil.randomUUID();
+        String userInfokey = LuckdrawContants.USERPREFIX + token;
+        SysUserDTO sysUserDTO = new SysUserDTO();
+        BeanUtils.copyProperties(sysUser, sysUserDTO); //使用更新对象的非空值去覆盖待更新对象
+        sysUserDTO.setToken(token);
+        boolean flag = redisUtil.set(userInfokey, sysUserDTO, LuckdrawContants.INVALIDTIME);
+        if (!flag) {
+            throw new RrException("保存用户信息失败");
+        }
+        sysUserDTO.setIntegral(saveTbIntegral.getIntegral());
+        // 返回用户数据
+        return sysUserDTO;
+    }
+
 
 }

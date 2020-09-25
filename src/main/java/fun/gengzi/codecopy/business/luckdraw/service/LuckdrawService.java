@@ -107,5 +107,13 @@ public interface LuckdrawService {
      */
     TbPrize getMyPrizeInfoByMq(String activityid);
 
+    /**
+     * 初始化用户积分
+     *
+     * @param activityid 活动id
+     * @param sysUser    {@link SysUser}
+     * @return
+     */
+    SysUserDTO initUserInfo(String activityid, SysUser sysUser);
 
 }

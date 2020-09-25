@@ -13,6 +13,7 @@ public class SysUserDTO extends SysUser implements Serializable {
 
     private static final long serialVersionUID = -343978074020579921L;
     private String token;
+    private Integer integral;
 
     @Override
     public String toString() {
