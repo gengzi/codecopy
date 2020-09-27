@@ -78,20 +78,6 @@ import java.util.List;
  * 2020年9月24日17:05:05
  * activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
  * 对于页面的跳转，尽管有些页面是需要加权限限制的
- * <p>
- * 2020年9月24日17:05:05
- * activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
- * 对于页面的跳转，尽管有些页面是需要加权限限制的
- * <p>
- * 2020年9月24日17:05:05
- * activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
- * 对于页面的跳转，尽管有些页面是需要加权限限制的
- */
-
-/**
- *  2020年9月24日17:05:05
- *  activity 的字段，考虑也放入 本地线程信息中，方便这些字段的使用
- *  对于页面的跳转，尽管有些页面是需要加权限限制的
  */
 
 /**
@@ -356,10 +342,14 @@ public class LuckdrawController {
         logger.info("startByKafka quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        LuckdrawEnum luckdrawEnum = luckdrawService.luckdrawByMq(aid, token);
-        ret.setSuccess();
-        ret.setInfo(luckdrawEnum.getMsg());
-        ret.setStatus(luckdrawEnum.getCode());
+        LuckdrawByMqEntity luckdrawByMqEntity = luckdrawService.luckdrawByMq(aid, token);
+        if (luckdrawByMqEntity != null && luckdrawByMqEntity.getLuckdrawEnum().equals(LuckdrawEnum.SUCCESS_DEFAULT)) {
+            // 消息已上送到mq
+            long currentTime = luckdrawByMqEntity.getCurrentTime();
+            ret.setSuccess();
+            ret.setInfo(currentTime);
+            ret.setStatus(luckdrawByMqEntity.getLuckdrawEnum().getCode());
+        }
         return ret;
     }
 
@@ -382,10 +372,10 @@ public class LuckdrawController {
             "\t}\n")})
     @PostMapping("/start/qryLuckdrawResult")
     @ResponseBody
-    public ReturnData qryLuckdrawResult(@RequestParam("aid") String aid, HttpServletRequest request) {
-        logger.info("qryLuckdrawResult quest param ,aid:{} ", aid);
+    public ReturnData qryLuckdrawResult(@RequestParam("aid") String aid, @RequestParam("currentTime") String currentTime, HttpServletRequest request) {
+        logger.info("qryLuckdrawResult quest param ,aid:{},currentTime:{} ", aid, currentTime);
         ReturnData ret = ReturnData.newInstance();
-        TbPrize myPrizeInfoByMq = luckdrawService.getMyPrizeInfoByMq(aid);
+        TbPrize myPrizeInfoByMq = luckdrawService.getMyPrizeInfoByMq(aid,currentTime);
         // 注意设置 success 和 设置 info 的顺序，前者的构造，是会替换info 的数据
         ret.setSuccess();
         ret.setInfo(myPrizeInfoByMq);

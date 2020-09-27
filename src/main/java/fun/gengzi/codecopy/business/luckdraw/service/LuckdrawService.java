@@ -35,7 +35,7 @@ public interface LuckdrawService {
      * @param token      用户的token 信息
      * @return {@link LuckdrawEnum}  返回的响应信息
      */
-    LuckdrawEnum luckdrawByMq(String activityid, String token);
+    LuckdrawByMqEntity luckdrawByMq(String activityid, String token);
 
     /**
      * 查询奖品信息
@@ -102,10 +102,11 @@ public interface LuckdrawService {
     /**
      * 根据活动id和用户id，查询我的奖品信息
      *
-     * @param activityid 活动id
+     * @param activityid  活动id
+     * @param currentTime kafka 消息标识
      * @return {@link  List<AwardeeVo>} 用户活动积分信息
      */
-    TbPrize getMyPrizeInfoByMq(String activityid);
+    TbPrize getMyPrizeInfoByMq(String activityid, String currentTime);
 
     /**
      * 初始化用户积分

@@ -2,6 +2,7 @@ package fun.gengzi.codecopy.business.luckdraw.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * <h1>抽奖枚举类</h1>

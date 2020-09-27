@@ -1,5 +1,6 @@
 package fun.gengzi.codecopy.business.luckdraw.service.impl;
 
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
@@ -24,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -215,6 +215,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     tbAwardee.setCreatetime(new Date());
                     tbAwardee.setPrizeId(tbPrize.getId());
                     tbAwardee.setPrizeName(tbPrize.getPrizeName());
+                    tbAwardee.setIdempotency(kafkaLuckdrawEntity.getIdempotencyFiled());
                     // 获奖数目 1
                     tbAwardee.setPrizeNum(1);
                     // 是否发放，奖品缺一个奖品类型字段
@@ -243,10 +244,9 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      * @param token      用户的token 信息
      */
     @Override
-    public LuckdrawEnum luckdrawByMq(String activityid, String token) {
-
-
+    public LuckdrawByMqEntity luckdrawByMq(String activityid, String token) {
         logger.info("抽奖开始");
+        LuckdrawByMqEntity luckdrawByMqEntity = new LuckdrawByMqEntity();
         List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
         if (CollectionUtils.isNotEmpty(tbPrizes)) {
             logger.info("校验奖品概率");
@@ -265,19 +265,22 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     KafkaLuckdrawEntity kafkaLuckdrawEntity = new KafkaLuckdrawEntity();
                     kafkaLuckdrawEntity.setActivityId(activityid);
                     kafkaLuckdrawEntity.setSysUser(sysUser);
-                    kafkaLuckdrawEntity.setIdempotencyFiled(activityid + ":" + System.currentTimeMillis());
+                    long currentTime = System.currentTimeMillis();
+                    kafkaLuckdrawEntity.setIdempotencyFiled(activityid + ":" + currentTime);
                     // 调用kafka 服务
                     kafkaService.sendLuckdrawMsgInfo(kafkaLuckdrawEntity);
+                    luckdrawByMqEntity.setCurrentTime(currentTime);
+                    luckdrawByMqEntity.setLuckdrawEnum(LuckdrawEnum.SUCCESS_DEFAULT);
                 } else {
                     logger.info("积分不足哦！");
-                    return LuckdrawEnum.ERROR_INTEGRAL_LITTLE;
+                    throw new RrException(LuckdrawEnum.ERROR_INTEGRAL_LITTLE.getMsg(), LuckdrawEnum.ERROR_INTEGRAL_LITTLE.getCode());
                 }
             } else {
                 logger.error("奖品信息概率有误");
-                return LuckdrawEnum.ERROR_DEFAULT;
+                throw new RrException("奖品信息概率有误");
             }
         }
-        return LuckdrawEnum.SUCCESS_DEFAULT;
+        return luckdrawByMqEntity;
     }
 
     /**
@@ -509,18 +512,35 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     /**
      * 根据活动id和用户id，查询我的奖品信息最新的一条
      *
-     * @param activityid 活动id
+     * @param activityid  活动id
+     * @param currentTime kafka 消息标识
      * @return TbPrize 获得的奖品信息
      */
     @Override
-    public TbPrize getMyPrizeInfoByMq(String activityid) {
+    public TbPrize getMyPrizeInfoByMq(String activityid, String currentTime) {
+        // 判断时间戳 如果小于的当前时间五分钟，就不走轮询查询获奖信息接口了，直接查询我的礼包接口
+        final TbPrize tbPrizeToResult = new TbPrize();
+        Date oldDate = DateUtil.date(Long.parseLong(currentTime));
+        Date currentDate = DateUtil.date(System.currentTimeMillis());
+        long minute = DateUtil.between(oldDate, currentDate, DateUnit.MINUTE);
+        if (minute >= 5) {
+            return tbPrizeToResult;
+        }
         SysUser sysUser = UserSessionThreadLocal.getUser();
         logger.info("threadloacl 获取到的用户信息:", sysUser);
-        TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndAwardeeIdOrderByAwardeeTime(activityid, sysUser.getUid());
-        Integer prizeId = tbAwardee.getPrizeId();
-        List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
-        Optional<TbPrize> optionalTbPrize = tbPrizes.stream().filter(tbPrize -> tbPrize.getId() == prizeId).findFirst();
-        return optionalTbPrize.orElseGet(null);
+        boolean flag = redisUtil.hasKey(currentTime);
+        if (flag) {
+            String isLuckdrawFlag = (String) redisUtil.get(activityid + ":" + currentTime);
+            if ("1".equals(isLuckdrawFlag)) {
+                // 表示可以查到获取信息,0标识抽奖失败
+                TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndAwardeeIdAndIdempotency(activityid, sysUser.getUid());
+                Integer prizeId = tbAwardee.getPrizeId();
+                List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
+                Optional<TbPrize> optionalTbPrize = tbPrizes.stream().filter(tbPrize -> tbPrize.getId() == prizeId).findFirst();
+                return optionalTbPrize.orElseGet(null);
+            }
+        }
+        return tbPrizeToResult;
     }
 
     /**

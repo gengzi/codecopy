@@ -57,15 +57,16 @@ public class KafkaServiceImpl implements KafkaService {
             long minute = DateUtil.between(oldDate, currentDate, DateUnit.MINUTE);
             if (minute >= 1) {
                 return;
-            }else{
+            } else {
                 // 校验当前消息的幂等性，保证消费消息不重复
                 boolean flag = redisUtil.hasKey(idempotencyFiled);
-                if(!flag){
+                if (!flag) {
                     // 不存在，存入到redis
-                    redisUtil.set(idempotencyFiled,"");
+                    redisUtil.set(idempotencyFiled, "0");
                     // 调用抽奖算法，依然走一遍校验流程
                     String activityId = kafkaLuckdrawEntity.getActivityId();
-                    luckdrawService.luckdraw(activityId);
+                    luckdrawService.mqLuckdraw(kafkaLuckdrawEntity);
+                    redisUtil.set(idempotencyFiled, "1");
                 }
             }
         }
