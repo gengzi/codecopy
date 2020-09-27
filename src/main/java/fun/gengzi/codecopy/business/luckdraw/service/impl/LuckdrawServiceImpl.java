@@ -19,6 +19,7 @@ import fun.gengzi.codecopy.business.luckdraw.service.KafkaService;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.exception.RrException;
+import fun.gengzi.codecopy.utils.datamask.BeanDataMaskUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,8 +133,10 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     logger.info("记录发奖信息开始");
                     TbAwardee tbAwardee = new TbAwardee();
                     tbAwardee.setActivityId(activityid);
+                    tbAwardee.setAwardeeId(sysUser.getUid());
                     tbAwardee.setAwardeeName(sysUser.getUname());
                     tbAwardee.setCreatetime(new Date());
+                    tbAwardee.setAwardeeTime(new Date());
                     tbAwardee.setPrizeId(tbPrize.getId());
                     tbAwardee.setPrizeName(tbPrize.getPrizeName());
                     // 获奖数目 1
@@ -211,8 +214,10 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     logger.info("记录发奖信息开始");
                     TbAwardee tbAwardee = new TbAwardee();
                     tbAwardee.setActivityId(activityid);
+                    tbAwardee.setAwardeeId(sysUser.getUid());
                     tbAwardee.setAwardeeName(sysUser.getUname());
                     tbAwardee.setCreatetime(new Date());
+                    tbAwardee.setAwardeeTime(new Date());
                     tbAwardee.setPrizeId(tbPrize.getId());
                     tbAwardee.setPrizeName(tbPrize.getPrizeName());
                     tbAwardee.setIdempotency(kafkaLuckdrawEntity.getIdempotencyFiled());
@@ -342,6 +347,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
                     logger.info("记录发奖信息开始");
                     TbAwardee tbAwardee = new TbAwardee();
                     tbAwardee.setActivityId(activityid);
+                    tbAwardee.setAwardeeId(uid);
                     tbAwardee.setAwardeeName(uid);
                     tbAwardee.setAwardeeTime(new Date());
                     tbAwardee.setCreatetime(new Date());
@@ -482,10 +488,10 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     public List<AwardeeVo> getAwardeeInfo(String activityid) {
         List<TbAwardee> tbAwardees = awardeeDao.qryTbAwardeeInfoByActivityIdAndDateNew(activityid);
         ArrayList<AwardeeVo> awardeeVos = new ArrayList<>(tbAwardees.size());
-        AwardeeVo awardeeVo = new AwardeeVo();
         tbAwardees.forEach(tbAwardee -> {
+            AwardeeVo awardeeVo = new AwardeeVo();
             BeanUtils.copyProperties(tbAwardee, awardeeVo);
-            awardeeVos.add(awardeeVo);
+            awardeeVos.add((AwardeeVo) BeanDataMaskUtils.maskObj(awardeeVo));
         });
         return awardeeVos;
     }
@@ -501,8 +507,8 @@ public class LuckdrawServiceImpl implements LuckdrawService {
     public List<MyAwardeeVo> getMyPrizeInfo(String activityid, String uid) {
         List<TbAwardee> tbAwardees = awardeeDao.findTbAwardeeByActivityIdAndAwardeeIdOrderByAwardeeTime(activityid, uid);
         ArrayList<MyAwardeeVo> myAwardeeVos = new ArrayList<>(tbAwardees.size());
-        MyAwardeeVo myAwardeeVo = new MyAwardeeVo();
         tbAwardees.forEach(tbAwardee -> {
+            MyAwardeeVo myAwardeeVo = new MyAwardeeVo();
             BeanUtils.copyProperties(tbAwardee, myAwardeeVo);
             myAwardeeVos.add(myAwardeeVo);
         });
@@ -533,7 +539,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
             String isLuckdrawFlag = (String) redisUtil.get(activityid + ":" + currentTime);
             if ("1".equals(isLuckdrawFlag)) {
                 // 表示可以查到获取信息,0标识抽奖失败
-                TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndAwardeeIdAndIdempotency(activityid, sysUser.getUid());
+                TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndIdempotency(activityid, sysUser.getUid());
                 Integer prizeId = tbAwardee.getPrizeId();
                 List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
                 Optional<TbPrize> optionalTbPrize = tbPrizes.stream().filter(tbPrize -> tbPrize.getId() == prizeId).findFirst();

@@ -315,7 +315,7 @@
 <img src="/images/liangduan1.png" alt="" class="liangduan">
 <div class="container">
     <div class="goldDiv">
-        <img src="/images/goldIcon.png" class="goldIcon fl">
+        <img src="/images/jifen.png" class="goldIcon fl">
         <!-- 积分数-->
         <span class="goldNum" id="ebtotalnm">0</span>
     </div>
@@ -400,7 +400,7 @@
                     我的礼包
                 </div>
             </a>
-            <p class="right_btn" id="sharebutton">分享好友</p>
+            <p class="right_btn" id="sharebutton">点个关注吧</p>
         </div>
     </div>
 
@@ -419,6 +419,22 @@
     </div>
     <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods" data-clipboard-action="copy"
          data-clipboard-target="#dhm"/>
+</div>
+
+
+<!--礼包信息-->
+<div class="tc_wenxin_libao">
+    <div class="weizj_neitc">
+        <img src="/images/touxiang.png" class="tou_img"/>
+        <div class="panel-body" style="height: 80px; overflow-y:scroll">
+            <div style="border: 1px  #000000; width: 80%; margin: 0 auto;">
+                <ul id="libao_ul">
+
+                </ul>
+            </div>
+        </div>
+        <img src="/images/tanc_a.png" class="nei_but"/>
+    </div>
 </div>
 
 <!--温馨提示-->
@@ -540,6 +556,7 @@
     //下面是大转盘部分
     var $btn = $('.zhiz');
     var isture = 0;
+    var aid = $.getUrlParam('aid');
     // 抽奖按钮触发
     $btn.click(function () {
         var total = $('#total').text();
@@ -559,7 +576,7 @@
 
                 jQuery.ajax({
                     type: 'POST',
-                    url: "/luckdraw/start?aid=hd_001",
+                    url: "/luckdraw/start?aid=" + aid,
                     timeout: 15000, //超时时间设置，单位毫秒
                     async: true,
                     headers: {
@@ -676,6 +693,7 @@
 
     $('.wenxin_btn,.nei_but').click(function () {
         $('.tc_wenxin').hide();
+        $('.tc_wenxin_libao').hide();
         $('body,html').removeClass('overF');
     });
     $('.wenxin_guanbi').click(function () {
@@ -703,6 +721,44 @@
             $(".xianjaitanbox").css({"display": "block"});
         }
     });
+</script>
+
+<script>
+
+    $(".left_btn").click(function () {
+
+
+        jQuery.ajax({
+            type: 'GET',
+            url: "/luckdraw/start/getMyPrizeInfo?aid=" + aid,
+            timeout: 15000, //超时时间设置，单位毫秒
+            async: true,
+            headers: {
+                'authorization': sessionStorage.getItem("Authorization")
+            },
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                if (data.info.length > 0) {
+                    $("#libao_ul").text("");
+                    $.each(data.info, function (i, item) {
+                        let awardeeTime = item.awardeeTime + "";
+                        let time = awardeeTime.substring(0, 10);
+                        $("#libao_ul").append("<li>" + time + "--" + item.prizeName + "</li>");
+                    });
+                } else {
+                    $("#libao_ul").append("<li>还没有奖品哦，快去抽奖吧！</li>");
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            }
+        });
+        $('.tc_wenxin_libao').show();
+    });
+
+
 </script>
 
 
@@ -748,31 +804,113 @@
 
 
 <script>
+
+    $(".hd_box_info").append("<span class=\"isGray\">以上所有资源全部收集于互联网，分享目的仅供大家学习与参考，如有侵权，请联系我及时删除！</span><br>\n");
+
+</script>
+
+
+<script>
     var arrayTOTAL = new Array();
-    // $(function () {
-    //     $.ajax({
-    //         type: 'GET',
-    //         url: "/dailylottery/static/outdailylottery/getRandomGoodsAndInfo",
-    //         timeout: 50000, //超时时间设置，单位毫秒
-    //         contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-    //         async: false,
-    //         dataType: 'json',
-    //         data: {
-    //             areaCode: areaId
-    //         },
-    //         success: function (data) {
-    //             $.each(data.randomGoodsList, function (i, item) {
-    //                 arrayTOTAL[i] = item.barrage_area + '|' + item.barrage_name + '|' + item.barrage_goods + '|' + item.barrage_heads + '|' + item.barrage_randomnum;
-    //             });
-    //         },
-    //         error: function (XMLHttpRequest, textStatus, errorThrown) {
-    //         }
-    //     });
+    $(function () {
+        $.ajax({
+            type: 'GET',
+            url: "/luckdraw/getAwardeeInfo?aid=" + aid,
+            timeout: 50000, //超时时间设置，单位毫秒
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.info, function (i, item) {
+                    arrayTOTAL[i] = item.awardeeName + '|' + item.prizeName;
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
 
 
-    //获取随机的数组
-    Array.prototype.getRandomItem = function () {
-        return this[Math.floor(Math.random() * this.length)]
-    }
+        //获取随机的数组
+        Array.prototype.getRandomItem = function () {
+            return this[Math.floor(Math.random() * this.length)]
+        }
+
+
+        //弹屏滚动通知
+        $(".danmu").each(function () {
+            (function (_this) {
+                clearTimeout(timeouter);
+                var timer = time_range(),//第一次随便给个时间间隔
+                    timeouter;
+                zhuan();
+
+                function zhuan() {
+                    timeouter = setTimeout(function () {
+                        var random = arrayTOTAL.getRandomItem();
+                        if (arrayTOTAL.length > 0) {
+                            var li = '<li class="crr" ><img style="border-radius: 50%;"  src="/images/touxiangnvhai.png">' + random.split('|')[0] + '中了' + random.split('|')[1] + '，' + Math.floor(Math.random() * (59 - 0)) + 's前</li>';
+                            if ($(_this).find('.tongzhi li').length < 3) {
+                                $(_this).find('ul').append(li);
+                            } else {
+                                $(_this).find('ul li').first().remove();
+                                $(_this).find('ul').append(li);
+                            }
+                            zhuan();
+                        }
+
+                    }, timer)
+
+                }
+            })(this)
+        });
+
+
+        function time_range() {
+            //第一时间段开始
+            var b = new Date();
+            //第一时间段结束
+            var e = new Date();
+
+            //第二时间段开始
+            var two_s = new Date();
+            //第二时间段结束
+            var two_e = new Date();
+
+            //第三时间段开始
+            var three_s = new Date();
+            //第三时间段结束
+            var three_e = new Date();
+
+
+            var n = new Date();
+
+            b.setHours(6);
+            b.setMinutes(00);
+            e.setHours(8);
+            e.setMinutes(30);
+
+            two_s.setHours(12);
+            two_s.setMinutes(00);
+            two_e.setHours(13);
+            two_e.setMinutes(00);
+
+            three_s.setHours(1);
+            three_s.setMinutes(30);
+            three_e.setHours(5);
+            three_e.setMinutes(00);
+
+            if (n.getTime() - b.getTime() > 0 && n.getTime() - e.getTime() < 0) {
+                return 1300;
+            } else if (n.getTime() - two_s.getTime() > 0 && n.getTime() - two_e.getTime() < 0) {
+                return 1400;
+            } else if (n.getTime() - three_s.getTime() > 0 && n.getTime() - three_e.getTime() < 0) {
+                return 4000;
+            } else {
+                return 2800;
+            }
+        }
+
+
+    });
 </script>
 </html>

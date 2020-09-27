@@ -39,7 +39,7 @@ public class TbAwardee {
     private String awardeeName;
     //获奖时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "awardee_time")
     private Date awardeeTime;
     //获奖个数
@@ -53,7 +53,7 @@ public class TbAwardee {
     private short isGrant;
     //发放时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "grant_time")
     private Date grantTime;
     //奖品发放表id
@@ -61,12 +61,12 @@ public class TbAwardee {
     private Integer grantId;
     //创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createtime")
     private Date createtime;
     //更新时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatetime")
     private Date updatetime;
 }

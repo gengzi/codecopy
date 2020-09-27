@@ -361,7 +361,7 @@ public class LuckdrawController {
      * @param request
      * @return
      */
-    @ApiOperation(value = "luckdraw", notes = "luckdraw")
+    @ApiOperation(value = "luckdraw_mq", notes = "luckdraw_mq")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "TbActivity", value = "TbActivity", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +

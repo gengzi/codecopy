@@ -1110,6 +1110,16 @@ body{
     z-index: 9999;
     display: none;
 }
+.tc_wenxin_libao{
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: none;
+}
 .wenxin_box{
     width: 4.5rem;
     height: auto;

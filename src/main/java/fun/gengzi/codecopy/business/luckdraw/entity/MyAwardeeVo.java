@@ -18,8 +18,12 @@ public class MyAwardeeVo {
     //奖品名称
     private String prizeName;
     //获奖时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date awardeeTime;
     //发放时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date grantTime;
     //奖品是否发放 1 以发放 0 未发放
     private short isGrant;
