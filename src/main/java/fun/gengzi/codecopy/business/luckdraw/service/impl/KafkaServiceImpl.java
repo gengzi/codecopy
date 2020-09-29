@@ -25,6 +25,16 @@ import java.util.Date;
 
 /**
  * <h1>kafka service impl</h1>
+ * <p>
+ * <p>
+ * 引入kafka，虽然优化了系统业务，但是增加了系统的不稳定性，mq一旦有什么问题，都会影响业务
+ * 基本策略：
+ * 如何保证mq的高可用
+ * 如何保证消息不会丢失
+ * 如何保证消息不会被重复消费
+ * 抽奖业务不用保证 消息的有序性
+ * 建议阅读
+ * https://doocs.github.io/advanced-java/#/?id=%e4%ba%92%e8%81%94%e7%bd%91-java-%e5%b7%a5%e7%a8%8b%e5%b8%88%e8%bf%9b%e9%98%b6%e7%9f%a5%e8%af%86%e5%ae%8c%e5%85%a8%e6%89%ab%e7%9b%b2%c2%a9
  *
  * @author gengzi
  * @date 2020年9月23日17:03:39
@@ -73,13 +83,16 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
 
+    /**
+     * 消费数据
+     * @param data
+     */
     @KafkaListener(topics = {"${kafka.topic.my-topic}"}, groupId = "group1")
     public void consumeMessage(String data) {
         logger.info("消费者消费的消息 -> {}", data);
         KafkaLuckdrawEntity kafkaLuckdrawEntity = JSONObject.parseObject(data, KafkaLuckdrawEntity.class);
         receiveLuckdrawMsgInfo(kafkaLuckdrawEntity);
     }
-
 
 
     /**
@@ -106,11 +119,11 @@ public class KafkaServiceImpl implements KafkaService {
                 boolean flag = redisUtil.hasKey(idempotencyFiled);
                 if (!flag) {
                     // 不存在，存入到redis
-                    redisUtil.set(idempotencyFiled, "0",300);
+                    redisUtil.set(idempotencyFiled, "0", 300);
                     // 调用抽奖算法，依然走一遍校验流程
                     String activityId = kafkaLuckdrawEntity.getActivityId();
                     luckdrawService.mqLuckdraw(kafkaLuckdrawEntity);
-                    redisUtil.set(idempotencyFiled, "1",300);
+                    redisUtil.set(idempotencyFiled, "1", 300);
                 }
             }
         }
