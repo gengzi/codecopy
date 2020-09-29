@@ -1,7 +1,6 @@
 package fun.gengzi.codecopy.java8.lamdba;
 
 
-import com.sun.xml.internal.fastinfoset.sax.SAXDocumentSerializerWithPrefixMapping;
 import fun.gengzi.codecopy.java8.lamdba.utils.Person;
 import org.junit.Test;
 
