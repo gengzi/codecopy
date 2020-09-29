@@ -53,8 +53,6 @@ public class ActivityFilter implements Filter {
         }
 
         // 判断活动id 是否存在，不存在直接返回
-
-
         List<TbActivity> tbActivities = activityDao.getEffectiveActivityInfo(new Date());
         if (CollectionUtils.isEmpty(tbActivities)) {
             logger.warn("当前无活动!");

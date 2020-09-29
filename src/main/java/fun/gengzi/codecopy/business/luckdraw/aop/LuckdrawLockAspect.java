@@ -114,7 +114,7 @@ public class LuckdrawLockAspect {
         } catch (InterruptedException e) {
             // 获取锁异常
             logger.info("获取redis锁异常：{}", e.getMessage());
-//            e.printStackTrace();
+            e.printStackTrace();
         }
         if (lockFlag) {
             try {

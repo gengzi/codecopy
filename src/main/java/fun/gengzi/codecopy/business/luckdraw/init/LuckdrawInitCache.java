@@ -29,7 +29,6 @@ public class LuckdrawInitCache implements ApplicationRunner {
      *
      * 初始化现在生效的活动的奖品库存（redis）
      *
-     *
      * @param applicationArguments
      * @throws Exception
      */
