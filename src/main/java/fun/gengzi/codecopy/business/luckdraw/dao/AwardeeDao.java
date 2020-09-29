@@ -48,7 +48,7 @@ public interface AwardeeDao extends JpaRepository<TbAwardee, Integer> {
      * @param awardeeId  获奖人id
      * @return
      */
-    TbAwardee findTopByActivityIdAndIdempotency(String activityId, String awardeeId);
+    TbAwardee findTopByActivityIdAndIdempotencyAndAwardeeId(String activityId, String idempotency, String awardeeId);
 
 
 }

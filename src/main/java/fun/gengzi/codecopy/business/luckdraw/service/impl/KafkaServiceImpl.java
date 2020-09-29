@@ -108,11 +108,11 @@ public class KafkaServiceImpl implements KafkaService {
                 boolean flag = redisUtil.hasKey(idempotencyFiled);
                 if (!flag) {
                     // 不存在，存入到redis
-                    redisUtil.set(idempotencyFiled, "0");
+                    redisUtil.set(idempotencyFiled, "0",300);
                     // 调用抽奖算法，依然走一遍校验流程
                     String activityId = kafkaLuckdrawEntity.getActivityId();
                     luckdrawService.mqLuckdraw(kafkaLuckdrawEntity);
-                    redisUtil.set(idempotencyFiled, "1");
+                    redisUtil.set(idempotencyFiled, "1",300);
                 }
             }
         }

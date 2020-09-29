@@ -79,7 +79,7 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      * @param activityid 活动id
      * @return {@link TbPrize}  获得的奖品信息
      */
-    @Transactional
+    @Transactional("transactionManager")
     @LuckdrawLock(name = LuckdrawLock.LockType.REDIS_LOCK)
     @Override
     public TbPrize luckdraw(@LuckdrawLockKey String activityid) {
@@ -524,22 +524,19 @@ public class LuckdrawServiceImpl implements LuckdrawService {
      */
     @Override
     public TbPrize getMyPrizeInfoByMq(String activityid, String currentTime) {
-        // 判断时间戳 如果小于的当前时间五分钟，就不走轮询查询获奖信息接口了，直接查询我的礼包接口
         final TbPrize tbPrizeToResult = new TbPrize();
-        Date oldDate = DateUtil.date(Long.parseLong(currentTime));
-        Date currentDate = DateUtil.date(System.currentTimeMillis());
-        long minute = DateUtil.between(oldDate, currentDate, DateUnit.MINUTE);
-        if (minute >= 5) {
-            return tbPrizeToResult;
-        }
         SysUser sysUser = UserSessionThreadLocal.getUser();
         logger.info("threadloacl 获取到的用户信息:", sysUser);
-        boolean flag = redisUtil.hasKey(currentTime);
+        String redisKey = activityid + LuckdrawContants.REDISKEYSEPARATOR + currentTime;
+        boolean flag = redisUtil.hasKey(redisKey);
         if (flag) {
-            String isLuckdrawFlag = (String) redisUtil.get(activityid + ":" + currentTime);
+            String isLuckdrawFlag = (String) redisUtil.get(redisKey);
             if ("1".equals(isLuckdrawFlag)) {
                 // 表示可以查到获取信息,0标识抽奖失败
-                TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndIdempotency(activityid, sysUser.getUid());
+                TbAwardee tbAwardee = awardeeDao.findTopByActivityIdAndIdempotencyAndAwardeeId(activityid, redisKey, sysUser.getUid());
+                if (tbAwardee == null) {
+                    return null;
+                }
                 Integer prizeId = tbAwardee.getPrizeId();
                 List<TbPrize> tbPrizes = prizeDao.findByActivityidOrderByProbability(activityid);
                 Optional<TbPrize> optionalTbPrize = tbPrizes.stream().filter(tbPrize -> tbPrize.getId() == prizeId).findFirst();

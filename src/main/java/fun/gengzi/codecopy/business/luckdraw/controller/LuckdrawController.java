@@ -15,6 +15,7 @@ import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -313,7 +314,9 @@ public class LuckdrawController {
         if (luckdraw == null || luckdraw.getId() == 0) {
             ret.setInfo("积分不足哦！");
         } else {
-            ret.setInfo(luckdraw);
+            final PrizeVo prizeVo = new PrizeVo();
+            BeanUtils.copyProperties(luckdraw, prizeVo);
+            ret.setInfo(prizeVo);
         }
         return ret;
     }
@@ -378,7 +381,9 @@ public class LuckdrawController {
         TbPrize myPrizeInfoByMq = luckdrawService.getMyPrizeInfoByMq(aid, currentTime);
         // 注意设置 success 和 设置 info 的顺序，前者的构造，是会替换info 的数据
         ret.setSuccess();
-        ret.setInfo(myPrizeInfoByMq);
+        final PrizeVo prizeVo = new PrizeVo();
+        BeanUtils.copyProperties(myPrizeInfoByMq, prizeVo);
+        ret.setInfo(prizeVo);
         return ret;
     }
 
