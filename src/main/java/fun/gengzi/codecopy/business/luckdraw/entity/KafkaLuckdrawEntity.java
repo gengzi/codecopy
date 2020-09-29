@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * <h1>kafka 抽奖实体类</h1>
  *
@@ -13,8 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaLuckdrawEntity {
+public class KafkaLuckdrawEntity implements Serializable {
 
+    private static final long serialVersionUID = 1907603312737460676L;
     // 用户信息
     private SysUser sysUser;
     // 活动id

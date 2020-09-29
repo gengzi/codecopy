@@ -2,13 +2,26 @@ package fun.gengzi.codecopy.business.luckdraw.service.impl;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.gengzi.codecopy.business.luckdraw.entity.KafkaLuckdrawEntity;
 import fun.gengzi.codecopy.business.luckdraw.service.KafkaService;
 import fun.gengzi.codecopy.business.luckdraw.service.LuckdrawService;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.Date;
 
@@ -20,7 +33,10 @@ import java.util.Date;
  */
 @Service
 public class KafkaServiceImpl implements KafkaService {
+    private Logger logger = LoggerFactory.getLogger(KafkaServiceImpl.class);
 
+    @Value("${kafka.topic.my-topic}")
+    private String myTopic;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -28,15 +44,45 @@ public class KafkaServiceImpl implements KafkaService {
     @Autowired
     private LuckdrawService luckdrawService;
 
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * 发送抽奖信息到kafka
      *
      * @param kafkaLuckdrawEntity
      */
+    @Transactional("kafkaTransactionManager")
     @Override
     public void sendLuckdrawMsgInfo(KafkaLuckdrawEntity kafkaLuckdrawEntity) {
-        // TODO 待实现
+        logger.info("kafkaLuckdrawEntity:{}", kafkaLuckdrawEntity);
+        ListenableFuture future = kafkaTemplate.send(myTopic, kafkaLuckdrawEntity);
+        // 异步发送，并回调
+        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                // 在出现异常中，包含两种异常，一种是 不可重试的异常，一种是 可重试的异常
+                logger.error("生产者发送消息：{} 失败，原因：{}", kafkaLuckdrawEntity.toString(), ex.getMessage());
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, Object> result) {
+                logger.info("生产者成功发送消息到" + myTopic + "-> " + result.getProducerRecord().value().toString());
+            }
+        });
     }
+
+
+    @KafkaListener(topics = {"${kafka.topic.my-topic}"}, groupId = "group1")
+    public void consumeMessage(String data) {
+        logger.info("消费者消费的消息 -> {}", data);
+        KafkaLuckdrawEntity kafkaLuckdrawEntity = JSONObject.parseObject(data, KafkaLuckdrawEntity.class);
+        receiveLuckdrawMsgInfo(kafkaLuckdrawEntity);
+    }
+
+
 
     /**
      * 消费kafka中的抽奖信息

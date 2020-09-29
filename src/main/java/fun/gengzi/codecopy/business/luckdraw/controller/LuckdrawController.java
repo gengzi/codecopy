@@ -326,7 +326,7 @@ public class LuckdrawController {
      * @param request
      * @return
      */
-    @ApiOperation(value = "luckdraw", notes = "luckdraw")
+    @ApiOperation(value = "luckdraw_mq", notes = "luckdraw_mq")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "TbActivity", value = "TbActivity", required = true)})
     @ApiResponses({@ApiResponse(code = 200, message = "\t{\n" +
@@ -375,7 +375,7 @@ public class LuckdrawController {
     public ReturnData qryLuckdrawResult(@RequestParam("aid") String aid, @RequestParam("currentTime") String currentTime, HttpServletRequest request) {
         logger.info("qryLuckdrawResult quest param ,aid:{},currentTime:{} ", aid, currentTime);
         ReturnData ret = ReturnData.newInstance();
-        TbPrize myPrizeInfoByMq = luckdrawService.getMyPrizeInfoByMq(aid,currentTime);
+        TbPrize myPrizeInfoByMq = luckdrawService.getMyPrizeInfoByMq(aid, currentTime);
         // 注意设置 success 和 设置 info 的顺序，前者的构造，是会替换info 的数据
         ret.setSuccess();
         ret.setInfo(myPrizeInfoByMq);

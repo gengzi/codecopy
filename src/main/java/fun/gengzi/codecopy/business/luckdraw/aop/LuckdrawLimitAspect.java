@@ -76,7 +76,12 @@ public class LuckdrawLimitAspect {
                 throw new RrException(LuckdrawEnum.ERROR_SERVICE_LIMIT.getMsg());
             }
         } catch (Throwable e) {
-            throw new RrException(LuckdrawEnum.ERROR_DEFAULT.getMsg());
+            if (e.getMessage().contains(LuckdrawEnum.ERROR_SERVICE_LIMIT.getMsg())) {
+                throw new RrException(LuckdrawEnum.ERROR_SERVICE_LIMIT.getMsg());
+            } else {
+                e.printStackTrace();
+                throw new RrException(LuckdrawEnum.ERROR_DEFAULT.getMsg());
+            }
         }
         return obj;
     }
