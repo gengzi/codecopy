@@ -217,7 +217,7 @@ public class ProductCacheController {
     @PostMapping("/findCacheByMutex")
     @ResponseBody
     public ReturnData findCacheByMutex(@RequestParam("id") Integer id) {
-        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoTest2(id);
+        Product oneProductCacheInfo = productCacheService.getOneProductCacheInfoByMutex(id);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(oneProductCacheInfo);
