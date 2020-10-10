@@ -58,6 +58,7 @@ RspCodeEnum 响应code枚举类
 增加了一个对 mysql 链接检测的服务，通过接口，可以得知 某个mysql 服务是否开启，并连接成功 connection
 增加演示商品信息缓存实践- 解决缓存的三大问题，缓存穿透，缓存雪崩，缓存击穿 product 
 增加工具类的测试服务 utilstest  （html转pdf）
+增加活动抽奖服务
 
 
 ### fun.gengzi.codecopy.vo 全局vo
