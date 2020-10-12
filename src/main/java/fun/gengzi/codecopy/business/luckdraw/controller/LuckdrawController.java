@@ -4,6 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
 import fun.gengzi.codecopy.business.luckdraw.algorithm.LuckdrawAlgorithlm;
 import fun.gengzi.codecopy.business.luckdraw.aop.LuckdrawServiceLimit;
+import fun.gengzi.codecopy.business.luckdraw.config.UserSessionThreadLocal;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.entity.*;
@@ -310,6 +311,8 @@ public class LuckdrawController {
         logger.info("luckdraw quest param ,aid:{} ", aid);
         ReturnData ret = ReturnData.newInstance();
         TbPrize luckdraw = luckdrawService.luckdraw(aid);
+        // 移除ThreadLocal 持有的用户信息
+        UserSessionThreadLocal.removeUser();
         ret.setSuccess();
         if (luckdraw == null || luckdraw.getId() == 0) {
             ret.setInfo("积分不足哦！");

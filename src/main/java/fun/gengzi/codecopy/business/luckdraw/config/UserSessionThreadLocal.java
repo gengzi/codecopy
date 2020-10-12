@@ -41,6 +41,7 @@ public class UserSessionThreadLocal {
      * 移除用户信息
      */
     public static void removeUser() {
+        logger.info("当前线程name:{},移除当前用户信息:{}", Thread.currentThread().getName(), userHolder.get());
         userHolder.remove();
     }
 
