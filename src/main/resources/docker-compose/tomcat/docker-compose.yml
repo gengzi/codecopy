@@ -1,0 +1,40 @@
+version: "2"
+services:
+  tomcat-1:
+    image: tomcat:8.5
+    container_name: "tomcat_1"
+    ports:
+      - "8081:8080"
+    restart: "always"
+    privileged: true  # 使用该参数，container内的root拥有真正的root权限，否则，container内的root只是外部的一个普通用户权限。
+    user: root  # 指定用户是 root 用户，来解决没有权限的问题
+    volumes:
+      - /home/ubuntu/docker_data/tomcat_1/conf:/usr/local/tomcat/conf
+      - /home/ubuntu/docker_data/tomcat_1/logs:/usr/local/tomcat/logs
+      - /home/ubuntu/docker_data/tomcat_1/webapps:/usr/local/tomcat/webapps
+      - /var/run/docker.sock:/var/run/docker.sock  # 允许容器与容器与Docker守护进程通信 ，也就是使用docker 命令 ， 比如 容器中需要实例化其他Docker容器
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/lib/x86_64-linux-gnu/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+    environment: # environment 和 Dockerfile 中的 ENV 指令一样会把变量一直保存在镜像、容器中，类似 docker run -e 的效果。设置容器的环境变量
+      - TZ=Asia/Shanghai #这里设置容器的时区为亚洲上海
+
+  tomcat-2:
+    image: tomcat:8.5
+    container_name: "tomcat_2"
+    ports:
+      - "8082:8080"
+    restart: "always"
+    privileged: true  # 使用该参数，container内的root拥有真正的root权限，否则，container内的root只是外部的一个普通用户权限。
+    user: root  # 指定用户是 root 用户，来解决没有权限的问题
+    volumes:
+      - /home/ubuntu/docker_data/tomcat_2/conf:/usr/local/tomcat/conf
+      - /home/ubuntu/docker_data/tomcat_2/logs:/usr/local/tomcat/logs
+      - /home/ubuntu/docker_data/tomcat_2/webapps:/usr/local/tomcat/webapps
+      - /var/run/docker.sock:/var/run/docker.sock  # 允许容器与容器与Docker守护进程通信 ，也就是使用docker 命令 ， 比如 容器中需要实例化其他Docker容器
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/lib/x86_64-linux-gnu/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+    environment: # environment 和 Dockerfile 中的 ENV 指令一样会把变量一直保存在镜像、容器中，类似 docker run -e 的效果。设置容器的环境变量
+      - TZ=Asia/Shanghai #这里设置容器的时区为亚洲上海
+
+
+
