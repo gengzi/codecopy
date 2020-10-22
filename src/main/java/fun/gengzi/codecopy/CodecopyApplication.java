@@ -8,7 +8,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableCaching
 @EnableAsync
 @ServletComponentScan
-public class CodecopyApplication {
+public class CodecopyApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         // 解决es的netty冲突问题
         System.setProperty("es.set.netty.runtime.available.processors", "false");
@@ -35,5 +37,10 @@ public class CodecopyApplication {
     @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    // 支持web 工程
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(CodecopyApplication.class);
     }
 }
