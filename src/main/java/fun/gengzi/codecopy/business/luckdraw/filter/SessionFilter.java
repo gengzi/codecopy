@@ -3,10 +3,12 @@ package fun.gengzi.codecopy.business.luckdraw.filter;
 import fun.gengzi.codecopy.business.luckdraw.config.UserSessionThreadLocal;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawContants;
 import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
+import fun.gengzi.codecopy.business.luckdraw.dao.ActivityDao;
 import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbIntegral;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.utils.HttpResponseUtils;
+import fun.gengzi.codecopy.utils.SpringContextUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,12 +38,23 @@ public class SessionFilter implements Filter {
 
     private Logger logger = LoggerFactory.getLogger(SessionFilter.class);
 
-    @Autowired
+    // @Autowired
     private RedisUtil redisUtil;
 
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // redisUtil = (RedisUtil) SpringContextUtils.getBean("redisUtil");
+        logger.info("init SessionFilter");
+    }
+
+    @Override
+    public void destroy() {
+        logger.info("destroy SessionFilter");
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        redisUtil = (RedisUtil) SpringContextUtils.getBean("redisUtil");
         // 校验是否包含 AUTHORIZATION ，是否有效
         // 根据token获取用户信息，校验用户的积分是否足够
         final ReturnData ret = ReturnData.newInstance();

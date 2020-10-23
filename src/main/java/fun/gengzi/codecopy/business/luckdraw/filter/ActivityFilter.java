@@ -4,6 +4,7 @@ import fun.gengzi.codecopy.business.luckdraw.constant.LuckdrawEnum;
 import fun.gengzi.codecopy.business.luckdraw.dao.ActivityDao;
 import fun.gengzi.codecopy.business.luckdraw.entity.TbActivity;
 import fun.gengzi.codecopy.utils.HttpResponseUtils;
+import fun.gengzi.codecopy.utils.SpringContextUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,11 +35,26 @@ public class ActivityFilter implements Filter {
 
     private Logger logger = LoggerFactory.getLogger(ActivityFilter.class);
 
-    @Autowired
+    //   @Autowired
     private ActivityDao activityDao;
+
+
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // 不能再此处获取spring context ，此时spring 容器还没有启动完毕， SpringContext 还是 null ，会报null 指针异常
+        //  activityDao = (ActivityDao) SpringContextUtils.getBean("activityDao");
+        logger.info("init ActivityFilter");
+    }
+
+    @Override
+    public void destroy() {
+        logger.info("destroy ActivityFilter");
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        activityDao = (ActivityDao) SpringContextUtils.getBean("activityDao");
         // 判断当前活动是否失效，失效，直接返回，并过滤无效活动id
         // 查询活动列表，先查询当前缓存，缓存失效，查询数据库
         final ReturnData ret = ReturnData.newInstance();
@@ -52,6 +68,7 @@ public class ActivityFilter implements Filter {
             return;
         }
 
+        logger.info("{} and {}",aidStr,activityDao);
         // 判断活动id 是否存在，不存在直接返回
         List<TbActivity> tbActivities = activityDao.getEffectiveActivityInfo(new Date());
         if (CollectionUtils.isEmpty(tbActivities)) {

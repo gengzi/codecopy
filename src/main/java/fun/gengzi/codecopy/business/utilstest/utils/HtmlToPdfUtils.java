@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -62,8 +63,10 @@ public class HtmlToPdfUtils {
         ITextRenderer iTextRenderer = new ITextRenderer();
         ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
         try {
-            fontResolver.addFont(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("font/simsun.ttf")).getPath(),
-                    BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            String path = "font" + File.separator + "simsun.ttf";
+            logger.info("path:{}", path);
+            File file = ResourceUtils.getFile("classpath:" + path);
+            fontResolver.addFont(file.getAbsolutePath(), BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
@@ -99,11 +102,9 @@ public class HtmlToPdfUtils {
 
     /**
      * 使用Chrome  Headless 无头浏览器，完成对html转换pdf
-     *
+     * <p>
      * 需要安装 goole chrome 浏览器，版本在 60 以上，linux 在 59以上
      * 调用命令实现转换
-     *
-     *
      *
      * @param url     网址
      * @param pdfPath 路径
