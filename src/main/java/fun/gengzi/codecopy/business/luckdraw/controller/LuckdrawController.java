@@ -451,6 +451,7 @@ public class LuckdrawController {
             } else {
                 // 用户信息不存在修改为直接新增用户信息，初始化积分9000分
                 SysUser sysUser = new SysUser();
+                sysUser.setUid(verificationVo.getPhone());
                 sysUser.setPhone(verificationVo.getPhone());
                 sysUser.setUtype(1);
                 sysUser.setUname(verificationVo.getPhone().substring(8, 11));
