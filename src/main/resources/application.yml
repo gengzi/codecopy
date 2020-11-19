@@ -16,10 +16,10 @@ spring:
 #    username: root
 #    password: 111
 #    type: com.alibaba.druid.pool.DruidDataSource
-    # redis 配置
-#  redis:
-  #    redisson:
-#      config: classpath:redisson.yml
+#     redis 配置
+  redis:
+      redisson:
+        config: classpath:redisson.yml
   jpa: #jpa配置
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
