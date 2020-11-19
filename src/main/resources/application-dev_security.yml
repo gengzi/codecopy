@@ -1,0 +1,7 @@
+spring:
+  security:
+    user:
+      # 配置用户名
+      name: user
+      # 配置密码
+      password: 111

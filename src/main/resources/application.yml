@@ -17,13 +17,9 @@ spring:
 #    password: 111
 #    type: com.alibaba.druid.pool.DruidDataSource
     # redis 配置
-  redis:
-    host: localhost
-    port: 6379
-    jedis.pool.max-wait: -1ms
-    timeout: 2000ms
-    redisson:
-      config: classpath:redisson.yml
+#  redis:
+  #    redisson:
+#      config: classpath:redisson.yml
   jpa: #jpa配置
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
@@ -130,6 +126,9 @@ spring:
     static-path-pattern: /**
   resources:
     static-locations: classpath:/templates/,classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  # 声明session 类型 redis
+  session:
+    store-type: redis
 #          key-generate-strategy:
 #            column: ID
 #            key-generator-name: snowflake
