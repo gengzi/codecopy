@@ -473,6 +473,22 @@ public class RedisUtil {
     }
 
     /**
+     * 根据key获取Set中的指定几个随机内容
+     *
+     * @param key  键
+     * @param size 个数
+     * @return
+     */
+    public List sRandomGet(String key, Integer size) {
+        try {
+            return redisTemplate.opsForSet().randomMembers(key, size);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * 根据value从一个set中查询,是否存在
      *
      * @param key   键
@@ -651,7 +667,7 @@ public class RedisUtil {
      * @param value 值
      * @return
      */
-    public boolean lSet(String key, List<Object> value) {
+    public boolean lSetAll(String key, List<Object> value) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
@@ -669,7 +685,7 @@ public class RedisUtil {
      * @param time  时间(秒)
      * @return
      */
-    public boolean lSet(String key, List<Object> value, long time) {
+    public boolean lSetAll(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0) {
@@ -721,10 +737,11 @@ public class RedisUtil {
 
     /**
      * 根据给定的布隆过滤器添加值
-     * @param bloomFilterHelper  bloom布隆过滤器解析类
-     * @param key redis 的key
-     * @param value redis 的value
-     * @param <T> 值的类型
+     *
+     * @param bloomFilterHelper bloom布隆过滤器解析类
+     * @param key               redis 的key
+     * @param value             redis 的value
+     * @param <T>               值的类型
      */
     public <T> void addByBloomFilter(BloomFilterHelper<T> bloomFilterHelper, String key, T value) {
         Preconditions.checkArgument(bloomFilterHelper != null, "bloomFilterHelper不能为空");
@@ -737,10 +754,11 @@ public class RedisUtil {
 
     /**
      * 根据给定的布隆过滤器判断值是否存在
+     *
      * @param bloomFilterHelper bloom布隆过滤器解析类
-     * @param key redis 的key
-     * @param value redis 的value
-     * @param <T> 值的类型
+     * @param key               redis 的key
+     * @param value             redis 的value
+     * @param <T>               值的类型
      * @return 存在 true
      */
     public <T> boolean includeByBloomFilter(BloomFilterHelper<T> bloomFilterHelper, String key, T value) {

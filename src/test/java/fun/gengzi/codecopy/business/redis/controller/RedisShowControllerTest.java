@@ -22,11 +22,19 @@ public class RedisShowControllerTest {
     private RedisShowController redisShowController;
 
 
+    // 定时排行榜
     @Test
     public void timedChangeLeaderboard() {
         ReturnData aa = redisShowController.timedChangeLeaderboard("aa");
         logger.info("{}", aa);
+    }
 
+
+    // 分页定时排行榜测试
+    @Test
+    public void timedChangeLeaderboardPagination(){
+        ReturnData aa = redisShowController.timedChangeLeaderboardPagination("aa", 0, 2);
+        logger.info("{}",aa);
 
     }
 }
