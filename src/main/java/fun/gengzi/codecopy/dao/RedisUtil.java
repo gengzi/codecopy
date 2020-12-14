@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -771,5 +772,55 @@ public class RedisUtil {
         }
         return true;
     }
+
+
+    /**
+     * zset 添加元素
+     *
+     * @param key
+     * @param time
+     * @param tuples
+     * @return
+     */
+    public long zsSetAndTime(String key, long time, Set<ZSetOperations.TypedTuple<Object>> tuples) {
+        try {
+            Long count = redisTemplate.opsForZSet().add(key, tuples);
+            if (time > 0) {
+                expire(key, time);
+            }
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * zset 添加元素
+     *
+     * @param key
+     * @param tuples
+     * @return
+     */
+    public long zsSetAndTime(String key, Set<ZSetOperations.TypedTuple<Object>> tuples) {
+        try {
+            Long count = redisTemplate.opsForZSet().add(key, tuples);
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public long zsRemove(String key, Object... values) {
+        try {
+            Long remove = redisTemplate.opsForZSet().remove(key, values);
+            return remove;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
 
 }

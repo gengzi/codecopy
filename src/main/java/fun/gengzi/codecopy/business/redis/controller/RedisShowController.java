@@ -3,9 +3,13 @@ package fun.gengzi.codecopy.business.redis.controller;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
+import org.redisson.misc.Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.DefaultTypedTuple;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +34,9 @@ import java.util.*;
 public class RedisShowController {
 
     private Logger logger = LoggerFactory.getLogger(RedisShowController.class);
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @Autowired
@@ -215,6 +222,13 @@ public class RedisShowController {
      * shorted set  排序set
      *
      *
+     * skkiplist 实现
+     *
+     * 根据分数排序的链表
+     * 由于底层数据结构是 链表，不能使用二分查找的方式，来进行快速搜索
+     * 所以提出 跳跃表的思想
+     * 时间复杂度 最坏情况下 O(N)
+     * 正常情况 O(logN)
      *
      *
      *
@@ -227,6 +241,7 @@ public class RedisShowController {
     @PostMapping("/dynamicLeaderboard")
     @ResponseBody
     public ReturnData dynamicLeaderboard(@RequestParam("code") String code) {
+
 
 
 
