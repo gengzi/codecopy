@@ -18,7 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RedissondbConfigEntity implements Serializable {
+    // 地址
     private String address;
+    // 密码
     private String password;
+    // 所有的db序号
     private List<Integer> databases = new ArrayList<>();
 }

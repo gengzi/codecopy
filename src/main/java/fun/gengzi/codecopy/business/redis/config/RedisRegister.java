@@ -53,6 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 并动态注册为bean
  */
 @Configuration
+// 实现 ImportBeanDefinitionRegistrar 用于动态注册bean
 public class RedisRegister implements EnvironmentAware, ImportBeanDefinitionRegistrar {
 
     private Logger logger = LoggerFactory.getLogger(RedisRegister.class);
@@ -61,8 +62,6 @@ public class RedisRegister implements EnvironmentAware, ImportBeanDefinitionRegi
     private Environment environment;
     // 用于绑定对象
     private Binder binder;
-
-
 
     /**
      * 设置环境
@@ -102,12 +101,17 @@ public class RedisRegister implements EnvironmentAware, ImportBeanDefinitionRegi
                 singleConfig.setPassword(redissondb.getPassword());
                 singleConfig.setDatabase(db);
                 RedissonClient redissonClient = Redisson.create(config);
+                // 构造RedissonConnectionFactory
                 RedissonConnectionFactory redisConnectionFactory = new RedissonConnectionFactory(redissonClient);
+                // bean定义
                 GenericBeanDefinition redisTemplate = new GenericBeanDefinition();
+                // 设置bean 的类型
                 redisTemplate.setBeanClass(RedisTemplate.class);
+                // 设置自动注入的形式，根据名称
                 redisTemplate.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_BY_NAME);
+                // redisTemplate 的属性配置
                 redisTemplate(redisTemplate, redisConnectionFactory);
-                //注册Bean
+                // 注册Bean
                 registry.registerBeanDefinition("redisTemplate" + db, redisTemplate);
             });
         }
@@ -115,6 +119,13 @@ public class RedisRegister implements EnvironmentAware, ImportBeanDefinitionRegi
 
     }
 
+    /**
+     * redisTemplate 的属性配置
+     *
+     * @param redisTemplate          泛型bean
+     * @param redisConnectionFactory 连接工厂
+     * @return
+     */
     public GenericBeanDefinition redisTemplate(GenericBeanDefinition redisTemplate, RedisConnectionFactory redisConnectionFactory) {
         RedisSerializer<String> stringRedisSerializer = new StringRedisSerializer();
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
@@ -125,6 +136,7 @@ public class RedisRegister implements EnvironmentAware, ImportBeanDefinitionRegi
                 ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         // key采用String的序列化方式，value采用json序列化方式
+        // 通过方法设置属性值
         redisTemplate.getPropertyValues().add("connectionFactory", redisConnectionFactory);
         redisTemplate.getPropertyValues().add("keySerializer", stringRedisSerializer);
         redisTemplate.getPropertyValues().add("hashKeySerializer", stringRedisSerializer);

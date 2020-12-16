@@ -24,9 +24,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-@AutoConfigureBefore({RedisAutoConfiguration.class})
-@Import(RedisRegister.class)
-@Configuration
+/**
+ * <h1>RedisTemplate 初始化类 </h1>
+ *
+ * @author gengzi
+ * @date 2020年12月16日22:38:46
+ */
+@AutoConfigureBefore({RedisAutoConfiguration.class})  // 要在RedisAutoConfiguration 自动配置前执行
+@Import(RedisRegister.class) // 配置该类前，先加载 RedisRegister 类
+@Configuration // 配置类
+// 实现 EnvironmentAware 用于获取全局环境
+// 实现 ApplicationContextAware 用于获取Spring Context 上下文
 public class RedisBeanInit implements EnvironmentAware, ApplicationContextAware {
     private Logger logger = LoggerFactory.getLogger(RedisBeanInit.class);
 
@@ -43,8 +51,6 @@ public class RedisBeanInit implements EnvironmentAware, ApplicationContextAware 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
-
-
     /**
      * 设置环境
      *
@@ -59,7 +65,7 @@ public class RedisBeanInit implements EnvironmentAware, ApplicationContextAware 
 
     @PostConstruct
     public void initAllRedisTemlate() {
-        logger.info("<<<初始化系统所有的RedisTemlate开始>>>");
+        logger.info("<<<初始化系统的RedisTemlate开始>>>");
         RedissondbConfigEntity redissondb;
         try {
             redissondb = binder.bind("redissondb", RedissondbConfigEntity.class).get();
@@ -78,8 +84,8 @@ public class RedisBeanInit implements EnvironmentAware, ApplicationContextAware 
                 }
             });
         }
-        logger.info("redistempleate map:{}", redisTemplateMap);
-        logger.info("<<<初始化系统所有的RedisTemlate完毕>>>");
+        logger.info("已经装配的redistempleate，map:{}", redisTemplateMap);
+        logger.info("<<<初始化系统的RedisTemlate完毕>>>");
     }
 
     @Bean
