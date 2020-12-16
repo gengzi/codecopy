@@ -1,12 +1,21 @@
 package fun.gengzi.codecopy.dao;
 
 import com.google.common.base.Preconditions;
+import fun.gengzi.codecopy.business.redis.config.RedisManager;
+import io.swagger.models.auth.In;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
+import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
+import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -23,6 +32,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class RedisUtil {
+
+
+    @Autowired
+    private RedisManager redisManager;
 
     private Logger logger = LoggerFactory.getLogger(RedisUtil.class);
 
@@ -812,8 +825,238 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * zs 移除元素
+     *
+     * @param key
+     * @param values
+     * @return
+     */
     public long zsRemove(String key, Object... values) {
         try {
+            Long remove = redisTemplate.opsForZSet().remove(key, values);
+            return remove;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员，其中有序集成员按分数值递增(从小到大)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合  仅返回 key
+     */
+    public Set zsGet(String key, long start, long end) {
+        try {
+            return redisTemplate.opsForZSet().range(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员，其中有序集成员按分数值递增(从小到大)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合，返回成员对象
+     */
+    public Set zsGetWithScores(String key, long start, long end) {
+        try {
+            return redisTemplate.opsForZSet().rangeWithScores(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员，其中有序集成员按分数值递减(从大到小)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合  仅返回 key
+     */
+    public Set zsGetReverse(String key, long start, long end) {
+        try {
+            return redisTemplate.opsForZSet().reverseRange(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员对象，其中有序集成员按分数值递减(从大到小)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合，返回成员对象
+     */
+    public Set zsGetReverseWithScores(String key, long start, long end) {
+        try {
+            return redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 切换数据库
+     *
+     * @return
+     */
+    public RedisTemplate switchDatabase(Integer dbIndex) {
+        logger.info("重新建立redis数据库连接开始");
+        Config config = new Config();
+        config.setCodec(StringCodec.INSTANCE);
+        SingleServerConfig singleConfig = config.useSingleServer();
+        singleConfig.setAddress("redis://120.53.235.63:6378");
+        singleConfig.setPassword("gengzi666");
+        singleConfig.setDatabase(dbIndex);
+        RedissonClient redissonClient = Redisson.create(config);
+        RedissonConnectionFactory redisConnectionFactory = new RedissonConnectionFactory(redissonClient);
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        logger.info("重新建立redis数据库连接结束");
+        return redisTemplate;
+    }
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员，其中有序集成员按分数值递增(从小到大)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合  仅返回 key
+     */
+    public Set zsGet(String key, long start, long end, Integer db) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
+            return redisTemplate.opsForZSet().range(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员，其中有序集成员按分数值递增(从小到大)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合，返回成员对象
+     */
+    public Set zsGetWithScores(String key, long start, long end, Integer db) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
+            return redisTemplate.opsForZSet().rangeWithScores(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员，其中有序集成员按分数值递减(从大到小)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合  仅返回 key
+     */
+    public Set zsGetReverse(String key, long start, long end, Integer db) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
+            return redisTemplate.opsForZSet().reverseRange(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 通过索引区间返回有序集合成指定区间内的成员对象，其中有序集成员按分数值递减(从大到小)顺序排列
+     *
+     * @param key   键
+     * @param start 起始位置 0
+     * @param end   末尾位置 -1
+     * @return 0 -1 返回按分数递增的顺序集合，返回成员对象
+     */
+    public Set zsGetReverseWithScores(String key, long start, long end, Integer db) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
+            return redisTemplate.opsForZSet().reverseRangeWithScores(key, start, end);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * zset 添加元素
+     *
+     * @param key
+     * @param time
+     * @param tuples
+     * @return
+     */
+    public long zsSetAndTime(String key, long time, Set<ZSetOperations.TypedTuple<Object>> tuples, Integer db) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
+            Long count = redisTemplate.opsForZSet().add(key, tuples);
+            if (time > 0) {
+                expire(key, time);
+            }
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * zset 添加元素
+     *
+     * @param key
+     * @param tuples
+     * @return
+     */
+    public long zsSetAndTime(String key, Set<ZSetOperations.TypedTuple<Object>> tuples, Integer db) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
+            Long count = redisTemplate.opsForZSet().add(key, tuples);
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * zs 移除元素
+     *
+     * @param key
+     * @param values
+     * @return
+     */
+    public long zsRemove(String key, Integer db, Object... values) {
+        try {
+            RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
             Long remove = redisTemplate.opsForZSet().remove(key, values);
             return remove;
         } catch (Exception e) {

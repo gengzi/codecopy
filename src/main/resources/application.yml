@@ -8,7 +8,7 @@ spring:
     cache: false
   profiles:
     # 可以配置多个。逗号分隔
-    active: dev,dev_luckdraw,dev_https
+    active: dev,dev_luckdraw,dev_https,my_redisson
     #active: dev,devshardingbyInline_encryption,dev_elasticsearch
 #  datasource:
 #    # 注意mysql 时区 字符集编码

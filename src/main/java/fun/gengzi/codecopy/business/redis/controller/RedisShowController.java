@@ -1,5 +1,7 @@
 package fun.gengzi.codecopy.business.redis.controller;
 
+import fun.gengzi.codecopy.business.redis.config.RedisManager;
+import fun.gengzi.codecopy.business.redis.config.RedisRegister;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
@@ -79,7 +81,7 @@ public class RedisShowController {
         arrayList.add("zhangsan");
         arrayList.add("lisi");
         arrayList.add("wangwu");
-        boolean b = redisUtil.lSetAll(code, arrayList, 3000);
+        boolean b = redisUtil.lSetAll(code, arrayList, 18000);
         // 获取该 list 所有数据
         List<Object> redisList = redisUtil.lGet(code, 0, -1);
 
@@ -107,7 +109,7 @@ public class RedisShowController {
         arrayList.add("zhangsan"); // 0
         arrayList.add("lisi");  // 1
         arrayList.add("wangwu");  // 2
-        boolean b = redisUtil.lSetAll(code, arrayList, 3000);
+        boolean b = redisUtil.lSetAll(code, arrayList, 18000);
         // 获取分页数据
         long length = redisUtil.lGetListSize(code);
         int startIndex = (page * size) + 1;
@@ -183,17 +185,17 @@ public class RedisShowController {
      * <p>
      * 如果是存储数字， -127 - 128 是一个字节存储
      * 如果是大一点的数字，就需要 2 两个字节存储
-     *
+     * <p>
      * 共同关注
-     *
+     * <p>
      * 粉丝列表，转 好友列表
-     *
-     *  userid  fenid
-     *  我的关注
-     *  userid  wid
-     *            几百个，或者几万个。
-     *   1    {5,4,2}
-     *   2    {4,1}
+     * <p>
+     * userid  fenid
+     * 我的关注
+     * userid  wid
+     * 几百个，或者几万个。
+     * 1    {5,4,2}
+     * 2    {4,1}
      *
      * @param code
      * @return
@@ -220,17 +222,25 @@ public class RedisShowController {
 
     /**
      * shorted set  排序set
-     *
-     *
+     * <p>
+     * <p>
      * skkiplist 实现
-     *
+     * <p>
      * 根据分数排序的链表
      * 由于底层数据结构是 链表，不能使用二分查找的方式，来进行快速搜索
      * 所以提出 跳跃表的思想
      * 时间复杂度 最坏情况下 O(N)
      * 正常情况 O(logN)
-     *
-     *
+     * <p>
+     * cnblogs.com/chenziyu/p/9225233.html
+     * <p>
+     * <p>
+     * <p>
+     * 动态排行榜实现
+     * <p>
+     * redis 事物实现
+     * <p>
+     * redis 的脚本模式
      *
      * @param code
      * @return
@@ -241,20 +251,96 @@ public class RedisShowController {
     @PostMapping("/dynamicLeaderboard")
     @ResponseBody
     public ReturnData dynamicLeaderboard(@RequestParam("code") String code) {
-
-
-
-
+        Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<>();
+        DefaultTypedTuple typedTuple = new DefaultTypedTuple("zhangsan", 88D);
+        DefaultTypedTuple typedTuple1 = new DefaultTypedTuple("zhangsan", 77D);
+        DefaultTypedTuple typedTuple2 = new DefaultTypedTuple("lisi", 68D);
+        DefaultTypedTuple typedTuple3 = new DefaultTypedTuple("wangwu", 120D);
+        tuples.add(typedTuple);
+        tuples.add(typedTuple1);
+        tuples.add(typedTuple2);
+        tuples.add(typedTuple3);
+        redisUtil.zsSetAndTime(code, tuples);
+        Set<ZSetOperations.TypedTuple<Object>> set = redisUtil.zsGetReverseWithScores(code, 0, -1);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-        ret.setMessage("");
+        ret.setMessage(set);
         return ret;
     }
 
 
+    /**
+     * 多路复用
+     * <p>
+     * 多个网络连接，复用同一个线程，进行同时的网络I/O的操作
+     * <p>
+     * 多路复用技术依靠于操作系统的支持，通过监听回调的形式，当客户发来网络数据，就直接返回给redis。
+     * <p>
+     * 监听这个线程上的，i/o操作。有那个客户发来数据，就接收处理。
+     * <p>
+     * <p>
+     * https://blog.csdn.net/diweikang/article/details/90346020
+     * <p>
+     * <p>
+     * 选择 redis 数据库命令
+     * select 数据库的数字
+     */
 
+    @ApiOperation(value = "redis 动态选择数据库", notes = "redis 动态选择数据库")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "code", required = true),
+            @ApiImplicitParam(name = "dbindex", value = "dbindex", required = true)})
+    @PostMapping("/dynamicDatabaseSelection")
+    @ResponseBody
+    public ReturnData dynamicDatabaseSelection(@RequestParam("code") String code, @RequestParam("dbindex") Integer dbindex) {
+        Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<>();
+        DefaultTypedTuple typedTuple = new DefaultTypedTuple("zhangsan", 88D);
+        DefaultTypedTuple typedTuple1 = new DefaultTypedTuple("zhangsan", 77D);
+        DefaultTypedTuple typedTuple2 = new DefaultTypedTuple("lisi", 68D);
+        DefaultTypedTuple typedTuple3 = new DefaultTypedTuple("wangwu", 120D);
+        tuples.add(typedTuple);
+        tuples.add(typedTuple1);
+        tuples.add(typedTuple2);
+        tuples.add(typedTuple3);
+        redisUtil.switchDatabase(dbindex);
+//        try {
+//            logger.info("当前业务执行业务开始");
+//            Thread.sleep(30000);
+//            logger.info("耗时结束");
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        redisUtil.zsSetAndTime(code, tuples);
+        Set<ZSetOperations.TypedTuple<Object>> set = redisUtil.zsGetReverseWithScores(code, 0, -1);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(set);
+        return ret;
+    }
 
-
+    @ApiOperation(value = "redis 动态选择数据库 新方式", notes = "redis 动态选择数据库 新方式")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "code", required = true),
+            @ApiImplicitParam(name = "dbindex", value = "dbindex", required = true)})
+    @PostMapping("/dynamicDatabaseSelectionNew")
+    @ResponseBody
+    public ReturnData dynamicDatabaseSelectionNew(@RequestParam("code") String code, @RequestParam("dbindex") Integer dbindex) {
+        Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<>();
+        DefaultTypedTuple typedTuple = new DefaultTypedTuple("zhangsan", 88D);
+        DefaultTypedTuple typedTuple1 = new DefaultTypedTuple("zhangsan", 77D);
+        DefaultTypedTuple typedTuple2 = new DefaultTypedTuple("lisi", 68D);
+        DefaultTypedTuple typedTuple3 = new DefaultTypedTuple("wangwu", 120D);
+        tuples.add(typedTuple);
+        tuples.add(typedTuple1);
+        tuples.add(typedTuple2);
+        tuples.add(typedTuple3);
+        redisUtil.zsSetAndTime(code, tuples, dbindex);
+        Set<ZSetOperations.TypedTuple<Object>> set = redisUtil.zsGetReverseWithScores(code, 0, -1, dbindex);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage(set);
+        return ret;
+    }
 
 
 }
