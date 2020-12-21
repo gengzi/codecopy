@@ -9,9 +9,15 @@ import org.redisson.misc.Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.scripting.ScriptSource;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +46,8 @@ public class RedisShowController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private RedisScript<Boolean> script;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -341,6 +349,40 @@ public class RedisShowController {
         ret.setMessage(set);
         return ret;
     }
+
+
+
+
+
+    @ApiOperation(value = "redis lua scriptTest", notes = "redis lua 脚本测试")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "code", required = true)})
+    @PostMapping("/scriptTest")
+    @ResponseBody
+    public ReturnData scriptTest(@RequestParam("code") String code) {
+        Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<>();
+        DefaultTypedTuple typedTuple = new DefaultTypedTuple("zhangsan", 88D);
+        DefaultTypedTuple typedTuple1 = new DefaultTypedTuple("zhangsan", 77D);
+        DefaultTypedTuple typedTuple2 = new DefaultTypedTuple("lisi", 68D);
+        DefaultTypedTuple typedTuple3 = new DefaultTypedTuple("wangwu", 120D);
+        tuples.add(typedTuple);
+        tuples.add(typedTuple1);
+        tuples.add(typedTuple2);
+        tuples.add(typedTuple3);
+
+
+        redisTemplate.execute(script, Collections.singletonList(code),tuples.toArray());
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage("");
+        return ret;
+    }
+
+
+
+//    public boolean checkAndSet(String expectedValue, String newValue) {
+//        return (boolean) redisTemplate.execute(script, Collections.singletonList("key"), Arrays.asList(expectedValue, newValue));
+//    }
 
 
 }

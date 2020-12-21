@@ -3,6 +3,7 @@ package fun.gengzi.codecopy.dao;
 import com.google.common.base.Preconditions;
 import fun.gengzi.codecopy.business.redis.config.RedisManager;
 import io.swagger.models.auth.In;
+import org.checkerframework.checker.units.qual.K;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
@@ -15,8 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
@@ -701,6 +706,7 @@ public class RedisUtil {
      */
     public boolean lSetAll(String key, List<Object> value, long time) {
         try {
+            // 设置超时时间 原子化
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0) {
                 expire(key, time);
@@ -1064,6 +1070,14 @@ public class RedisUtil {
             return 0;
         }
     }
+
+    public void fun01(){
+
+//        redisTemplate.opsForValue().set();
+//     redisTemplate.opsForList().rightPush()
+    }
+
+
 
 
 }
