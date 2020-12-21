@@ -372,6 +372,7 @@ public class RedisShowController {
         tuples.add(typedTuple3);
 
         List<Object> params = new ArrayList<Object>(tuples.size()*2+1);
+        params.add(String.valueOf(params.size()));
         tuples.forEach(objectTypedTuple -> {
             params.add(BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString());
             params.add(objectTypedTuple.getValue());
