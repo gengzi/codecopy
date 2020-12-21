@@ -20,9 +20,9 @@ public class RedisLuaScriptConfig {
      * @return
      */
     @Bean
-    public RedisScript<Boolean> script() {
+    public RedisScript<String> script() {
         Resource resource = new ClassPathResource("/redislua/zset_add_expire.lua");
-        return RedisScript.of(resource, Boolean.class);
+        return RedisScript.of(resource, String.class);
     }
 
 }

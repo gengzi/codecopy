@@ -11,6 +11,16 @@
 
 
 -- zset 设置值并设置过期时间
+-- eval "return redis.call('ZADD',KEYS[1],1,'ddd')" 1 ss:dd
+-- print(ARGV[1])
 
-local current = redis.call('ZADD', 'test:zset:add',' 2 "world" 3 "bar"')
-return true
+
+redis.log(redis.LOG_DEBUG,ARGV[1])
+
+
+-- for i = 1, AGVA[1], 1 do
+-- local current = redis.call('ZADD', KEYS[1], )
+-- end
+
+
+return ARGV[1]

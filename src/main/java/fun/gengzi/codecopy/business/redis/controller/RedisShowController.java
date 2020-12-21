@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -47,7 +48,7 @@ public class RedisShowController {
     private RedisTemplate redisTemplate;
 
     @Autowired
-    private RedisScript<Boolean> script;
+    private RedisScript<String> script;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -370,11 +371,16 @@ public class RedisShowController {
         tuples.add(typedTuple2);
         tuples.add(typedTuple3);
 
+        List<Object> params = new ArrayList<Object>(tuples.size()*2+1);
+        tuples.forEach(objectTypedTuple -> {
+            params.add(BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString());
+            params.add(objectTypedTuple.getValue());
+        });
 
-        redisTemplate.execute(script, Collections.singletonList(code),tuples.toArray());
+        String  result = (String) redisTemplate.execute(script, Collections.singletonList(code),params.toArray());
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-        ret.setMessage("");
+        ret.setMessage(result);
         return ret;
     }
 
