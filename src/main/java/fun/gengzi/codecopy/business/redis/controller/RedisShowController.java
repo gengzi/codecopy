@@ -16,6 +16,8 @@ import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scripting.ScriptSource;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Controller;
@@ -351,9 +353,8 @@ public class RedisShowController {
         return ret;
     }
 
-
-
-
+    @Autowired
+    private RedisManager redisManager;
 
     @ApiOperation(value = "redis lua scriptTest", notes = "redis lua 脚本测试")
     @ApiImplicitParams({
@@ -371,20 +372,28 @@ public class RedisShowController {
         tuples.add(typedTuple2);
         tuples.add(typedTuple3);
 
-        List<Object> params = new ArrayList<Object>(tuples.size()*2+1);
+        List<Object> params = new ArrayList<Object>(tuples.size() * 2 + 1);
         params.add(String.valueOf(params.size()));
         tuples.forEach(objectTypedTuple -> {
             params.add(BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString());
             params.add(objectTypedTuple.getValue());
         });
+//                1+0  1+1       2+1   2+2   3+2  3+3
+//                  1    2        3    4
+//        5000  5  88  zhangsan  77 zhangsan
+//                    3    4       5    6
+//                    3+0    3+1     4+1  4+2
 
-        String  result = (String) redisTemplate.execute(script, Collections.singletonList(code),params.toArray());
+        RedisTemplate redisTemplate = redisManager.getRedisTemplate(3);
+        RedisSerializer<String> stringRedisSerializer = new StringRedisSerializer();
+        String result = (String) redisTemplate.execute(script, stringRedisSerializer, stringRedisSerializer, Collections.singletonList(code), "30000", params.toArray());
+//        String result = (String) redisTemplate.execute(script,stringRedisSerializer,stringRedisSerializer,Collections.singletonList(code), "3000", "3","88","zhangsan");
+
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(result);
         return ret;
     }
-
 
 
 //    public boolean checkAndSet(String expectedValue, String newValue) {

@@ -17,10 +17,9 @@
 -- redis.log(redis.LOG_DEBUG,ARGV[1])
 
 
-for i = 1, AGVA[1], 1 do
-local current = redis.call('ZADD', KEYS[1], AGVA[i+1], AGVA[i+2])
+local sizeStr = tonumber(ARGV[2])
+local size = (sizeStr-1)/2
+for i = 3, size+2 , 1 do
+local current = redis.call('ZADD', KEYS[1], ARGV[i+i-3], ARGV[i+i-2])
 end
-redis.call('Expire', KEYS[1], )
-
-
-return ARGV[1]
+redis.call('Expire', KEYS[1], tonumber(ARGV[1])) return "ok"
