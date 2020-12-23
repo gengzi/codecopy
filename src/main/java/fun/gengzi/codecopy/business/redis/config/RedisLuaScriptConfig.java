@@ -5,11 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.scripting.ScriptSource;
-import org.springframework.scripting.support.ResourceScriptSource;
 
 /**
  * <h1>redis lua 脚本配置类</h1>
+ *
+ * @author gengzi
+ * @date 2020年12月23日14:46:50
  */
 @Configuration
 public class RedisLuaScriptConfig {

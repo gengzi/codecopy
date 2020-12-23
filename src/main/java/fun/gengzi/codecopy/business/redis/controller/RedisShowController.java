@@ -2,6 +2,8 @@ package fun.gengzi.codecopy.business.redis.controller;
 
 import fun.gengzi.codecopy.business.redis.config.RedisManager;
 import fun.gengzi.codecopy.business.redis.config.RedisRegister;
+import fun.gengzi.codecopy.business.redis.entity.LuaScriptExecEntity;
+import fun.gengzi.codecopy.business.redis.entity.ZsetAddEntity;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.utils.JsonUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
@@ -56,6 +58,9 @@ public class RedisShowController {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private RedisManager redisManager;
 
     /**
      * 数组，查询快，增删慢  可以根据下标查询，增删，都可能会涉及 扩容和数据移动
@@ -355,15 +360,33 @@ public class RedisShowController {
         return ret;
     }
 
-    @Autowired
-    private RedisManager redisManager;
 
-    @ApiOperation(value = "redis lua scriptTest", notes = "redis lua 脚本测试")
+
+
+    /**
+     *
+     *
+     *
+     *
+     *  redisTemplate 提供了 execute 来支持对redis lua 的执行
+     *  特别注意的是： 在传参给lua 脚本的时候，redistemplate 会把key 和value 进行默认的序列化（如果不指定的情况下）
+     *  默认的序列化，要看redisTemplate 是否配置了自定义的序列化，如果没有的话，就会采用默认的，jdk提供的序列化
+     *
+     *
+     *
+     *
+     *
+     *
+     * @param code
+     * @return
+     */
+    @ApiOperation(value = "redis lua 实现zset添加数据并设置过期时间", notes = "redis lua 脚本测试")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "code", required = true)})
     @PostMapping("/scriptTest")
     @ResponseBody
     public ReturnData scriptTest(@RequestParam("code") String code) {
+        // 构造模拟数据
         Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<>();
         DefaultTypedTuple typedTuple = new DefaultTypedTuple("zhangsan", 88D);
         DefaultTypedTuple typedTuple1 = new DefaultTypedTuple("zhangsan", 77D);
@@ -373,50 +396,25 @@ public class RedisShowController {
         tuples.add(typedTuple1);
         tuples.add(typedTuple2);
         tuples.add(typedTuple3);
+        ZsetAddEntity zsetAddEntity = new ZsetAddEntity();
+        zsetAddEntity.setTuples(tuples);
+        zsetAddEntity.setSize(tuples.size());
+        LuaScriptExecEntity luaScriptExecEntity = new LuaScriptExecEntity();
+        luaScriptExecEntity.setInfo(zsetAddEntity);
+        luaScriptExecEntity.setTtl(30000);
 
-//        List<Map<String, String>> params = new ArrayList<>(tuples.size() * 2 + 1);
-////        params.add(String.valueOf(tuples.size() * 2 + 1));
-//        tuples.forEach(objectTypedTuple -> {
-//            HashMap<String, String> objectObjectHashMap = new HashMap<>();
-//            objectObjectHashMap.put((BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString()), (String) objectTypedTuple.getValue());
-//            params.add(objectObjectHashMap);
-////            params.add(BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString());
-////            params.add(objectTypedTuple.getValue());
-//        });
-
-        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
-        objectObjectHashMap.put("info",tuples);
-        objectObjectHashMap.put("size",tuples.size());
-        objectObjectHashMap.put("ttl",30000);
-
-        String jsonInfo = JsonUtils.objectToJson(objectObjectHashMap);
-
-
-//                1+0  1+1       2+1   2+2   3+2  3+3
-//                  1    2        3    4
-//        5000  5  88  zhangsan  77 zhangsan
-//                    3    4       5    6
-//                    3+0    3+1     4+1  4+2
+        String jsonInfo = JsonUtils.objectToJson(luaScriptExecEntity);
+        logger.info("lua 数据：{}", jsonInfo);
 
         RedisTemplate redisTemplate = redisManager.getRedisTemplate(3);
+        // 序列化方式
         RedisSerializer<String> stringRedisSerializer = new StringRedisSerializer();
-//        String result = (String) redisTemplate.execute(script, stringRedisSerializer, stringRedisSerializer, Collections.singletonList(code), "30000", params.toArray());
-//        String result = (String) redisTemplate.execute(script,stringRedisSerializer,stringRedisSerializer,Collections.singletonList(code), "3000", "3","88","zhangsan");
-
+        // 调用lua 脚本
         String result = (String) redisTemplate.execute(script,stringRedisSerializer,stringRedisSerializer,Collections.singletonList(code), jsonInfo);
-
-
-
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(result);
         return ret;
     }
-
-
-//    public boolean checkAndSet(String expectedValue, String newValue) {
-//        return (boolean) redisTemplate.execute(script, Collections.singletonList("key"), Arrays.asList(expectedValue, newValue));
-//    }
-
 
 }

@@ -22,10 +22,10 @@ local key = KEYS[1]
 -- 解析json数据
 local content = cjson.decode(ARGV[1])
 -- 获取数组长度
-local length = content["size"]
+local length = content["info"]["size"]
 local ttl = content["ttl"]
 for i = 1, length , 1 do
-    local current = redis.call('ZADD', key, content["info"][i]["score"] , content["info"][i]["value"])
+    local current = redis.call('ZADD', key, content["info"]["tuples"][i]["score"] , content["info"]["tuples"][i]["value"])
 end
 local num = redis.call('Expire', KEYS[1], ttl)
 return "ok"
