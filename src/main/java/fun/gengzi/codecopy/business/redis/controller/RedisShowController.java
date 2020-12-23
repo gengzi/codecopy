@@ -3,6 +3,7 @@ package fun.gengzi.codecopy.business.redis.controller;
 import fun.gengzi.codecopy.business.redis.config.RedisManager;
 import fun.gengzi.codecopy.business.redis.config.RedisRegister;
 import fun.gengzi.codecopy.dao.RedisUtil;
+import fun.gengzi.codecopy.utils.JsonUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
 import org.redisson.misc.Hash;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.scripting.ScriptSource;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Controller;
@@ -372,12 +374,24 @@ public class RedisShowController {
         tuples.add(typedTuple2);
         tuples.add(typedTuple3);
 
-        List<Object> params = new ArrayList<Object>(tuples.size() * 2 + 1);
-        params.add(String.valueOf(params.size()));
-        tuples.forEach(objectTypedTuple -> {
-            params.add(BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString());
-            params.add(objectTypedTuple.getValue());
-        });
+//        List<Map<String, String>> params = new ArrayList<>(tuples.size() * 2 + 1);
+////        params.add(String.valueOf(tuples.size() * 2 + 1));
+//        tuples.forEach(objectTypedTuple -> {
+//            HashMap<String, String> objectObjectHashMap = new HashMap<>();
+//            objectObjectHashMap.put((BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString()), (String) objectTypedTuple.getValue());
+//            params.add(objectObjectHashMap);
+////            params.add(BigDecimal.valueOf(objectTypedTuple.getScore()).toPlainString());
+////            params.add(objectTypedTuple.getValue());
+//        });
+
+        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("info",tuples);
+        objectObjectHashMap.put("size",tuples.size());
+        objectObjectHashMap.put("ttl",30000);
+
+        String jsonInfo = JsonUtils.objectToJson(objectObjectHashMap);
+
+
 //                1+0  1+1       2+1   2+2   3+2  3+3
 //                  1    2        3    4
 //        5000  5  88  zhangsan  77 zhangsan
@@ -386,8 +400,12 @@ public class RedisShowController {
 
         RedisTemplate redisTemplate = redisManager.getRedisTemplate(3);
         RedisSerializer<String> stringRedisSerializer = new StringRedisSerializer();
-        String result = (String) redisTemplate.execute(script, stringRedisSerializer, stringRedisSerializer, Collections.singletonList(code), "30000", params.toArray());
+//        String result = (String) redisTemplate.execute(script, stringRedisSerializer, stringRedisSerializer, Collections.singletonList(code), "30000", params.toArray());
 //        String result = (String) redisTemplate.execute(script,stringRedisSerializer,stringRedisSerializer,Collections.singletonList(code), "3000", "3","88","zhangsan");
+
+        String result = (String) redisTemplate.execute(script,stringRedisSerializer,stringRedisSerializer,Collections.singletonList(code), jsonInfo);
+
+
 
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
