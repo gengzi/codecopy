@@ -1,36 +1,26 @@
 package fun.gengzi.codecopy.business.redis.controller;
 
 import fun.gengzi.codecopy.business.redis.config.RedisManager;
-import fun.gengzi.codecopy.business.redis.config.RedisRegister;
 import fun.gengzi.codecopy.business.redis.entity.LuaScriptExecEntity;
 import fun.gengzi.codecopy.business.redis.entity.ZsetAddEntity;
 import fun.gengzi.codecopy.dao.RedisUtil;
 import fun.gengzi.codecopy.utils.JsonUtils;
 import fun.gengzi.codecopy.vo.ReturnData;
 import io.swagger.annotations.*;
-import org.redisson.misc.Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.data.redis.core.DefaultTypedTuple;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.scripting.ScriptSource;
-import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -270,7 +260,7 @@ public class RedisShowController {
     @ResponseBody
     public ReturnData dynamicLeaderboard(@RequestParam("code") String code) {
         Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<>();
-        DefaultTypedTuple typedTuple = new DefaultTypedTuple("zhangsan", 88D);
+        DefaultTypedTuple<Object> typedTuple = new DefaultTypedTuple<Object>("zhangsan", 88D);
         DefaultTypedTuple typedTuple1 = new DefaultTypedTuple("zhangsan", 77D);
         DefaultTypedTuple typedTuple2 = new DefaultTypedTuple("lisi", 68D);
         DefaultTypedTuple typedTuple3 = new DefaultTypedTuple("wangwu", 120D);
@@ -361,21 +351,10 @@ public class RedisShowController {
     }
 
 
-
-
     /**
-     *
-     *
-     *
-     *
-     *  redisTemplate 提供了 execute 来支持对redis lua 的执行
-     *  特别注意的是： 在传参给lua 脚本的时候，redistemplate 会把key 和value 进行默认的序列化（如果不指定的情况下）
-     *  默认的序列化，要看redisTemplate 是否配置了自定义的序列化，如果没有的话，就会采用默认的，jdk提供的序列化
-     *
-     *
-     *
-     *
-     *
+     * redisTemplate 提供了 execute 来支持对redis lua 的执行
+     * 特别注意的是： 在传参给lua 脚本的时候，redistemplate 会把key 和value 进行默认的序列化（如果不指定的情况下）
+     * 默认的序列化，要看redisTemplate 是否配置了自定义的序列化，如果没有的话，就会采用默认的，jdk提供的序列化
      *
      * @param code
      * @return
@@ -410,11 +389,60 @@ public class RedisShowController {
         // 序列化方式
         RedisSerializer<String> stringRedisSerializer = new StringRedisSerializer();
         // 调用lua 脚本
-        String result = (String) redisTemplate.execute(script,stringRedisSerializer,stringRedisSerializer,Collections.singletonList(code), jsonInfo);
+        String result = (String) redisTemplate.execute(script, stringRedisSerializer, stringRedisSerializer, Collections.singletonList(code), jsonInfo);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(result);
         return ret;
     }
+
+
+    /**
+     * 测试事务执行，中间出错，后续的命令是否执行
+     * 当命令执行出错，客户端怎么回滚数据
+     *
+     *
+     * 直接删除操作的key 好像是一个不错的选择
+     *
+     * redis的lua脚本依然也是不支持回滚操作的，需要根据业务来判断是否做如果的回滚操作
+     *
+     *
+     *
+     * @param code
+     * @return
+     */
+    @ApiOperation(value = "redis事务", notes = "redis事务")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "code", required = true)})
+    @PostMapping("/affair")
+    @ResponseBody
+    public ReturnData affair(@RequestParam("code") String code) {
+        RedisTemplate redisTemplate = redisManager.getRedisTemplate(3);
+        try {
+            List<Object> txResults = (List<Object>) new SessionCallback<List<Object>>() {
+                public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                    operations.watch("key");
+                    operations.watch("zz");
+                    operations.multi();
+                    operations.opsForSet().add("key", "value1");
+                    operations.opsForZSet().add("zz", "11", 77D);
+                    //TODO 使用字符串类型，获取zset类型的数据，会导致报错
+                    operations.opsForValue().get("zz");
+                    return operations.exec();
+                }
+            }.execute(redisTemplate);
+        } catch (Exception e) {
+            logger.error("执行redis事务失败，原因：{}", e.getMessage());
+            // 执行回滚逻辑
+            redisTemplate.delete("key");
+            redisTemplate.delete("zz");
+        }
+
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage("");
+        return ret;
+    }
+
 
 }
