@@ -2,6 +2,7 @@ package fun.gengzi.codecopy;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
@@ -22,6 +23,10 @@ public class CodecopyApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         // 解决es的netty冲突问题
         System.setProperty("es.set.netty.runtime.available.processors", "false");
+
+        //启用非web模式，但是没看出来啥用
+        //SpringApplication springApplication = new SpringApplication();
+        //springApplication.setWebApplicationType(WebApplicationType.NONE);
         SpringApplication.run(CodecopyApplication.class, args);
     }
 
