@@ -51,8 +51,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * 读取系统配置，系统启动时，读取redis 的配置，初始化所有的redistemplate
  * 并动态注册为bean
+ *
+ * @author gengzi
+ * @date 2021年1月5日22:16:29
  */
 @Configuration
+// 实现 EnvironmentAware 用于获取环境配置
 // 实现 ImportBeanDefinitionRegistrar 用于动态注册bean
 public class RedisRegister implements EnvironmentAware, ImportBeanDefinitionRegistrar {
 

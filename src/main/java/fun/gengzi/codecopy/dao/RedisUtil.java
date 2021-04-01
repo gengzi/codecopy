@@ -929,8 +929,8 @@ public class RedisUtil {
         Config config = new Config();
         config.setCodec(StringCodec.INSTANCE);
         SingleServerConfig singleConfig = config.useSingleServer();
-        singleConfig.setAddress("redis://120.53.235.63:6378");
-        singleConfig.setPassword("gengzi666");
+        singleConfig.setAddress("redis://127.0.0.1:6379");
+        singleConfig.setPassword("111");
         singleConfig.setDatabase(dbIndex);
         RedissonClient redissonClient = Redisson.create(config);
         RedissonConnectionFactory redisConnectionFactory = new RedissonConnectionFactory(redissonClient);
@@ -1044,6 +1044,7 @@ public class RedisUtil {
      */
     public long zsSetAndTime(String key, Set<ZSetOperations.TypedTuple<Object>> tuples, Integer db) {
         try {
+            // 根据db序号，获取对应的 RedisTemplate
             RedisTemplate redisTemplate = redisManager.getRedisTemplate(db);
             Long count = redisTemplate.opsForZSet().add(key, tuples);
             return count;

@@ -292,8 +292,10 @@ public class RedisShowController {
      * <p>
      * 选择 redis 数据库命令
      * select 数据库的数字
+     *
+     * @param code 键
+     * @param dbindex Redis 数据库序号
      */
-
     @ApiOperation(value = "redis 动态选择数据库", notes = "redis 动态选择数据库")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "code", required = true),

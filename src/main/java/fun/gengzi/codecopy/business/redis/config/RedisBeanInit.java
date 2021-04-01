@@ -63,7 +63,7 @@ public class RedisBeanInit implements EnvironmentAware, ApplicationContextAware 
     }
 
 
-    @PostConstruct
+    @PostConstruct // Constructor >> @Autowired >> @PostConstruct 用于执行一个 非静态的void 方法，常应用于初始化资源
     public void initAllRedisTemlate() {
         logger.info("<<<初始化系统的RedisTemlate开始>>>");
         RedissondbConfigEntity redissondb;

@@ -1,4 +1,4 @@
 redissondb:
-  address: "redis://120.53.235.63:6378"
-  password: gengzi666
+  address: "redis://127.0.0.1:6379"
+  password: 111
   databases: [2,3,4,5,6]
