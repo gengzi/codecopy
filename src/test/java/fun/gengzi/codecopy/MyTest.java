@@ -1,6 +1,8 @@
 package fun.gengzi.codecopy;
 
 import cn.hutool.core.io.file.FileReader;
+import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.IdUtil;
 
 import java.io.*;
 
@@ -57,6 +59,13 @@ public class MyTest {
 //        java.io.FileReader
     }
 
+
+    public void fun04(){
+        //参数1为终端ID
+//参数2为数据中心ID
+        Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+        long id = snowflake.nextId();
+    }
 
 
 }
