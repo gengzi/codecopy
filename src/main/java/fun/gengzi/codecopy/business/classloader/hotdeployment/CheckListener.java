@@ -9,12 +9,26 @@ import lombok.SneakyThrows;
 import org.aspectj.weaver.ast.Test;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 
 public class CheckListener {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ClassNotFoundException, MalformedURLException, IllegalAccessException, InstantiationException {
+        // 使用自定义类加载器加载类
+        File file1 = new File("D:\\ideaworkspace");
+        URI uri = file1.toURI();
+        URL url = uri.toURL();
+        HotDeploymentClassLoaderV2 hotDeploymentClassLoaderV2 = new HotDeploymentClassLoaderV2(new URL[]{url}, Thread.currentThread().getContextClassLoader());
+        Class<?> aClass = hotDeploymentClassLoaderV2.loadClass("fun.gengzi.codecopy.business.classloader.hotdeployment.TestCode");
+        Console.log("类加载器：{}",aClass.getClassLoader());
+        Object instance = aClass.newInstance();
+        Console.log("hashCode：{}",instance.hashCode());
+
+
         // 持续监听
         // 检索代码变化
         File file = FileUtil.file("D:\\idea_workspace\\codecopy\\src\\main\\java\\fun\\gengzi\\codecopy\\business\\classloader\\hotdeployment\\");
@@ -36,12 +50,27 @@ public class CheckListener {
                 // 调用命令行工具 javac 编译java文件为class文件，存储到运行目录下
                 String str = RuntimeUtil.execForStr("javac -d D:\\ideaworkspace D:\\idea_workspace\\codecopy\\src\\main\\java\\fun\\gengzi\\codecopy\\business\\classloader\\hotdeployment\\TestCode.java");
                 // 调用自定义类加载器，重新加载class文件
-                HotDeploymentClassLoader hotDeploymentClassLoader = new HotDeploymentClassLoader(Thread.currentThread().getContextClassLoader(), "D:\\ideaworkspace");
-                Class<?> aClass = hotDeploymentClassLoader.findClass("fun.gengzi.codecopy.business.classloader.hotdeployment.TestCode");
-                Console.log("重新加载：{}", aClass);
-                Object instance = aClass.newInstance();
+//                HotDeploymentClassLoader hotDeploymentClassLoader = new HotDeploymentClassLoader(Thread.currentThread().getContextClassLoader(), "D:\\ideaworkspace");
+//                Class<?> aClass = hotDeploymentClassLoader.findClass("fun.gengzi.codecopy.business.classloader.hotdeployment.TestCode");
+//                Console.log("重新加载：{}", aClass);
+//                Object instance = aClass.newInstance();
                 //
                 // TestCode testCode = new TestCode();
+
+                hotDeploymentClassLoaderV2.close();
+
+                Console.log("close类加载器");
+                Console.log("instance:{}", instance);
+
+
+                File file1 = new File("D:\\ideaworkspace");
+                URI uri = file1.toURI();
+                URL url = uri.toURL();
+                HotDeploymentClassLoaderV2 hotDeploymentClassLoaderV2 = new HotDeploymentClassLoaderV2(new URL[]{url}, Thread.currentThread().getContextClassLoader());
+                Class<?> aClass = hotDeploymentClassLoaderV2.loadClass("fun.gengzi.codecopy.business.classloader.hotdeployment.TestCode");
+                Console.log("类加载器：{}",aClass.getClassLoader());
+                Object instance = aClass.newInstance();
+                Console.log("hashCode：{}",instance.hashCode());
 
             }
 
