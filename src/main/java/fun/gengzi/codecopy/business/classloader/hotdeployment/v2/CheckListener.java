@@ -1,36 +1,37 @@
 package fun.gengzi.codecopy.business.classloader.hotdeployment.v2;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.watch.WatchMonitor;
 import cn.hutool.core.io.watch.Watcher;
 import cn.hutool.core.lang.Console;
-import cn.hutool.core.util.RuntimeUtil;
-import fun.gengzi.codecopy.business.classloader.hotdeployment.HotDeploymentClassLoaderV2;
-import fun.gengzi.codecopy.business.luckdraw.entity.SysUser;
 import lombok.SneakyThrows;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 
+/**
+ * <h1>文件监听</h1>
+ * <p>
+ * 利用hutool封装的文件监听方法，监听class文件的变化
+ *
+ * @author gengzi
+ * @date 2021年4月14日14:00:57
+ */
 public class CheckListener {
 
-
-    public static void listener() {
-        // 持续监听
-        // 检索代码变化
-        File file = FileUtil.file("D:\\ideaworkspace\\codecopy\\codecopy\\target\\classes\\fun\\gengzi\\codecopy\\business\\classloader\\hotdeployment\\v2\\");
-        //这里只监听文件或目录的修改事件
+    /**
+     * 监听方法
+     * 持续监听，检索代码变化，这里只监听文件或目录的修改事件
+     *
+     * @param file 被监听的目录或者文件
+     */
+    public static void listener(File file) {
         WatchMonitor watchMonitor = WatchMonitor.create(file, WatchMonitor.ENTRY_MODIFY);
         watchMonitor.setWatcher(new Watcher() {
             @Override
             public void onCreate(WatchEvent<?> event, Path currentPath) {
                 Object obj = event.context();
                 Console.log("创建：{}-> {}", currentPath, obj);
-
             }
 
             @SneakyThrows
@@ -40,8 +41,6 @@ public class CheckListener {
                 Console.log("修改：{}-> {}", currentPath, obj);
                 // 重新创建classloader 加载对应类
                 SysApplication.restart();
-
-
             }
 
             @Override

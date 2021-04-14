@@ -3,11 +3,10 @@ package fun.gengzi.codecopy.business.classloader.hotdeployment.v2;
 public class TestCode {
 
     static {
-        System.out.println("classloader:" + TestCode.class.getClassLoader());
-        System.out.println("chufa111111111");
+        System.out.println("TestCode类加载器:" + TestCode.class.getClassLoader());
     }
 
     public TestCode() {
-        System.out.println("gouzhaofangfa132111fdaf2fdsfad5522255");
+        System.out.println("version2.0");
     }
 }
