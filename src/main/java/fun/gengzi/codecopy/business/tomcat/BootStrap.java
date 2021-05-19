@@ -1,12 +1,27 @@
 package fun.gengzi.codecopy.business.tomcat;
 
-import com.google.common.io.FileBackedOutputStream;
 import lombok.SneakyThrows;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
+/**
+ *  <h1>mytomcat 启动类</h1>
+ *
+ *  1.0 版本，支持接收HTTP请求，并成功响应 hello mytomcat
+ *  2.0 版本，封装Request 和 Response 对象，并响应静态资源
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * @author gengzi
+ * @date 2021年5月19日15:09:38
+ */
 public class BootStrap {
 
 
@@ -35,9 +50,12 @@ public class BootStrap {
             System.out.println(line);
 
             OutputStream outputStream = socket.getOutputStream();
-            PrintWriter printWriter = new PrintWriter(outputStream, true);
-            // 回传HTTP 响应
-            printWriter.println("HTTP/1.1 200 OK");
+
+            String hell_mytomcat = ResponseUtils.http200("hell mytomcat");
+            System.out.println(hell_mytomcat);
+            outputStream.write(hell_mytomcat.getBytes());
+            outputStream.flush();
+            outputStream.close();
             socket.close();
         }
     }
