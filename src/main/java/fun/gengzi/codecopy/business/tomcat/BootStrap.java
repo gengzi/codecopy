@@ -35,9 +35,17 @@ public class BootStrap {
      *
      * @param args
      */
-    @SneakyThrows
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
+        // version 1
+//         version1();
+        // version 2
+        version2();
+
+    }
+
+    @SneakyThrows
+    public static void version1(){
         ServerSocket serverSocket = new ServerSocket(PORT);
         while (true) {
             // 只有接收到请求后，该方法才会返回
@@ -56,6 +64,23 @@ public class BootStrap {
             outputStream.write(hell_mytomcat.getBytes());
             outputStream.flush();
             outputStream.close();
+            socket.close();
+        }
+    }
+
+
+
+    @SneakyThrows
+    public static void version2(){
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        while (true) {
+            // 只有接收到请求后，该方法才会返回
+            Socket socket = serverSocket.accept();
+            // 获取数据
+            Request request = new Request(socket);
+
+            Response response = new Response(socket);
+
             socket.close();
         }
     }
