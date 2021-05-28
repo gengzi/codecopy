@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 
 /**
@@ -38,6 +38,12 @@ public class BootStrap {
 
     // 记录当前配置文件中的servlet 信息
     public static ConcurrentHashMap<String, Object> allServlet = new ConcurrentHashMap();
+
+    // 线程池
+    public static ThreadPoolExecutor executor = new ThreadPoolExecutor(5,
+            6,
+            60,
+            TimeUnit.SECONDS, new LinkedBlockingDeque(50));
 
     /**
      * 创建class类，可以直接写包名  xx.Class 包名会被创建出来
@@ -151,34 +157,12 @@ public class BootStrap {
     public static void version3() {
         // 初始化
         init();
-
-
         ServerSocket serverSocket = new ServerSocket(PORT);
         while (true) {
             // 只有接收到请求后，该方法才会返回
             Socket socket = serverSocket.accept();
-            // 获取数据
-            Request request = new Request(socket);
-            Response response = new Response(socket);
-            if (request.getUrl().endsWith(STATIC_HTML_TYPE) && GET_HTTP.equalsIgnoreCase(request.getHttpType())) {
-                response.jumpStaticResource(request.getUrl());
-            } else {
-                Optional<Map.Entry<String, Object>> first = allServlet.entrySet().
-                        stream().filter(map -> map.getKey().equals(request.getUrl())).
-                        findFirst();
+            executor.execute(new ServletThread(socket,allServlet));
 
-                Map.Entry<String, Object> servlet = first.orElse(null);
-                if (servlet == null) {
-                    // 未知请求
-                    response.outPut("请求失败");
-                } else {
-                    Object obj = servlet.getValue();
-                    if (obj instanceof Servlert) {
-                        ((Servlert) obj).service(request, response);
-                    }
-                }
-            }
-            socket.close();
         }
     }
 }
