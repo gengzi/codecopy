@@ -5,20 +5,17 @@ import lombok.SneakyThrows;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- *  <h1>mytomcat 启动类</h1>
- *
- *  1.0 版本，支持接收HTTP请求，并成功响应 hello mytomcat
- *  2.0 版本，封装Request 和 Response 对象，并响应静态资源
- *
- *
- *
- *
- *
- *
- *
+ * <h1>mytomcat 启动类</h1>
+ * <p>
+ * 1.0 版本，支持接收HTTP请求，并成功响应 hello mytomcat
+ * 2.0 版本，封装Request 和 Response 对象，并响应静态资源
+ * 3.0 版本，支持动态请求，使用线程池，优化多个请求
  * @author gengzi
  * @date 2021年5月19日15:09:38
  */
@@ -26,6 +23,12 @@ public class BootStrap {
 
 
     public static final int PORT = 8080;
+
+    // 静态页面后缀
+    public static final String STATIC_HTML_TYPE = ".html";
+
+    // get请求方式
+    public static final String GET_HTTP = "GET";
 
 
     /**
@@ -40,12 +43,12 @@ public class BootStrap {
         // version 1
 //         version1();
         // version 2
-        version2();
+        versio3();
 
     }
 
     @SneakyThrows
-    public static void version1(){
+    public static void version1() {
         ServerSocket serverSocket = new ServerSocket(PORT);
         while (true) {
             // 只有接收到请求后，该方法才会返回
@@ -69,9 +72,8 @@ public class BootStrap {
     }
 
 
-
     @SneakyThrows
-    public static void version2(){
+    public static void version2() {
         ServerSocket serverSocket = new ServerSocket(PORT);
         while (true) {
             // 只有接收到请求后，该方法才会返回
@@ -81,6 +83,46 @@ public class BootStrap {
 
             Response response = new Response(socket);
 
+            socket.close();
+        }
+    }
+
+
+    public static ConcurrentHashMap<String, Object> allServlet = new ConcurrentHashMap();
+
+    @SneakyThrows
+    public static void versio3() {
+        // 初始化方法
+        //InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("web.xml");
+
+
+        allServlet.put("/testDynamic", Class.forName("fun.gengzi.codecopy.business.tomcat.DynamicTestServlet").newInstance());
+
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        while (true) {
+            // 只有接收到请求后，该方法才会返回
+            Socket socket = serverSocket.accept();
+            // 获取数据
+            Request request = new Request(socket);
+            Response response = new Response(socket);
+            if (request.getUrl().endsWith(STATIC_HTML_TYPE) &&  GET_HTTP.equalsIgnoreCase(request.getHttpType())) {
+                response.jumpStaticResource(request.getUrl());
+            }else {
+                Optional<Map.Entry<String, Object>> first = allServlet.entrySet().
+                        stream().filter(map -> map.getKey().equals(request.getUrl())).
+                        findFirst();
+
+                Map.Entry<String, Object> servlet = first.orElse(null);
+                if (servlet == null) {
+                    // 未知请求
+                    response.outPut("请求失败");
+                } else {
+                    Object obj = servlet.getValue();
+                    if (obj instanceof Servlert) {
+                        ((Servlert) obj).service(request, response);
+                    }
+                }
+            }
             socket.close();
         }
     }
