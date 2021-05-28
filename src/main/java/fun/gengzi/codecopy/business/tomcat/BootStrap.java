@@ -21,15 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BootStrap {
 
-
+    // 监听端口
     public static final int PORT = 8080;
-
     // 静态页面后缀
     public static final String STATIC_HTML_TYPE = ".html";
 
     // get请求方式
     public static final String GET_HTTP = "GET";
-
 
     /**
      * 创建class类，可以直接写包名  xx.Class 包名会被创建出来
@@ -43,10 +41,15 @@ public class BootStrap {
         // version 1
 //         version1();
         // version 2
+        //version2();
+
         versio3();
 
     }
 
+    /**
+     * 版本1 支持接收HTTP请求，并成功响应 hello mytomcat
+     */
     @SneakyThrows
     public static void version1() {
         ServerSocket serverSocket = new ServerSocket(PORT);
@@ -72,6 +75,9 @@ public class BootStrap {
     }
 
 
+    /**
+     * 版本2 封装Request 和 Response 对象，并响应静态资源
+     */
     @SneakyThrows
     public static void version2() {
         ServerSocket serverSocket = new ServerSocket(PORT);
@@ -80,12 +86,18 @@ public class BootStrap {
             Socket socket = serverSocket.accept();
             // 获取数据
             Request request = new Request(socket);
-
+            // 进行响应
             Response response = new Response(socket);
-
+            if (request.getUrl().endsWith(STATIC_HTML_TYPE) &&  GET_HTTP.equalsIgnoreCase(request.getHttpType())) {
+                response.jumpStaticResource(request.getUrl());
+            }else {
+                response.outPut("找不到此页面");
+            }
             socket.close();
         }
     }
+
+
 
 
     public static ConcurrentHashMap<String, Object> allServlet = new ConcurrentHashMap();
