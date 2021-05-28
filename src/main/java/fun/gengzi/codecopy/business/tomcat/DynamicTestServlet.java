@@ -10,9 +10,7 @@ public class DynamicTestServlet extends HttpServlet {
      */
     @Override
     public void doGet(Request request, Response respon) {
-        String data = ResponseUtils.http200("get 请求响应");
-        respon.outPut(data);
-
+        respon.outPut("get 请求响应");
     }
 
     /**
@@ -23,7 +21,7 @@ public class DynamicTestServlet extends HttpServlet {
      */
     @Override
     public void doPost(Request request, Response respon) {
-        ResponseUtils.http200("post 请求响应");
+        respon.outPut("post 请求响应");
     }
 
     /**
