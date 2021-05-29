@@ -6,6 +6,9 @@ package fun.gengzi.codecopy.business.jvm.gc;
  * <p>
  * <p>
  * -Xms20M -Xmx20M -Xmn10M -XX:+UseParNewGC -XX:+PrintGCDetails -XX:SurvivorRatio=8
+ * 设置最小堆内存和最大堆内存都是20M，年轻代内存设置10M，然后进行内存分配，来观察Gc日志
+ * <p>
+ * 年轻待，eden区域与 survivor0  和 survivor1的比例分配为 8:1:1
  */
 public class GcTestCode01 {
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <!-- 前端控制器配置 -->
+    <servlet>
+        <servlet-name>dynamicRequestServlet</servlet-name>
+        <servlet-class>fun.gengzi.codecopy.business.tomcat.DynamicTestServlet</servlet-class>
+    </servlet>
+    <!-- servlet映射 -->
+    <servlet-mapping>
+        <servlet-name>dynamicRequestServlet</servlet-name>
+        <url-pattern>/testDynamic</url-pattern>
+    </servlet-mapping>
+</web-app>
