@@ -473,6 +473,30 @@
 <!--            <artifactId>redisson-spring-data-22</artifactId>-->
 <!--            <version>3.13.6</version>-->
 <!--        </dependency>-->
+
+
+
+<!--        <dependency>-->
+<!--            <groupId>com.github.gengzi</groupId>-->
+<!--            <artifactId>baselog</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--        </dependency>-->
+
+        <!--dom4j 增加对xml的解析-->
+        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+
     </dependencies>
 
 
