@@ -26,11 +26,13 @@ public class Fun02FutureThread {
                 e.printStackTrace();
             }
         });
+        // submit 可以传一个string ，并响应回来
 
         try {
             future.get(2, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            // TODO 必须加return；
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
