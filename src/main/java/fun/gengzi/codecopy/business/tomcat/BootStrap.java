@@ -59,7 +59,7 @@ public class BootStrap {
         // version 2
         // version2();
         // version3
-        version3();
+        version4();
     }
 
     /**
@@ -165,4 +165,16 @@ public class BootStrap {
 
         }
     }
+
+    @SneakyThrows
+    public static void version4() {
+
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        while (true) {
+            Socket socket = serverSocket.accept();
+            // 不返回，直接卡死
+            Thread.sleep(2000000);
+        }
+    }
+
 }
