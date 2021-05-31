@@ -39,16 +39,14 @@ public class InOrOutPutStream {
     }
 
 
-
-
     @SneakyThrows
-    public static void fun01(){
+    public static void fun01() {
 
-        InOrOutPutStreamThreadPoolExecute threadPoolExecutor = new InOrOutPutStreamThreadPoolExecute(5,10,60, TimeUnit.SECONDS,new ArrayBlockingQueue<>(50));
+        InOrOutPutStreamThreadPoolExecute threadPoolExecutor = new InOrOutPutStreamThreadPoolExecute(5, 10, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(50));
 
 
         new Thread(() -> {
-            while (true){
+            while (true) {
                 check(threadPoolExecutor);
                 try {
                     Thread.sleep(30000);
@@ -56,19 +54,16 @@ public class InOrOutPutStream {
                     e.printStackTrace();
                 }
                 int size = threadPoolExecutor.hashMap.entrySet().size();
-                if(size == 0){
+                if (size == 0) {
                     System.out.println("当前已经没有线程了");
                 }
             }
         }).start();
 
 
-
-
-
 //        HttpURLConnection.HttpInputStream
         threadPoolExecutor.execute(() -> {
-            while(!Thread.interrupted()){
+            while (!Thread.interrupted()) {
                 InputStream inputStream = null;
                 try {
                     inputStream = new URL("http://localhost:8080").openStream();
@@ -82,20 +77,15 @@ public class InOrOutPutStream {
         });
 
 
-
-
-
-
-
+//
 //        URL url = new URL("https://w.wallhaven.cc");
 //        URLConnection urlConnection = url.openConnection();
 //        urlConnection.connect();
+//        urlConnection.getInputStream();
 //        int connectTimeout = urlConnection.getConnectTimeout();
 //        System.out.println(connectTimeout);
 //        int readTimeout = urlConnection.getReadTimeout();
 //        System.out.println(readTimeout);
-
-
 
 
     }
@@ -126,13 +116,7 @@ public class InOrOutPutStream {
         }
         System.out.println("结束检测--------------");
 
-
-
-
     }
-
-
-
 
 
 }
