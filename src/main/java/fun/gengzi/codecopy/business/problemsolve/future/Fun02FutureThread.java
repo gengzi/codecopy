@@ -12,6 +12,10 @@ public class Fun02FutureThread {
 
     public static void main(String[] args) throws InterruptedException {
 
+        // 不能获取返回结果
+        // threadPoolExecutor.execute();
+
+        // 可以得到一个返回结果
         Future<?> future = threadPoolExecutor.submit(() -> {
             try {
                 for (int i = 0; i < 1000; i++) {
