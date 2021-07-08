@@ -26,7 +26,7 @@ public class ConnectionPool {
             // 超时等待
             long timeout = System.currentTimeMillis() + mills;
             long remaining = mills;
-            while (pool.isEmpty() && mills > 0) {
+            while (pool.isEmpty() && remaining > 0) {
                 // 等待超时
                 pool.wait(remaining);
                 remaining = timeout - System.currentTimeMillis();
