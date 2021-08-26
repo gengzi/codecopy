@@ -30,20 +30,24 @@ public class Fun02FutureThread {
             });
             // submit 可以传一个string ，并响应回来
 
-            try {
-                future.get(2, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                // TODO 必须加return；
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-                boolean cancel = future.cancel(true);
-                System.out.println(cancel);
-            } finally {
-//            threadPoolExecutor.shutdownNow();
-            }
+        try {
+            future.get(50, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("中断线程");
+            // TODO 必须加return；
+            return;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            // 中断执行此任务线程的方式来试图停止任务，返回true 说明成功
+            boolean cancel = future.cancel(true);
+            System.out.println("中断状态" + cancel);
+        } finally {
+
+            System.out.println("销毁线程池");
+            //            threadPoolExecutor.shutdownNow();
         }
 
 
