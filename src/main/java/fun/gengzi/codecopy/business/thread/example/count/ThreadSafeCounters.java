@@ -46,8 +46,8 @@ public class ThreadSafeCounters {
                 e.printStackTrace();
             }
         }
-        System.out.println(threadSafeCounters.atomicInteger.get());
-        System.out.println(threadSafeCounters.i);
+        System.out.println(threadSafeCounters.atomicInteger.get());  // 100000
+        System.out.println(threadSafeCounters.i);   // 97778
     }
 
     private void safeCount() {
