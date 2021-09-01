@@ -11,9 +11,10 @@ import java.util.stream.IntStream;
 
 
 /**
+ * <h1>演示ReentrantLock</h1>
  *
- * https://blog.csdn.net/Dream_xun/article/details/97648589 Java8 替换for循环的方法，Java8简洁的for循环
- *
+ * @author itw_gengsj
+ * @date 2021年8月26日21:42:34
  */
 public class ReentrantLockShow {
     // 求和
@@ -52,15 +53,12 @@ public class ReentrantLockShow {
         IntStream.range(1, 5).forEach(index -> {
             new Thread(() -> reentrantLockShow.add(index), ThreadNameEnum.getThreadNameByIndex(index)).start();
         });
-//        for (int i = 1; i < 5; i++) {
-//            int finalI = i;
-//            new Thread(() -> {
-//                reentrantLockShow.add(finalI);
-//            }, ThreadNameEnum.getThreadNameByIndex(i)).start();
-//        }
     }
 
 
+    /**
+     * 线程名称枚举
+     */
     enum ThreadNameEnum {
         THREAD_A(1, "ThreadA"),
         THREAD_B(2, "ThreadB"),
