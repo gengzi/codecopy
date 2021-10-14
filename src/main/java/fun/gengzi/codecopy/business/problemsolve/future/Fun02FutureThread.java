@@ -51,16 +51,15 @@ public class Fun02FutureThread {
             }
             System.out.println("销毁线程池");
             long taskCount = threadPoolExecutor.getTaskCount();
-            System.out.println("线程池已安排执行的大致任务总数:"+taskCount);
+            System.out.println("线程池已安排执行的大致任务总数:" + taskCount);
             //            threadPoolExecutor.shutdownNow();
         }
 
 
-            Thread.sleep(50000000);
+        Thread.sleep(50000000);
 
 
-        }
     }
-
-
 }
+
+
