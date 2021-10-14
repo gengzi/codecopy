@@ -1,6 +1,5 @@
 package fun.gengzi.codecopy.business.problemsolve.future;
 
-import lombok.SneakyThrows;
 
 import java.util.concurrent.*;
 
@@ -55,11 +54,8 @@ public class Fun02FutureThread {
             //            threadPoolExecutor.shutdownNow();
         }
 
-
         Thread.sleep(50000000);
-
-
     }
+
+
 }
-
-
