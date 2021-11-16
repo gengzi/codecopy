@@ -929,8 +929,8 @@ public class RedisUtil {
         Config config = new Config();
         config.setCodec(StringCodec.INSTANCE);
         SingleServerConfig singleConfig = config.useSingleServer();
-        singleConfig.setAddress("redis://127.0.0.1:6379");
-        singleConfig.setPassword("111");
+        singleConfig.setAddress("redis://120.53.235.63:6378");
+        singleConfig.setPassword("gengzi666");
         singleConfig.setDatabase(dbIndex);
         RedissonClient redissonClient = Redisson.create(config);
         RedissonConnectionFactory redisConnectionFactory = new RedissonConnectionFactory(redissonClient);
