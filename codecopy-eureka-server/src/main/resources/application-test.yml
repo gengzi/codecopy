@@ -1,0 +1,14 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: codecopy-eureka-server
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      register-with-eureka: false # ⾃⼰就是服务不需要注册⾃⼰
+      fetch-registry: false #⾃⼰就是服务不需要从Eureka Server获取服务信息,默认为true，置为false
+
