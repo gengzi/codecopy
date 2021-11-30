@@ -1,8 +1,5 @@
 server:
   port: 8881
-spring:
-  application:
-    name: codecopy-shardingsphere-service
 eureka:
   client:
     service-url: # eureka-server 的地址
@@ -12,3 +9,32 @@ eureka:
     prefer-ip-address: true
     #⾃定义实例显示格式，加上版本号，便于多版本管理，注意是ip-address，早期版本是ipAddress
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+
+
+spring:
+  application:
+    name: codecopy-shardingsphere-service
+  shardingsphere:
+    # 显示sql
+    props:
+      sql:
+        show: true
+    datasource:
+      # 配置两个数据源
+      names: dsh0,dsh1
+      # ds0 数据源
+      dsh0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/dsh0?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+      # ds1 数据源
+      dsh1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/dsh1?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+
+
