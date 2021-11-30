@@ -1,0 +1,10 @@
+# 开启tomcat 的https
+server:
+  ssl:
+    key-store: classpath:server.p12
+    key-store-type: PKCS12
+    trust-store: classpath:truststore.jks
+    trust-store-password: 222222
+    trust-store-type: JKS
+    key-store-password: test
+    enabled: false

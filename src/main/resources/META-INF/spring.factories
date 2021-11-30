@@ -1,0 +1,8 @@
+#org.springframework.boot.diagnostics.FailureAnalyzer=\
+#
+# 启用自动配置
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+
+# 环境进程
+org.springframework.boot.env.EnvironmentPostProcessor = \
+fun.gengzi.codecopy.business.starter.EnvironmentPostProcessorExample

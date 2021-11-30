@@ -1,0 +1,44 @@
+# mysql docker-compose file
+# author gengzi
+version: '2'
+# 服务
+services:
+  mysql-master:
+    image: mysql:5.7  # 引用的容器镜像
+    volumes:
+      - /data/mysql5.7_master:/var/lib/mysql    # 将容器中的 /var/lib/mysql 映射到宿主机的 /data/mysql5.7_master
+      - /data/mysql5.7_master_config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - /var/run/docker.sock:/var/run/docker.sock  # 允许容器与容器与Docker守护进程通信 ，也就是使用docker 命令 ， 比如 容器中需要实例化其他Docker容器
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/lib/x86_64-linux-gnu/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+    ports:    #端口映射  宿主机:容器
+      - "3306:3306"
+    privileged: true  # 使用该参数，container内的root拥有真正的root权限，否则，container内的root只是外部的一个普通用户权限。
+    user: root  # 指定用户是 root 用户，来解决没有权限的问题
+    restart: always    #是否随docker服务启动重启
+    container_name: mysql5.7-master  # 容器实例后的名称
+    environment: # environment 和 Dockerfile 中的 ENV 指令一样会把变量一直保存在镜像、容器中，类似 docker run -e 的效果。设置容器的环境变量
+      - MYSQL_ROOT_PASSWORD=111
+      - MYSQL_DATABASE=luckdraw_db
+      - TZ=Asia/Shanghai #这里设置容器的时区为亚洲上海
+  mysql-slave:
+    image: mysql:5.7
+    volumes:
+      - /data/mysql5.7_slave:/var/lib/mysql
+      - /data/mysql5.7_slave_config/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/lib/x86_64-linux-gnu/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+    ports:
+      - "3307:3306"
+    privileged: true
+    user: root
+    restart: always
+    container_name: mysql5.7-slave
+    environment:
+      - MYSQL_ROOT_PASSWORD=111
+      - MYSQL_DATABASE=luckdraw_db
+      - TZ=Asia/Shanghai #这里设置容器的时区为亚洲上海
+
+
+

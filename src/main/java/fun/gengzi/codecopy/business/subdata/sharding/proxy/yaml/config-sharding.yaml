@@ -1,0 +1,165 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+######################################################################################################
+# 
+# Here you can configure the rules for the proxy. 您可以在这里配置代理的规则。
+# This example is configuration of sharding rule. 这个例子是分片规则的配置。
+#   
+# If you want to use sharding, please refer to this file;  如果要使用分片，请参考此文件；
+# if you want to use master-slave, please refer to the config-master_slave.yaml. 如果要使用主从模式，请参考配置config-master_slave.yaml
+# 
+######################################################################################################
+#
+#schemaName: sharding_db
+#
+#dataSources:
+#  ds_0:
+#    url: jdbc:postgresql://127.0.0.1:5432/demo_ds_0?serverTimezone=UTC&useSSL=false
+#    username: postgres
+#    password: postgres
+#    connectionTimeoutMilliseconds: 30000
+#    idleTimeoutMilliseconds: 60000
+#    maxLifetimeMilliseconds: 1800000
+#    maxPoolSize: 50
+#  ds_1:
+#    url: jdbc:postgresql://127.0.0.1:5432/demo_ds_1?serverTimezone=UTC&useSSL=false
+#    username: postgres
+#    password: postgres
+#    connectionTimeoutMilliseconds: 30000
+#    idleTimeoutMilliseconds: 60000
+#    maxLifetimeMilliseconds: 1800000
+#    maxPoolSize: 50
+#
+#shardingRule:
+#  tables:
+#    t_order:
+#      actualDataNodes: ds_${0..1}.t_order_${0..1}
+#      tableStrategy:
+#        inline:
+#          shardingColumn: order_id
+#          algorithmExpression: t_order_${order_id % 2}
+#      keyGenerator:
+#        type: SNOWFLAKE
+#        column: order_id
+#    t_order_item:
+#      actualDataNodes: ds_${0..1}.t_order_item_${0..1}
+#      tableStrategy:
+#        inline:
+#          shardingColumn: order_id
+#          algorithmExpression: t_order_item_${order_id % 2}
+#      keyGenerator:
+#        type: SNOWFLAKE
+#        column: order_item_id
+#  bindingTables:
+#    - t_order,t_order_item
+#  defaultDatabaseStrategy:
+#    inline:
+#      shardingColumn: user_id
+#      algorithmExpression: ds_${user_id % 2}
+#  defaultTableStrategy:
+#    none:
+
+######################################################################################################
+#
+# If you want to connect to MySQL, you should manually copy MySQL driver to lib directory.
+# 如果要连接到MySQL，需要手动将MySQL驱动程序复制到lib目录下。
+#
+######################################################################################################
+# 逻辑数据源名称
+schemaName: sharding_db
+
+# 数据源配置，可配置多个data_source_name
+dataSources:
+  # 与Sharding-JDBC配置不同，无需配置数据库连接池
+  ds0:
+    # 数据库url连接
+    url: jdbc:mysql://127.0.0.1:3306/ds0?serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 111
+    # 连接超时毫秒数
+    connectionTimeoutMilliseconds: 30000
+    # 空闲连接回收超时毫秒数
+    idleTimeoutMilliseconds: 60000
+    # 连接最大存活时间毫秒数
+    maxLifetimeMilliseconds: 1800000
+    # 最大连接数
+    maxPoolSize: 50
+  ds1:
+    url: jdbc:mysql://127.0.0.1:3306/ds1?serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 111
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  slaveds0:
+    url: jdbc:mysql://127.0.0.1:3307/ds0?autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password:
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+  slaveds1:
+    url: jdbc:mysql://127.0.0.1:3307/ds1?autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password:
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 50
+
+
+
+# 省略数据分片配置，与Sharding-JDBC配置一致
+shardingRule:
+  tables:
+    t_bussiness:
+      actualDataNodes: ds$->{0..1}.t_bussiness$->{0..1}
+      tableStrategy:
+        inline:
+          shardingColumn: id
+          algorithmExpression: t_bussiness$->{id % 2}
+      keyGenerator:
+        type: SNOWFLAKE
+        column: id
+  bindingTables:
+    - t_bussiness
+  broadcastTables:
+    - shorturl
+    - area_info
+    - dic_data
+    - dic_list
+    - sys_permission
+  defaultDatabaseStrategy:
+    inline:
+      shardingColumn: data_version
+      algorithmExpression: ds$->{data_version % 2}
+  defaultDataSourceName: ds0
+  defaultTableStrategy:
+    none:
+  # 省略读写分离配置，与Sharding-JDBC配置一致
+  masterSlaveRules:
+    ds0:
+      masterDataSourceName: ds0
+      slaveDataSourceNames:
+        - slaveds0
+    ds1:
+      masterDataSourceName: ds1
+      slaveDataSourceNames:
+        - slaveds1

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script charset="utf-8" src="../js/jsencrypt/jsencrypt.min.js"></script>
+    <script charset="utf-8" src="../js/other.js"></script>
+</head>
+<body>
+<h1>rsa加密演示</h1>
+<p>使用hello world 加密，加密后再解密，具体看 console 控制台打印内容</p>
+
+<script>
+    console.log("使用公钥加密，使用密钥解密")
+    var key = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbcdLKOtTKOjalffv/LLLOqfyh8Ep4XHjvOivMU3Nb1N0puG4+NTrXBS8GDczgsZ+7J6D7FTcH8JInMKpz85LMCAwEAAQ==";
+    let encryptRSAByPublicKey1 = encryptRSAByPublicKey("你好", key);
+    console.log("hello world 加密后：" + encryptRSAByPublicKey1)
+
+    var privateKey = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAttx0so61Mo6NqV9+/8sss6p/KHwSnhceO86K8xTc1vU3Sm4bj41OtcFLwYNzOCxn7snoPsVNwfwkicwqnPzkswIDAQABAkBGw9Xda+Cvaf9kdnJdZzErbmW7Mxi5WVT37BxVqdM01BTjudKSADlLn53fEeWl7pmfMkMuXZ7uPNdqmLWVLMNxAiEA6LXvDTKtEZNyTvjXs4nDJweiIT9kZtZmYD3hVcQueJUCIQDJKV+PcdKehVw8U+hdeE4/NZDFCHRzaGM4Zs5YRRbuJwIgSG0fSn9EKB04zWVbVNCCgWo5xplBOVRvJnL758KYKAUCIDdpmzZDb3ZVXCwOHRMqYbuNwNxV0OY9mh9eSncMSR2/AiEApSModT03Kr+nHxhgzAyOvzLcKE0IPMJ+ny3mjdyBjWc=";
+    let decryptRSAByPrivateKey1 = decryptRSAByPrivateKey(encryptRSAByPublicKey1, privateKey);
+    console.log("解密后：" + decryptRSAByPrivateKey1);
+
+</script>
+
+
+</body>
+</html>

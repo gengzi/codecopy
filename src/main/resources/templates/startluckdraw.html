@@ -1,0 +1,916 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>天天抽奖</title>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/tiantian_cj.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/animate.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/swiper.min.css"/>
+    <script src="/js/jquery-1.7.1.min.js"></script>
+    <script src="/js/public640.js"></script>
+    <script src="/js/tiantian.js"></script>
+    <script type="text/javascript" src="/js/jquery.rotate.min.js"></script>
+    <link rel="stylesheet" href="/css/medal/reset.css"/>
+    <link rel="stylesheet" href="/css/medal/xunzhang.css"/>
+    <link rel="stylesheet" href="/css/medal/swiper.min.css"/>
+    <link rel="stylesheet" href="/css/index.css"/>
+    <script src="/js/medal/tanceng.js"></script>
+</head>
+<script>
+
+    (function ($) {
+        // 获取路径中的参数
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    })(jQuery);
+
+    sessionStorage.getItem("uname")
+    sessionStorage.getItem("integral")
+    var token = sessionStorage.getItem("Authorization")
+    if (token == null || token == "") {
+        var aid = $.getUrlParam('aid');
+        window.location.href = "/luckdraw/activity?aid=" + aid;
+    }
+    var NUMBER_OF_LEAVES = 400;//更改个数
+    function init() {
+        var container = document.getElementsByClassName('leafContainer')[0];
+        for (var i = 0; i < NUMBER_OF_LEAVES; i++) {
+            container.appendChild(createALeaf());
+        }
+    }
+
+    function randomInteger(low, high) {
+        return low + Math.floor(Math.random() * (high - low));
+    }
+
+    function randomFloat(low, high) {
+        return low + Math.random() * (high - low);
+    }
+
+    function pixelValue(value) {
+        return value + 'px';
+    }
+
+    function durationValue(value) {
+        return value + 's';
+    }
+
+    function createALeaf() {
+        var leafDiv = document.createElement('div');
+        var image = document.createElement('img');
+        image.src = '/images/medal/image' + randomInteger(1, 5) + '.png';
+        leafDiv.style.top = "-20px";
+        leafDiv.style.left = pixelValue(randomInteger(0, 1000));
+        var spinAnimationName = (Math.random() < 0.5) ? 'clockwiseSpin' : 'counterclockwiseSpinAndFlip';
+        leafDiv.style.webkitAnimationName = 'fade, drop';
+        image.style.webkitAnimationName = spinAnimationName;
+        var fadeAndDropDuration = durationValue(randomFloat(5, 11));
+        var spinDuration = durationValue(randomFloat(4, 8));
+        leafDiv.style.webkitAnimationDuration = fadeAndDropDuration + ', ' + fadeAndDropDuration;
+        var leafDelay = durationValue(randomFloat(0, 5));
+        leafDiv.style.webkitAnimationDelay = leafDelay + ', ' + leafDelay;
+        image.style.webkitAnimationDuration = spinDuration;
+        leafDiv.appendChild(image);
+        return leafDiv;
+    }
+
+    window.addEventListener('load', init);
+</script>
+
+<script type="text/javascript">
+    var medalShareTitle = "抽奖锦鲤";
+    var medalShareContent = "我获得了新的勋章，你也快来手厅获取吧！";
+    var medalSharePic = "medal/xz_jl.png";
+    var medalShareUrl;
+
+    $(function () {
+        // {"shareTitle":"【天天抽奖,惊喜不断】","shareContent":"免费抽奖,金币、流量、电影券等你来抢!","sharePic":"20190722/222_69b34c8d470343cfa919ddecfdde9ed1.jpg","shareMobileUrl":"http://m.client.10010.com/dailylottery/view/dailylotteryshare.jsp"}
+        shareTitle = "【天天抽奖,惊喜不断】";
+        shareContent = "免费抽奖,金币、流量、电影券等你来抢!";
+        sharePic = "222_69b34c8d470343cfa919ddecfdde9ed1.jpg";
+        // shareMobileUrl = msg.shareMobileUrl;
+    });
+    var uautil = {
+        getuserAgent: function () {//获取客户端UA信息
+            return navigator.userAgent.toLowerCase();
+        },
+        getagent: function () {//获取客户端类型
+            var agent = uautil.getuserAgent();
+            if (/android/.test(agent)) {
+                return 'android';
+            } else if (/iphone/.test(agent)) {
+                return 'iphone';
+            } else {
+                return 'other';
+            }
+        },
+        getversion: function () {
+            var versionStr = null;
+            var agent = uautil.getagent();
+            if (agent == 'android') {
+                versionStr = uautil.getuserAgent().match('unicom\\{version:([A-Za-z_]*@+[0-9]+.+[0-9]+),desmobile:[0-9]*\\}');
+            } else if (agent == 'iphone') {
+                versionStr = uautil.getuserAgent().match('unicom\\{version:([A-Za-z_]*@+[0-9]+.+[0-9]+)\\}');
+            }
+            return versionStr != null ? versionStr[1] : '';
+        }
+    };
+    var mobileVersion = uautil.getversion();
+
+
+    function shareClient(flag) {
+        var shareJson;
+        var in1 = "in1";
+        var timexz = new Date().Format("yyyy-MM-dd");
+        if (flag == "1") {
+            shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + shareTitle + "\",\"shareContent\":\"" + shareContent + "\",\"shareURL\":\"" + shareMobileUrl + "?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"miniProgramShare\":\"1\",\"miniProgramType\":\"0\",\"miniProgramUserName\":\"gh_2bab3e2deed1\",\"miniProgramPath\":\"/pages/ttcj/ttcj?encryptusernumber=" + phoneid + "&areaId=" + areaId + "&JiFenflag=" + JiFenflag + "\",\"shareIconURL\":\"http://img.client.10010.com/mobileService/view/client/images/signin/uploads/pic/" + sharePic + "\"}";
+        } else if (flag == "2") {
+            //长地址变短地址
+            $.ajax({
+                type: 'POST',
+                url: "/dailylottery/static/doubleball/getShortAddress?phoneid=" + phoneid,
+                timeout: 50000, //超时时间设置，单位毫秒
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    medalShareUrl = data;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("分享信息");
+                }
+            });
+            shareJson = "{\"shareType\":\"url\",\"shareTitle\":\"" + medalShareTitle + "\",\"shareContent\":\"" + medalShareContent + "\",\"shareURL\":\"" + medalShareUrl + "\",\"shareIconURL\":\"/images/" + medalSharePic + "\"}";
+        }
+        if (mobileVersion.indexOf('3.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('3.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('3.3') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('4.3') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.3') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.4') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.5') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.6') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.7') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.8') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('5.9') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('6.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('6.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('6.2') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('7.0') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('7.1') != -1) {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "\",\"shareJson\":" + shareJson + "}");
+            }
+        } else if (mobileVersion.indexOf('2.4') != -1) {
+            window.location.href = "http://wap.10010.com/t/wap/upload/khd.jsp";
+        } else {
+            if (mobileVersion.indexOf('iphone') != -1) {
+                window.location = "clientAction={\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "" + shareMobileUrl + "\"}";
+            } else {
+                js_invoke.interact("{\"type\":\"share2\",\"url\":\"\",\"shareList\":\"sinaweibo,tencentweibo,qzone,wechat,wechatmoments,shortmessage,qq,jietufenxiang\",\"msg\":\"" + shareContent + "" + shareMobileUrl + "\"}");
+            }
+        }
+    }
+
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+</script>
+<body>
+<img src="/images/liangduan1.png" alt="" class="liangduan">
+<div class="container">
+    <div class="goldDiv">
+        <img src="/images/jifen.png" class="goldIcon fl">
+        <!-- 积分数-->
+        <span class="goldNum" id="ebtotalnm">0</span>
+    </div>
+    <div class="container_header">
+        <img class="container_header_img" src="/images/container_header_img8.jpg"/>
+        <img class="huodongGzImg" src="/images/huodongGzImg2.png"/>
+        <div class="header_timer_index">
+            <p class="time_info">
+                <span class="info_span" style="margin-top: 0.35rem">(<span id="username"></span>)您还可抽奖<span
+                        class="cs_num" id="changevalue">0</span>次</span>
+            </p>
+        </div>
+        <div class="zhuanpan_box_index">
+            <img src="/images/zp_bg3_1.png" class="zp_bg" id="zhuanpan_1" alt=""/>
+            <img src="/images/zp_bg3_2.png" class="zp_bg2" style="display: none" id="zhuanpan_2" alt=""/>
+            <div class="quan">
+                <div class="dazp" id="goodsInfo">
+                    <div class="zpjp_div div_1">
+                        <img src="/images/3a8d85c5827347a08f2342d83c5cbc271.png"
+                             class="zpjp_div_pic1"/>
+                        <p class="jiangpin_info1 a"
+                           style="color: #fa682e;">10积分</p>
+                    </div>
+                    <div class="zpjp_div div_2">
+                        <img src="/images/4a3d1fd058944bc4ae3f7a30e8b2b4da.png"
+                             class="zpjp_div_pic2"/>
+                        <p class="jiangpin_info2 a"
+                           style="color: #fa682e;">0.1元</p>
+                    </div>
+                    <div class="zpjp_div div_3">
+                        <img src="/images/4b77e11ce6cd4f54ba4e990c45fa0dd41.png"
+                             class="zpjp_div_pic3"/>
+                        <p class="jiangpin_info3 a"
+                           style="color: #fa682e;">QQ会员</p>
+                    </div>
+                    <div class="zpjp_div div_4">
+                        <img src="/images/9036449e6ab64869adf1b9a7383f3192.png"
+                             class="zpjp_div_pic4"/>
+                        <p class="jiangpin_info4 a"
+                           style="color: #fa682e;">1积分</p>
+                    </div>
+                    <div class="zpjp_div div_5">
+                        <img src="/images/25872276c2064343ae54bf57193145001.png"
+                             class="zpjp_div_pic5"/>
+                        <p class="jiangpin_info5 a"
+                           style="color: #fa682e;">会员</p>
+                    </div>
+                    <div class="zpjp_div div_6">
+                        <img src="/images/e3c8080e62ef44f9ada3f518fd5981b9.png"
+                             class="zpjp_div_pic6"/>
+                        <p class="jiangpin_info6 a"
+                           style="color: #fa682e;">9.85折充值折扣券</p>
+                    </div>
+                    <div class="zpjp_div div_7">
+                        <img src="/images/5ca06363cd114669bfd560b0d1227f4b.png"
+                             class="zpjp_div_pic7"/>
+                        <p class="jiangpin_info7 a"
+                           style="color: #fa682e;">0.5元</p>
+                    </div>
+                    <div class="zpjp_div div_8">
+                        <img src="/images/xx_img.png" class="zpjp_div_pic8" alt=""/>
+                        <p class="jiangpin_info8 a">谢谢参与</p>
+                    </div>
+                </div>
+            </div>
+            <!--抽奖-->
+            <div class="nei_quan">
+                <input type="button" name="name" class="zhiz" value="">
+                <img src="/images/zhizhen4.png" class="zhiz_img" style="display:none;" alt=""/>
+            </div>
+        </div>
+        <div class="danmu">
+            <div class="tongzhi">
+                <div class="zheceng"></div>
+                <ul>
+                </ul>
+            </div>
+        </div>
+        <div class="container_btns">
+            <a href="#">
+                <div class="left_btn">
+                    我的礼包
+                </div>
+            </a>
+            <p class="right_btn" id="sharebutton">点个关注吧</p>
+        </div>
+    </div>
+
+
+</div>
+
+<!--弹层-->
+<div class="tc_bg">
+    <div class="yizj_neitc">
+        <img src="/images/zhongjiangli.png" class="zhongj"/>
+        <div class="jiang">
+            <span id="info"></span>
+            <img src="" id="prize_img" class="jiangjqun"/>
+        </div>
+        <a href="#"><img src="/images/zj_an.png" class="nei_but_cg"/></a>
+    </div>
+    <img src="/images/tt_guanbi_icon.png" class="tt_guanbi_img" id="checkgoods" data-clipboard-action="copy"
+         data-clipboard-target="#dhm"/>
+</div>
+
+
+<!--礼包信息-->
+<div class="tc_wenxin_libao">
+    <div class="weizj_neitc">
+        <img src="/images/touxiang.png" class="tou_img"/>
+        <div class="panel-body" style="height: 80px; overflow-y:scroll">
+            <div style="border: 1px  #000000; width: 80%; margin: 0 auto;">
+                <ul id="libao_ul">
+
+                </ul>
+            </div>
+        </div>
+        <img src="/images/tanc_a.png" class="nei_but"/>
+    </div>
+</div>
+
+<!--温馨提示-->
+<div class="tc_wenxin">
+    <div class="weizj_neitc">
+        <img src="/images/touxiang.png" class="tou_img"/>
+        <h6 class="wenzz" id="reminder"></h6>
+        <img src="/images/tanc_a.png" class="nei_but"/>
+    </div>
+    <img src="/images/tt_guanbi_icon.png" class="wenxin_guanbi"/>
+</div>
+
+<!--温馨提示 兑换-->
+<div class="tc_wenxin_four">
+    <div class="wenxin_box_two">
+        <img class="xiaoziren" src="/images/xiaoziren.png"/>
+        <p class="wenxin_info_two" id="hint">
+
+        </p>
+        <p class="wenxin_btn_two" id="gosign">去签到</p>
+        <p class="wenxin_btn1" id="cancel">取消</p>
+        <div class="clear_float"></div>
+    </div>
+    <img class="wenxin_guanbi_four" src="/images/tt_guanbi_img.png"/>
+</div>
+
+
+<!--温馨提示--异常提示-->
+<div class="tc_wenxin_three">
+    <div class="wenxin_box_three">
+        <img class="xiaoziren" src="/images/xiaoziren.png"/>
+        <p class="wenxin_info_three" id="markedword"></p>
+
+        <p class="wenxin_btn_three">我知道了</p>
+    </div>
+    <img class="wenxin_guanbi_three" src="/images/tt_guanbi_img.png"/>
+</div>
+
+<!--活动规则谈层-->
+<div class="hd_guize_mengceng" style="display: none;">
+    <div class="hd_guize_box">
+        <p class="hd_guize_box_p">
+            <img class="xiaoziren_img" src="/images/tt_huodong_info1.png"/>
+        </p>
+        <div class="hd_p_box">
+            <p class="hd_box_info">
+
+            </p>
+
+        </div>
+        <img class="jbs" src="/images/jbs_img.png"/>
+        <img class="guanbi_icon" src="/images/tt_guanbi_img.png"/>
+    </div>
+</div>
+
+
+<!--中奖弹层-->
+<div class="zj_tanceng">
+    <img src="/images/tt_guanbi_icon.png" class="zj_guanbi"/>
+    <div class="zj_mei">
+        <p class="zj_tis">恭喜您获得神秘礼包</p>
+        <div class="hezi">
+            <img src="/images/gaizi.png" class="gaizi"/>
+            <div class="jiangp">
+                <p class="zj_t"></p>
+                <img src="" class="zj_img"/>
+            </div>
+            <img src="/images/xiahezi.png" class="xia_he"/>
+        </div>
+        <a href="https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=http://m.client.10010.com/myPrizeForActivity/querywinninglist.htm?CALLBACKURL=https://m.client.10010.com/mobileService/thirdRedirect.htm?redirect_uri=https://m.client.10010.com/dailylottery/static/textdl/userLogin">
+            <img src="/images/wodelibao.png" class="choujiang"/></a>
+    </div>
+</div>
+<!--勋章墙弹框-->
+<div class="xianjaitanbox">
+    <div class="leafContainer"></div>
+    <div class="white_contentss" style="position: relative;">
+        <div class="xinjiabox">
+            <p style="color: #fff6cd;font-size: 0.35rem;text-align: center;">恭喜您获得新勋章</p>
+            <div style="width: 60%;margin: 0 auto;"><img style="width: 100%;margin: 0.20rem auto;display: flex;"
+                                                         src="/images/medal/xinjiaxzx.png" alt=""/></div>
+            <div class="xinjiaimg">
+                <img src="/images/medal/xz_jl.png" alt=""/>
+            </div>
+            <p style="color: #fff6cd;font-size: .38rem;text-align: center;margin-top: 0.5rem;">抽奖锦鲤</p>
+            <div class="xinjiafenxing">
+                <span class="aaaa"><img src="/images/medal/xinjiafenxiang.png" alt=""/></span>
+                <span class="bbbb"><img src="/images/medal/xinjiajinru.png" alt=""/></span>
+            </div>
+        </div>
+        <img class="guang" src="/images/medal/gaung.png" alt=""/>
+        <div class="guan"
+             style="margin-top: 1rem;position: absolute;z-index: 99;left: 50%;margin-left: -0.245rem;bottom: -3.1rem;">
+            <img src="/images/medal/xinjiagaunbi.png"/>
+        </div>
+    </div>
+</div>
+<div id="randomid" style="display: none"></div>
+<span id="total" style="display: none"></span>
+<span id="da_num" style="display: none">10</span>
+<span id="da_ban" style="display: none">10</span>
+</body>
+<script src="/js/swiper.min.js"></script>
+<script>
+    // 设置值
+    let item = sessionStorage.getItem("integral");
+    let uname = sessionStorage.getItem("uname");
+    // 设置积分数
+    $("#ebtotalnm").text(item);
+    // 计算抽奖次数
+    $("#changevalue").text(parseInt(item / 30));
+    // 设置用户名
+    $("#username").text(uname);
+</script>
+
+<!--抽奖js-->
+<script>
+    var medal = "";
+    //下面是大转盘部分
+    var $btn = $('.zhiz');
+    var isture = 0;
+    var aid = $.getUrlParam('aid');
+    // 抽奖按钮触发
+    $btn.click(function () {
+        var total = $('#total').text();
+        var flag = true;
+        if (flag) {
+            flag = false;
+            // 获取剩余机会
+            var changevalue = parseInt($('#changevalue').text());
+            if (changevalue > 0) {
+                $(this).attr("disabled", "disabled");
+                $(".zhiz_img").css("display", "block");
+                $(".dazp").rotate({
+                    angle: 0,
+                    duration: 100000, //旋转时间
+                    animateTo: 360000
+                });
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: "/luckdraw/start?aid=" + aid,
+                    timeout: 15000, //超时时间设置，单位毫秒
+                    async: true,
+                    headers: {
+                        'authorization': sessionStorage.getItem("Authorization")
+                    },
+                    contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.info == "未中奖哦，再抽一次吧！") {
+                            rotateFunc(8, 22, "谢谢参与", "x_n");
+                        } else {
+                            $(this).attr("disabled", "disabled");
+                            $(".zhiz_img").css("display", "block");
+                            clickfunc(data);
+                            flag = true;
+                            let ebtotalnmVal = $('#ebtotalnm').text()
+                            sessionStorage.setItem("integral", ebtotalnmVal - 30)
+                            $('#ebtotalnm').text(ebtotalnmVal - 30);
+                            $('#changevalue').text(changevalue - 1);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        rotateFunc(8, 22, "谢谢参与", "x_n", "9");
+                    },
+                    complete: function (XMLHttpRequest, status) { //请求完成后最终执行参数
+                        if (status == 'error') {
+                            rotateFunc(8, 22, "谢谢参与", "x_n", '9');
+                        }
+                    }
+                });
+            } else {
+                $('#reminder').text("您的机会次数不足~");
+                $('.tc_wenxin').show();
+            }
+        }
+    });
+
+
+    var clickfunc = function (data) {
+        //data为随机出来的结果，根据概率后的结果
+        //后台传入的奖品下标
+        var index = parseInt(data.info.id);
+        console.log("奖项id：" + index)
+        var prizename = data.info.prizeName;
+        console.log("奖项名称：" + prizename)
+        var smlbbs = "xx";
+        medal = data.medal;
+        if (index != 8) {
+            // 中奖啦
+        }
+        if (index != null && prizename != null) {
+            switch (index) {
+                case 1:
+                    rotateFunc(1, 338, prizename, "x_n", smlbbs);
+                    break;
+                case 2:
+                    rotateFunc(2, 293, prizename, "s_w", smlbbs);
+                    break;
+                case 3:
+                    rotateFunc(3, 248, prizename, "x_n", smlbbs);
+                    break;
+                case 4:
+                    rotateFunc(4, 203, prizename, "wzj", smlbbs);
+                    break;
+                case 5:
+                    rotateFunc(5, 158, prizename, "x_n", smlbbs);
+                    break;
+                case 6:
+                    rotateFunc(6, 110, prizename, "x_n", smlbbs);
+                    break;
+                case 7:
+                    rotateFunc(7, 65, prizename, "x_n", smlbbs);
+                    break;
+                case 8:
+                    rotateFunc(8, 22, "谢谢参与", "x_n", smlbbs);
+                    break;
+            }
+        } else {
+            $('#reminder').text("哎呀，没有奖品出没~");
+            $('.tc_wenxin').show();
+            rotateFunc(8, 22, "谢谢参与", "x_n");
+        }
+    }
+
+
+    $(function () {
+        $('.kzzf').each(function () {
+            var maxwidth = 4;
+            if ($(this).text().length > maxwidth) {
+                $(this).text($(this).text().substring(0, maxwidth));
+                $(this).html($(this).html() + '…');
+            }
+        })
+    })
+
+    if ($('.swiper-wrapper').children().length != 1) {
+        var swiper = new Swiper('.swiper-container', {
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            pagination: '.swiper-pagination',
+            paginationClickable: true,
+            // Disable preloading of all images
+            preloadImages: false,
+            // Enable lazy loading
+            lazyLoading: false,
+            loop: true,
+            autoplay: 1500,
+            autoplayDisableOnInteraction: false
+        });
+        $('.swiper-lazy-preloader-white').remove();
+    } else {
+        $('.swiper-lazy-preloader-white').remove();
+    }
+
+    $('.wenxin_btn,.nei_but').click(function () {
+        $('.tc_wenxin').hide();
+        $('.tc_wenxin_libao').hide();
+        $('body,html').removeClass('overF');
+    });
+    $('.wenxin_guanbi').click(function () {
+        $('.tc_wenxin').hide();
+        $('body,html').removeClass('overF');
+        if (medal == "666") {
+            $(".xianjaitanbox").css({"display": "block"});
+        }
+    });
+    $(".zj_guanbi").click(function () {
+        $(".zj_tanceng").hide();
+    });
+    //勋章墙
+    $(".guan").on("click", function () {
+        $(".xianjaitanbox").css({"display": "none"});
+        medal = "222";
+    });
+    //关闭按钮
+    $('.tt_guanbi_img').click(function () {
+        $('.tc_bg').hide();
+        $('.tc_bg_jifen').hide();
+        $('.tc_bg_signcoin').hide();
+        $("body,html").removeClass('overF');
+        if (medal == "666") {
+            $(".xianjaitanbox").css({"display": "block"});
+        }
+    });
+</script>
+
+<script>
+
+    $(".left_btn").click(function () {
+
+
+        jQuery.ajax({
+            type: 'GET',
+            url: "/luckdraw/start/getMyPrizeInfo?aid=" + aid,
+            timeout: 15000, //超时时间设置，单位毫秒
+            async: true,
+            headers: {
+                'authorization': sessionStorage.getItem("Authorization")
+            },
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                if (data.info.length > 0) {
+                    $("#libao_ul").text("");
+                    $.each(data.info, function (i, item) {
+                        let awardeeTime = item.awardeeTime + "";
+                        let time = awardeeTime.substring(0, 10);
+                        $("#libao_ul").append("<li>" + time + "--" + item.prizeName + "</li>");
+                    });
+                } else {
+                    $("#libao_ul").append("<li>还没有奖品哦，快去抽奖吧！</li>");
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+            }
+        });
+        $('.tc_wenxin_libao').show();
+    });
+
+
+</script>
+
+
+<script>
+    var times1 = 0;
+    $('#sharebutton').click(function () {
+        // //分享
+        // //判断计时器是否处于关闭状态
+        // if (times1 == 0) {
+        //     times1 = 5; //设定间隔时间（秒）
+        //     //启动计时器，倒计时time秒后自动关闭计时器。
+        //     var index = setInterval(function () {
+        //         times1--;
+        //         if (times1 == 0) {
+        //             clearInterval(index);
+        //         }
+        //     }, 500);
+        //     var usernumberofjsp = "7d1300cffb536a6c3aea78b1aa175016";
+        //     //分享监控ajax
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: "/dailylottery/static/share/sharepagelog?usernumberofjsp=" + usernumberofjsp,
+        //         timeout: 50000, //超时时间设置，单位毫秒
+        //         contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        //         dataType: 'json',
+        //         success: function (msg) {
+        //         },
+        //         error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //         }
+        //     });
+        //     shareClient("1");
+        // }
+    });
+    $('.aaaa').click(function () {
+        //分享
+        shareClient("2");
+    });
+    $('.bbbb').click(function () {
+        //分享
+        window.location.href = "http://m.client.10010.com/mobileService/unicomUserMedal/UnicomUserMedal.htm";
+    });
+</script>
+
+
+<script>
+
+    $(".hd_box_info").append("<span class=\"isGray\">以上所有资源全部收集于互联网，分享目的仅供大家学习与参考，如有侵权，请联系我及时删除！</span><br>\n");
+
+</script>
+
+
+<script>
+    var arrayTOTAL = new Array();
+    $(function () {
+        $.ajax({
+            type: 'GET',
+            url: "/luckdraw/getAwardeeInfo?aid=" + aid,
+            timeout: 50000, //超时时间设置，单位毫秒
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.info, function (i, item) {
+                    arrayTOTAL[i] = item.awardeeName + '|' + item.prizeName;
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            }
+        });
+
+
+        //获取随机的数组
+        Array.prototype.getRandomItem = function () {
+            return this[Math.floor(Math.random() * this.length)]
+        }
+
+
+        //弹屏滚动通知
+        $(".danmu").each(function () {
+            (function (_this) {
+                clearTimeout(timeouter);
+                var timer = time_range(),//第一次随便给个时间间隔
+                    timeouter;
+                zhuan();
+
+                function zhuan() {
+                    timeouter = setTimeout(function () {
+                        var random = arrayTOTAL.getRandomItem();
+                        if (arrayTOTAL.length > 0) {
+                            var li = '<li class="crr" ><img style="border-radius: 50%;"  src="/images/touxiangnvhai.png">' + random.split('|')[0] + '中了' + random.split('|')[1] + '，' + Math.floor(Math.random() * (59 - 0)) + 's前</li>';
+                            if ($(_this).find('.tongzhi li').length < 3) {
+                                $(_this).find('ul').append(li);
+                            } else {
+                                $(_this).find('ul li').first().remove();
+                                $(_this).find('ul').append(li);
+                            }
+                            zhuan();
+                        }
+
+                    }, timer)
+
+                }
+            })(this)
+        });
+
+
+        function time_range() {
+            //第一时间段开始
+            var b = new Date();
+            //第一时间段结束
+            var e = new Date();
+
+            //第二时间段开始
+            var two_s = new Date();
+            //第二时间段结束
+            var two_e = new Date();
+
+            //第三时间段开始
+            var three_s = new Date();
+            //第三时间段结束
+            var three_e = new Date();
+
+
+            var n = new Date();
+
+            b.setHours(6);
+            b.setMinutes(00);
+            e.setHours(8);
+            e.setMinutes(30);
+
+            two_s.setHours(12);
+            two_s.setMinutes(00);
+            two_e.setHours(13);
+            two_e.setMinutes(00);
+
+            three_s.setHours(1);
+            three_s.setMinutes(30);
+            three_e.setHours(5);
+            three_e.setMinutes(00);
+
+            if (n.getTime() - b.getTime() > 0 && n.getTime() - e.getTime() < 0) {
+                return 1300;
+            } else if (n.getTime() - two_s.getTime() > 0 && n.getTime() - two_e.getTime() < 0) {
+                return 1400;
+            } else if (n.getTime() - three_s.getTime() > 0 && n.getTime() - three_e.getTime() < 0) {
+                return 4000;
+            } else {
+                return 2800;
+            }
+        }
+
+
+    });
+</script>
+</html>

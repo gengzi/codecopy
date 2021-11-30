@@ -1,0 +1,77 @@
+# 精确分片配置
+# 库按照 年 yyyy 分
+# 表按照 月 MM 分
+
+spring:
+  shardingsphere:
+    # 显示sql
+    props:
+      sql:
+        show: true
+    datasource:
+      # 配置两个数据源
+      names: ds2020,ds2021
+      # ds0 数据源
+      ds2020:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/ds2020?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+      # ds1 数据源
+      ds2021:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/ds2021?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+
+    ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
+    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
+    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
+    ## 需要设置为 integer 类型
+    ###
+    sharding:
+      # 默认的数据源名称
+      default-data-source-name: ds2020
+      # 主键生成策略
+      key-generators:
+        snowflake:
+          type: SNOWFLAKE
+      # 绑定表
+      binding-tables: t_bussiness_date
+      # 广播表 配置为广播表，会在执行插入 更新时，都每个数据库都执行
+      broadcast-tables: shorturl,sys_permission
+      # 默认的数据库策略
+      default-database-strategy:   # 分库策略
+        standard:
+          # 数据分片的列
+          sharding-column: createdate
+          # 分片算法
+          #precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.precise.InDateShardingStrategyConfiguration
+          range-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.range.InDateDataBaseRangeShardingConfiguration
+          # 分片算法 这个算法是，必须选择的，如果不填写，会导致系统启动失败
+          precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.range.InDateDataBaseRangeShardingConfiguration
+      # 表配置
+      tables:   # 分表策略
+        # 业务表
+        t_bussiness_date:
+          # 主键生成策略
+          key-generator:
+            # 列
+            column: id
+            # 生成算法
+            type: SNOWFLAKE
+            props:
+              worker:
+                id: 123
+          # 实际数据节点
+          actual-data-nodes: ds$->{2020..2021}.t_bussiness_date$->{1..2}
+          # 表策略
+          table-strategy:
+            standard:
+              # 分片列
+              sharding-column: createdate
+              # 分片算法
+              precise-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.precise.InMonthShardingStrategyConfiguration
+              range-algorithm-class-name: fun.gengzi.codecopy.business.subdata.strategy.range.InMonthDataBaseRangeShardingConfiguration

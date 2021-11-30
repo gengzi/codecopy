@@ -1,0 +1,37 @@
+spring:
+  shardingsphere:
+    props:
+      sql:
+        show: true
+    datasource:
+      names: esinfo
+      esinfo:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/luckdraw_db?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      properties:
+        isolation.level: read_committed
+      # 配置消费者消息offset是否自动重置(消费者重连会能够接收最开始的消息)
+      auto-offset-reset: earliest
+    producer:
+      bootstrap-servers: localhost:9092
+      # 发送的对象信息变为json格式
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      transaction-id-prefix: tx.
+    listener:
+      type: batch
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+
+
+# kafka 的配置
+kafka:
+  topic:
+    my-topic: topic1
+    my-topic2: topic2
