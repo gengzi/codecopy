@@ -9,14 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>pay-service</artifactId>
+    <artifactId>common</artifactId>
 
-    <dependencies>
-        <!--引入common包-->
-        <dependency>
-            <groupId>fun.gengzi</groupId>
-            <artifactId>common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>

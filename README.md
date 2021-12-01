@@ -104,3 +104,24 @@ redis缓存实现
 
 * spring 配置
 [springboot：springboot配置文件（配置文件占位符、Profile、配置文件的加载位置）](https://www.cnblogs.com/Mrchengs/p/10120140.html)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 微服务搭建问题
+* common 包打包失败，移除父pom文件中打包插件，那个工程下需要打包，自行引入 
+  [SpringBoot多模块打包报错：spring-boot-maven-plugin:1.5.3.RELEASE:repackage failed: Unable to find main class](https://dandelioncloud.cn/article/details/1370378236395646978)
+
+* shardingsphere 5.0 版本需配置 mode ，不配置会报  No qualifying bean of type 'org.apache.shardingsphere.infra.config.mode.ModeConfiguration' type: question
+

@@ -128,10 +128,6 @@
                     <!--                    </dependency>-->
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
 
             <!-- 不执行单元测试，但会编译测试类并在target/test-classes目录下生成相应的class -->
             <plugin>
@@ -159,11 +155,7 @@
                     <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
-            <!--打包插件-->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+            <!--为了帮助common install这里移除了 spring-boot-maven-plugin 那个模块需要打包，自行引入 -->
         </plugins>
     </build>
 

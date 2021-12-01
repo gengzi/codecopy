@@ -6,7 +6,7 @@
   \__, |\___|_| |_|\__, /___|_|\___/ \___/ \___/ 
    __/ |            __/ |                        
   |___/            |___/
-  ShardingSphere 数据库分库分表实践
+  ShardingSphere 数据库分库分表实践     支付微服务
   ${AnsiColor.BRIGHT_RED}
   基于 spring boot 2.2.7.RELEASE
   基于 ShardingSphere 5.0
