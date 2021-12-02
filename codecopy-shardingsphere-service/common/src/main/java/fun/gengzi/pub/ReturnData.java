@@ -1,7 +1,7 @@
 package fun.gengzi.codecopy.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fun.gengzi.codecopy.constant.RspCodeEnum;
+import fun.gengzi.enums.RspCodeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

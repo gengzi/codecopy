@@ -14,9 +14,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
  * @author gengzi
  * @date 2021年12月1日23:10:00
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, DruidDataSourceAutoConfigure.class, JtaAutoConfiguration.class})
+//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, DruidDataSourceAutoConfigure.class, JtaAutoConfiguration.class})
 // 忽略自动配置的类，排除 数据源自动配置，数据量连接池的自动配置
 @EnableEurekaClient
+@SpringBootApplication
 public class PayServiceApplication {
 
 

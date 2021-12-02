@@ -1,7 +1,5 @@
-package fun.gengzi.codecopy.constant;
+package fun.gengzi.enums;
 
-
-import io.swagger.models.auth.In;
 
 import java.util.Arrays;
 import java.util.Map;

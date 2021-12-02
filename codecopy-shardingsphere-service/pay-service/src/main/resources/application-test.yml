@@ -25,9 +25,9 @@ spring:
         show: true
     datasource:
       # 配置两个数据源
-      names: codecopy_shardingsphere
-      # ds0 数据源
-      dsmysql:
+      names: shardingsphere
+      # shardingsphere 数据源
+      shardingsphere:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://127.0.0.1:3306/codecopy_shardingsphere?autoReconnect=true&serverTimezone=Asia/Shanghai
@@ -39,6 +39,16 @@ spring:
     ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
     ## 需要设置为 integer 类型
     ###
-    ## TODO 待补充表分片策略
+    ## 使用 shadingjdc 就要配置分片策略
+
+    sharding:
+      # 默认的数据源名称
+      default-data-source-name: shardingsphere
+      # 主键生成策略
+      key-generators:
+        snowflake:
+          type: SNOWFLAKE
+      # 广播表 配置为广播表，会在执行插入 更新时，都每个数据库都执行
+      broadcast-tables: goods
 
 

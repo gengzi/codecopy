@@ -5,11 +5,11 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "goods", schema = "codecopy_shardingsphere", catalog = "")
+@Table(name = "goods")
 public class GoodsEntity {
     private int id;
     private String goodsName;
-    private Double price;
+    private Integer price;
     private String goodsDescriptionMarkDown;
     private String goodsDescription;
     private String goodsType;
@@ -42,11 +42,11 @@ public class GoodsEntity {
 
     @Basic
     @Column(name = "price")
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -106,6 +106,7 @@ public class GoodsEntity {
         return createTime;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
@@ -116,6 +117,7 @@ public class GoodsEntity {
         return updateTime;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
     }

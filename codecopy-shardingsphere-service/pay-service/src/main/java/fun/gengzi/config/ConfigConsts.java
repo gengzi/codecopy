@@ -1,4 +1,4 @@
-package fun.gengzi.codecopy.config;
+package fun.gengzi.config;
 
 /**
  * <h1>Config系统配置常量定义</h1>
@@ -10,12 +10,12 @@ public class ConfigConsts {
     // 【推荐】不要使用一个常量类维护所有常量，要按常量功能进行归类，分开维护。
     // 快捷方式 psfs
     // 项目名称
-    public static final String APP_NAME_TITLE = "CodeCopy_APP";
+    public static final String APP_NAME_TITLE = "pay-service";
     // 项目说明
-    public static final String APP_EXPLANATION = "适用于复制粘贴的组件化的代码工程";
+    public static final String APP_EXPLANATION = "支付微服务";
     // 项目版本
-    public static final String APP_VERSION = "1.0.8";
+    public static final String APP_VERSION = "1.0.0";
     // swagger-config-全局controller包名
-    public static final String SWAGGER_CONTROLLER_PACKAGE = "fun.gengzi.codecopy.business";
+    public static final String SWAGGER_CONTROLLER_PACKAGE = "fun.gengzi.controller";
 
 }

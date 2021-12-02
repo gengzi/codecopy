@@ -125,3 +125,5 @@ redis缓存实现
 
 * shardingsphere 5.0 版本需配置 mode ，不配置会报  No qualifying bean of type 'org.apache.shardingsphere.infra.config.mode.ModeConfiguration' type: question
 
+* idea 没有出现 run dashboard 运行的仪表盘
+    [IDEA中设置Run Dashboard](https://blog.csdn.net/chinoukin/article/details/80577890)
