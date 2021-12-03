@@ -1,25 +1,19 @@
 package fun.gengzi.controller;
 
 import fun.gengzi.codecopy.vo.ReturnData;
+import fun.gengzi.dao.PayOrderRecordJPA;
 import fun.gengzi.entity.GoodsEntity;
 import fun.gengzi.vo.GoodsVo;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
@@ -35,6 +29,10 @@ public class PayController {
     private Logger logger = LoggerFactory.getLogger(PayController.class);
 
 
+    @Autowired
+    private PayOrderRecordJPA payOrderRecordJPA;
+
+
     @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
     @PostMapping("/queryInfo")
     @ResponseBody
@@ -43,7 +41,6 @@ public class PayController {
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
 
-//        GoodsEntity save = goodsJPA.save(goodsEntity);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage("");

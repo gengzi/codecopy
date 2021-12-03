@@ -1,0 +1,22 @@
+server:
+  port: 8885
+eureka:
+  client:
+    service-url: # eureka-server 的地址
+      defaultZone: http://localhost:8761/eureka/ #把 eureka 集群中的所有 url 都填写了进来，也可以只写⼀台，因为各个 eureka server 可以同步注册表
+  instance:
+    #使⽤ip注册，否则会使⽤主机名注册了（此处考虑到对⽼版本的兼容，新版本经过实验都是ip）
+    prefer-ip-address: true
+    #⾃定义实例显示格式，加上版本号，便于多版本管理，注意是ip-address，早期版本是ipAddress
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+spring:
+  datasource:
+    # 注意mysql 时区 字符集编码
+    url: jdbc:mysql://127.0.0.1:3306/codecopy_shardingsphere?autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 111
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+
+
+

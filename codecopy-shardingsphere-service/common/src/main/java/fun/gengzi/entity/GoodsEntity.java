@@ -7,7 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "goods")
 public class GoodsEntity {
-    private int id;
+    private Long id;
     private String goodsName;
     private Integer price;
     private String goodsDescriptionMarkDown;
@@ -22,11 +22,11 @@ public class GoodsEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

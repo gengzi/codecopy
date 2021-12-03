@@ -1,0 +1,54 @@
+server:
+  port: 8883
+eureka:
+  client:
+    service-url: # eureka-server 的地址
+      defaultZone: http://localhost:8761/eureka/ #把 eureka 集群中的所有 url 都填写了进来，也可以只写⼀台，因为各个 eureka server 可以同步注册表
+  instance:
+    #使⽤ip注册，否则会使⽤主机名注册了（此处考虑到对⽼版本的兼容，新版本经过实验都是ip）
+    prefer-ip-address: true
+    #⾃定义实例显示格式，加上版本号，便于多版本管理，注意是ip-address，早期版本是ipAddress
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+
+
+spring:
+  application:
+    name: pay-service
+# 按ip 首段分表，不分库
+  shardingsphere:
+    mode:
+      ## 特别注意： 在shardingsphere 5.0 版本必须配置 mode ，不配置会报  No qualifying bean of type 'org.apache.shardingsphere.infra.config.mode.ModeConfiguration' type: question
+      type: Memory
+    # 显示sql
+    props:
+      sql:
+        show: true
+    datasource:
+      # 配置两个数据源
+      names: shardingsphere
+      # shardingsphere 数据源
+      shardingsphere:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/codecopy_shardingsphere?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+
+    ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
+    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
+    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
+    ## 需要设置为 integer 类型
+    ###
+    ## 使用 shadingjdc 就要配置分片策略
+
+    sharding:
+      # 默认的数据源名称
+      default-data-source-name: shardingsphere
+      # 主键生成策略
+      key-generators:
+        snowflake:
+          type: SNOWFLAKE
+      # 广播表 配置为广播表，会在执行插入 更新时，都每个数据库都执行
+      broadcast-tables: goods
+
+

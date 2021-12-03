@@ -12,6 +12,8 @@
     <modules>
         <module>pay-service</module>
         <module>common</module>
+        <module>order-service</module>
+        <module>goods-service</module>
     </modules>
 
 

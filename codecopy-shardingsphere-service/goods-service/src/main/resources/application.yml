@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: application-test-eurekaconfig,test-nosharding #多个配置逗号分隔
+    active: test-nosharding
   jpa: #jpa配置
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
@@ -9,4 +9,4 @@ spring:
       ddl-auto: none
     show-sql: true
   application:
-    name: pay-service
+    name: goods-service
