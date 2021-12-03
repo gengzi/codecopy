@@ -19,10 +19,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Api(value = "商品管理", tags = {"商品管理"})
@@ -94,6 +93,10 @@ public class GoodsController {
         Specification<GoodsEntity> specification = (Specification<GoodsEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
             Predicate p1 = criteriaBuilder.like(root.get("goodsName"),good.getGoodsName()+"%");
+            list.add(p1);
+            List<Order> orders = new ArrayList<>();
+            orders.add(criteriaBuilder.asc(root.get("id").as(Long.class)));
+            query.orderBy(orders);
             return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
         Page<GoodsEntity> all = goodsJPA.findAll(specification, pageable);
