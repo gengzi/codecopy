@@ -18,7 +18,7 @@ public class GoodsEntity {
     private Timestamp autoOnlineTime;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Byte isDel;
+    private Boolean isDel;
     private Integer sales;
 
     @Id
@@ -125,11 +125,11 @@ public class GoodsEntity {
 
     @Basic
     @Column(name = "is_del")
-    public Byte getIsDel() {
+    public Boolean getIsDel() {
         return isDel;
     }
 
-    public void setIsDel(Byte isDel) {
+    public void setIsDel(Boolean isDel) {
         this.isDel = isDel;
     }
 

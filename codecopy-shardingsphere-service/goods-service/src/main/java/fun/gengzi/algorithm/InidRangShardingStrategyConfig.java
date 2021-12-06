@@ -7,7 +7,9 @@ import org.apache.shardingsphere.sharding.api.sharding.standard.PreciseShardingV
 import org.apache.shardingsphere.sharding.api.sharding.standard.RangeShardingValue;
 import org.apache.shardingsphere.sharding.api.sharding.standard.StandardShardingAlgorithm;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
 /**
  * 范围分片
@@ -16,12 +18,13 @@ import java.util.Collection;
 public final class InidRangShardingStrategyConfig implements StandardShardingAlgorithm<Long> {
 
 
-
     /**
      * Initialize algorithm.
+     * 初始化算法
      */
     @Override
     public void init() {
+        // 可以做一下初始化动作
         log.info("按id范围分片<init>");
     }
 
@@ -31,7 +34,10 @@ public final class InidRangShardingStrategyConfig implements StandardShardingAlg
     }
 
     /**
-     * Sharding.
+     * Sharding. 精确分片
+     *
+     * 0 - 2
+     * 2 - 4
      *
      * @param availableTargetNames available data sources or table names
      * @param shardingValue        sharding value
@@ -39,12 +45,22 @@ public final class InidRangShardingStrategyConfig implements StandardShardingAlg
      */
     @Override
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
-        log.info("{}====={}",availableTargetNames,shardingValue);
-        return null;
+        log.info("根据id范围分片：可用目标名称[{}],分片键信息[{}]", availableTargetNames, shardingValue);
+        Long keyValue = shardingValue.getValue();
+        // 判断当前id 是否
+        if(Range.closedOpen(1L, 3L).contains(keyValue)){
+            return (String) availableTargetNames.stream().toArray()[0];
+        }
+        if(Range.closedOpen(3L, 5L).contains(keyValue)){
+            return (String) availableTargetNames.stream().toArray()[1];
+        }
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * Sharding.
+     * Sharding. 范围分片
+     *
+     * 根据id分片，1 - 50 万一张表，
      *
      * @param availableTargetNames available data sources or table names
      * @param shardingValue        sharding value
@@ -52,10 +68,18 @@ public final class InidRangShardingStrategyConfig implements StandardShardingAlg
      */
     @Override
     public Collection<String> doSharding(Collection<String> availableTargetNames, RangeShardingValue<Long> shardingValue) {
-
-        log.info("{}====={}",availableTargetNames,shardingValue);
-
-
-        return null;
+        log.info("根据id范围分片：可用目标名称[{}],分片键信息[{}]", availableTargetNames, shardingValue);
+        Range<Long> valueRange = shardingValue.getValueRange();
+        int low = 0 ;
+        int upper =1;
+        final LinkedHashSet<String> targetNames = new LinkedHashSet<>();
+        Long aLong = valueRange.lowerEndpoint();
+        Long aLong1 = valueRange.upperEndpoint();
+        for (int i = low; i <upper ; i++) {
+            for(String name :availableTargetNames){
+                targetNames.add(name);
+            }
+        }
+        return targetNames;
     }
 }

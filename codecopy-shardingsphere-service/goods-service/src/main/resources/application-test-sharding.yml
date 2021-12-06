@@ -17,8 +17,7 @@ spring:
       type: Memory
     # 显示sql
     props:
-      sql:
-        show: true
+      sql-show: true
     datasource:
       # 配置一个数据源
       names: goods
@@ -41,21 +40,27 @@ spring:
         tables:
           # 业务表
           goods:
+            # 标准分片表配置，真实数据节点 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持inline表达式。
             actual-data-nodes: goods.goods_$->{0..1}
+            #  分布式序列策略配置（主键）
             key-generate-strategy:
-              column: id
-              key-generator-name: SNOWFLAKE
+              column: id  # 分布式序列列名称
+              key-generator-name: SNOWFLAKE # 分布式序列算法名称  类型：SNOWFLAKE（雪花算法）  UUID
             # 分表策略
             table-strategy:
+              # 用于单分片键的标准分片场景
               standard:
-                sharding-column: id
-                sharding-algorithm-name: idrange
+                sharding-column: id  # 分片列名称
+                sharding-algorithm-name: idrange # 分片算法名称
+        # 分片算法配置
         sharding-algorithms:
+          # 分片算法名称
           idrange:
-            type: CLASS_BASED
+            type: CLASS_BASED  # 分片算法类型  自定义类分片算法(CLASS_BASED)通过配置分片策略类型和算法类名，实现自定义扩展。
+            # 分片算法属性配置
             props:
-              strategy: STANDARD
-              algorithmClassName: fun.gengzi.algorithm.InidRangShardingStrategyConfig
+              strategy: STANDARD  # 分片策略类型，支持 STANDARD(标准单分片键)、COMPLEX（复合多分片键） 或 HINT（行表达式分片）（不区分大小写）
+              algorithmClassName: fun.gengzi.algorithm.InidRangShardingStrategyConfig  # 分布式序列算法属性配置
 
 
 

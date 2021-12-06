@@ -40,3 +40,9 @@
 放弃旧库，都使用新库
 
 
+### 问题
+* （1） [Java 范围比较的推荐姿势](https://blog.csdn.net/w605283073/article/details/121297313)
+使用guava的 range 比较器
+* （2） StandardShardingStrategy 为什么要求精确分片 和 范围分片都必须存在
+PreciseShardingAlgorithm是必选的，用于处理=和IN的分片
+RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不配置RangeShardingAlgorithm，SQL中的BETWEEN AND将按照全库路由处理
