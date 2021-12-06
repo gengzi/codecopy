@@ -92,9 +92,11 @@ public class GoodsController {
         Pageable pageable = PageRequest.of(currentPage,pageSize);
         Specification<GoodsEntity> specification = (Specification<GoodsEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
+            // like
             Predicate p1 = criteriaBuilder.like(root.get("goodsName"),good.getGoodsName()+"%");
             list.add(p1);
             List<Order> orders = new ArrayList<>();
+            // 排序
             orders.add(criteriaBuilder.asc(root.get("id").as(Long.class)));
             query.orderBy(orders);
             return criteriaBuilder.and(list.toArray(new Predicate[0]));
