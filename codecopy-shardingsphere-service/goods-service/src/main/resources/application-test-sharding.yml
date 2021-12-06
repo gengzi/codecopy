@@ -16,6 +16,9 @@ spring:
       ## 特别注意： 在shardingsphere 5.0 版本必须配置 mode ，不配置会报  No qualifying bean of type 'org.apache.shardingsphere.infra.config.mode.ModeConfiguration' type: question
       type: Memory
     # 显示sql
+    # 5.0版本之前
+    # sql:
+    #  show: true
     props:
       sql-show: true
     datasource:

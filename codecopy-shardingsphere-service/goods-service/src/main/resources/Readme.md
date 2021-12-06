@@ -40,6 +40,18 @@
 放弃旧库，都使用新库
 
 
+### 配置变化
+* 显示sql 
+```java
+5.x版本以前
+spring.shardingsphere.props.sql.show=true
+
+5.x版本以后，sql.show参数调整为sql-show
+spring.shardingsphere.props.sql-show=true
+```
+
+
+
 ### 问题
 * （1） [Java 范围比较的推荐姿势](https://blog.csdn.net/w605283073/article/details/121297313)
 使用guava的 range 比较器
