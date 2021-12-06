@@ -15,7 +15,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoodsVo {
-
+    @ApiModelProperty(value = "主键")
+    private Long id;
     @ApiModelProperty(value = "商品名称")
     private String goodsName;
     @ApiModelProperty(value = "价格 分")

@@ -31,7 +31,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 //@EnableKnife4j
 // 生效的配置文件
-@Profile({"dev","test","test-nosharding"})
+@Profile({"dev","test","test-nosharding","test-sharding"})
 public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
