@@ -7,6 +7,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "goods")
 public class GoodsEntity {
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String goodsName;
     private Integer price;

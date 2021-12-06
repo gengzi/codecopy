@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test-nosharding
+    active: test-sharding
   jpa: #jpa配置
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
