@@ -12,10 +12,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
- * 范围分片
+ * 根据id范围分片
  */
 @Slf4j
-public final class InidRangShardingStrategyConfig implements StandardShardingAlgorithm<Long> {
+public final class InidRangeShardingStrategyConfig implements StandardShardingAlgorithm<Long> {
 
 
     /**
@@ -39,6 +39,11 @@ public final class InidRangShardingStrategyConfig implements StandardShardingAlg
      * 0 - 2
      * 2 - 4
      *
+     *
+     * 0 - 500000       1
+     * 500000 - 1000000  2
+     *
+     *
      * @param availableTargetNames available data sources or table names
      * @param shardingValue        sharding value
      * @return sharding result for data source or table name
@@ -47,6 +52,7 @@ public final class InidRangShardingStrategyConfig implements StandardShardingAlg
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
         log.info("根据id范围分片：可用目标名称[{}],分片键信息[{}]", availableTargetNames, shardingValue);
         Long keyValue = shardingValue.getValue();
+
         // 判断当前id 是否
         if(Range.closedOpen(1L, 3L).contains(keyValue)){
             return (String) availableTargetNames.stream().toArray()[0];
