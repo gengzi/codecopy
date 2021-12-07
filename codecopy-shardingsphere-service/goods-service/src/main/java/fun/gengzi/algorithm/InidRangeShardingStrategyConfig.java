@@ -9,6 +9,7 @@ import org.apache.shardingsphere.sharding.api.sharding.standard.StandardSharding
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
@@ -17,7 +18,7 @@ import java.util.LinkedHashSet;
 @Slf4j
 public final class InidRangeShardingStrategyConfig implements StandardShardingAlgorithm<Long> {
 
-
+    private LinkedHashMap<Range<Long>, Long> hashMap = new LinkedHashMap<>();
     /**
      * Initialize algorithm.
      * 初始化算法
@@ -26,6 +27,14 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
     public void init() {
         // 可以做一下初始化动作
         log.info("按id范围分片<init>");
+        Range<Long> open1 = Range.closed(1L, 10L);
+        Range<Long> open2 = Range.closed(11L, 31L);
+        Range<Long> open3 = Range.closed(41L, 43L);
+        Range<Long> open4 = Range.closed(50L, 100L);
+        hashMap.put(open1, 0L);
+        hashMap.put(open2, 1L);
+        hashMap.put(open3, 0L);
+        hashMap.put(open4, 1L);
     }
 
     @Override
@@ -52,15 +61,9 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
         log.info("根据id范围分片：可用目标名称[{}],分片键信息[{}]", availableTargetNames, shardingValue);
         Long keyValue = shardingValue.getValue();
+        RangesUtils rangesUtils = new RangesUtils<>();
+        return "goods_"+String.valueOf(rangesUtils.ascOrderFixedLengthRange(hashMap, keyValue));
 
-        // 判断当前id 是否
-        if(Range.closedOpen(1L, 3L).contains(keyValue)){
-            return (String) availableTargetNames.stream().toArray()[0];
-        }
-        if(Range.closedOpen(3L, 5L).contains(keyValue)){
-            return (String) availableTargetNames.stream().toArray()[1];
-        }
-        throw new UnsupportedOperationException();
     }
 
     /**

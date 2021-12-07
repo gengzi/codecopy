@@ -4,7 +4,6 @@ import com.google.common.collect.Range;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.calcite.util.NumberUtil;
 
 import java.math.RoundingMode;
 import java.util.*;
@@ -31,27 +30,6 @@ public class RangesUtils<c extends Long> {
     }
 
 
-    public static void main(String[] args) {
-        RangesUtils rangesUtils = new RangesUtils();
-        Long aLong = rangesUtils.ascOrderFixedLengthRange(11L, 10L);
-        System.out.println(aLong);
-
-        HashMap<Range<Long>, Long> hashMap = new LinkedHashMap<>();
-        Range<Long> open1 = Range.closed(1L, 10L);
-        Range<Long> open2 = Range.closed(11L, 31L);
-        Range<Long> open3 = Range.closed(41L, 43L);
-        Range<Long> open4 = Range.closed(50L, 100L);
-
-        hashMap.put(open1, 1L);
-        hashMap.put(open2, 2L);
-        hashMap.put(open3, 3L);
-        hashMap.put(open4, 4L);
-        Object o = rangesUtils.ascOrderFixedLengthRange(hashMap, 67L);
-        System.out.println(o);
-
-    }
-
-
     /**
      * 升序区间，计算当前数在那个区间范围内
      * 例如
@@ -59,14 +37,16 @@ public class RangesUtils<c extends Long> {
      * 1       2       3
      * 使用二分查找，判断
      *
-     * @param allrange   现有的区间集合 和 对应数据
-     * @param indexValue 当前数值
-     * @return 返回当前数在第几个区间
+     * 这里定义必须为 LinkedHashMap
+     *
+     * @param allrange   区间集合，此区间必须升序存入
+     * @param indexValue 需求判断的当前数值
+     * @return 返回当前数在第几个区间(从1开始)
      */
-    public Object ascOrderFixedLengthRange(Map<Range<c>, Object> allrange, c indexValue) {
+    public Object ascOrderFixedLengthRange(LinkedHashMap<Range<c>, Object> allrange, c indexValue) {
         final ArrayList<Long> allrangeList = new ArrayList<>(allrange.size() * 2);
         final ArrayList<Object> indexs = new ArrayList<>(allrange.size());
-        // 将上界下界生成升序数据
+        // 将上界下界生成升序数组
         allrange.keySet().stream().forEach(
                 range -> {
                     allrangeList.add(range.lowerEndpoint());
@@ -75,22 +55,29 @@ public class RangesUtils<c extends Long> {
                 }
         );
         Long[] rangeArr = allrangeList.toArray(new Long[]{});
-        // 获取对应坐标
-        int i = binarySearch(rangeArr,  indexValue);
-        if(i == -1){
-            throw  new RuntimeException("选择区间失败");
+        log.info("create rangearr :{}", rangeArr);
+        // 通过二分查找，计算区间下标
+        int sectionIndex = binarySearch(rangeArr, indexValue);
+        if (sectionIndex == -1) {
+            throw new RuntimeException("选择区间失败");
         }
-        return indexs.get(i - 1);
+        return indexs.get(sectionIndex - 1);
     }
 
-
-    private int binarySearch(Long[] arr,long searchNumber) {
-        int low = 0;
-        int high = arr.length-1;
-        int mid;
-        log.info("arr length:{}",arr.length);
+    /**
+     * 二分查找，计算区间下标
+     *
+     * @param arr          排序数组
+     * @param searchNumber 比较值
+     * @return 区间下标 -1 为匹配区间失败
+     */
+    private int binarySearch(Long[] arr, long searchNumber) {
+        int low = 0; // 开始坐标
+        int high = arr.length - 1; // 结束坐标
+        int mid; // 中间值
+        log.info("arr length:{}", arr.length);
         while (low <= high) {
-            if(low == high){
+            if (low == high) {
                 mid = low;
                 // 最后一次
                 if (arr[mid] > searchNumber) {
@@ -100,7 +87,7 @@ public class RangesUtils<c extends Long> {
                 } else {
                     return IntMath.divide(mid, 2, RoundingMode.DOWN) + 1;
                 }
-            }else{
+            } else {
                 mid = (low + high) / 2;
                 if (arr[mid] > searchNumber) {
                     high = mid - 1;
@@ -111,27 +98,25 @@ public class RangesUtils<c extends Long> {
                 }
             }
         }
-        log.info("");
-        //low > high
-        if (low > arr.length - 1 || high < 0) {//待查找的数比最大的数还要大,或者比最小的数还要小
-            return -1;//not found
-        }
-        // 区间范围外
-        boolean odd = isOdd(high);
-        if (odd) {
-            long value = arr[high + 1];
-            boolean contains = Range.open(arr[high], value).contains(searchNumber);
-            if (contains) {
-                // 计算位置， 除2 + 1
-                return IntMath.divide(high, 2, RoundingMode.DOWN) + 1;
-            }
+
+        long lower = -1;
+        long upper = -1;
+        // 判断当前下标是奇数还是偶数
+        if (isOdd(high)) {
+            // 偶数，说明当前下标值属于区间的下界位置
+            // 当前坐标+1,则是区间的上界
+            lower = arr[high];
+            upper = arr[high + 1];
         } else {
-            long value = arr[high - 1];
-            boolean contains = Range.open(value, arr[high]).contains(searchNumber);
-            if (contains) {
-                // 计算位置， 除2 + 1
-                return IntMath.divide(high, 2, RoundingMode.DOWN) + 1;
-            }
+            // 奇数，说明当前下标值属于区间的上界位置
+            // 当前坐标-1.则是区间的下界
+            lower = arr[high - 1];
+            upper = arr[high];
+        }
+        // 这里使用closed 其实没有必要，在上面的判断包含了区间值的判断
+        if (Range.open(lower, upper).contains(searchNumber)) {
+            // 每个区间，占用两个下标，利用当前下标值 整除 2 得到倍数，因为倍数最小为 0 ，进行+1 就可以获取下标
+            return IntMath.divide(high, 2, RoundingMode.DOWN) + 1;
         }
         return -1;
     }
@@ -141,9 +126,9 @@ public class RangesUtils<c extends Long> {
      * 判断奇数还是偶数
      *
      * @param num 判断的数字
-     * @return
+     * @return true 偶数 false 奇数
      */
-    public boolean isOdd(int num) {
+    public static boolean isOdd(int num) {
         if ((num & 1) != 1) {   //是奇数
             return true;
         }
