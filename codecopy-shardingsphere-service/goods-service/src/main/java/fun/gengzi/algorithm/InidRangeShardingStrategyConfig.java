@@ -14,7 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 
 /**
- * 根据id范围分片
+ * 根据id范围分片 
  */
 @Slf4j
 public final class InidRangeShardingStrategyConfig implements StandardShardingAlgorithm<Long> {
