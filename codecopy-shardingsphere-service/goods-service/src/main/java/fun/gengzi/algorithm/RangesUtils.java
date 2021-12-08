@@ -3,11 +3,22 @@ package fun.gengzi.algorithm;
 import com.google.common.collect.Range;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.RoundingMode;
 import java.util.*;
 
+
+/**
+ * <h1>区间工具类</h1>
+ * <p>
+ * <p>
+ * 主要用于计算，区间范围对应的下标
+ *
+ * @author gengzi
+ * @date 2021年12月8日16:38:22
+ */
 @Slf4j
 public class RangesUtils<c extends Long> {
 
@@ -29,6 +40,53 @@ public class RangesUtils<c extends Long> {
         return LongMath.divide(indexValue, rangeLength, RoundingMode.DOWN) + 1L;
     }
 
+    /**
+     * 升序区间，计算当前数在那个区间范围内
+     * 例如
+     * [1,10] [13,20] [21,50]
+     * 1       2       3
+     * 使用二分查找，判断
+     * <p>
+     * 这里定义必须为 LinkedHashMap
+     *
+     * @param rangeArr   排序后的数组
+     * @param indexValue 需求判断的当前数值
+     * @return 返回当前数在第几个区间(从1开始)
+     */
+    public int ascOrderFixedLengthRange(c[] rangeArr, c indexValue) {
+        log.info("create rangearr :{}", rangeArr);
+        // 通过二分查找，计算区间下标
+        int sectionIndex = binarySearch(rangeArr, indexValue);
+        if (sectionIndex == -1) {
+            throw new RuntimeException("选择区间失败");
+        }
+        return sectionIndex;
+    }
+
+
+    /**
+     * 将构造的范围map 转换为数组
+     *
+     * @param allrange
+     * @return
+     */
+    public Entity mapToArr(LinkedHashMap<Range<c>, Object> allrange) {
+        final ArrayList<Long> allrangeList = new ArrayList<>(allrange.size() * 2);
+        final ArrayList<Object> indexValObjs = new ArrayList<>(allrange.size());
+        // 将上界下界生成升序数组
+        allrange.keySet().stream().forEach(
+                range -> {
+                    allrangeList.add(range.lowerEndpoint());
+                    allrangeList.add(range.upperEndpoint());
+                    indexValObjs.add(allrange.get(range));
+                }
+        );
+        Entity entity = new Entity();
+        entity.setAllRangep(allrangeList.toArray(new Long[]{}));
+        entity.setVal(indexValObjs.toArray(new Object[]{}));
+        return entity;
+    }
+
 
     /**
      * 升序区间，计算当前数在那个区间范围内
@@ -36,32 +94,33 @@ public class RangesUtils<c extends Long> {
      * [1,10] [13,20] [21,50]
      * 1       2       3
      * 使用二分查找，判断
-     *
+     * <p>
      * 这里定义必须为 LinkedHashMap
      *
      * @param allrange   区间集合，此区间必须升序存入
      * @param indexValue 需求判断的当前数值
-     * @return 返回当前数在第几个区间(从1开始)
+     * @return 返回当前数在第几个区间(从1开始), 映射的数据
      */
     public Object ascOrderFixedLengthRange(LinkedHashMap<Range<c>, Object> allrange, c indexValue) {
-        final ArrayList<Long> allrangeList = new ArrayList<>(allrange.size() * 2);
-        final ArrayList<Object> indexs = new ArrayList<>(allrange.size());
-        // 将上界下界生成升序数组
-        allrange.keySet().stream().forEach(
-                range -> {
-                    allrangeList.add(range.lowerEndpoint());
-                    allrangeList.add(range.upperEndpoint());
-                    indexs.add(allrange.get(range));
-                }
-        );
-        Long[] rangeArr = allrangeList.toArray(new Long[]{});
-        log.info("create rangearr :{}", rangeArr);
+        Entity entity = mapToArr(allrange);
+        log.info("create rangearr info :{}", entity);
+        return ascOrderFixedLengthRange(entity, indexValue);
+    }
+
+    /**
+     * 执行二分查找
+     *
+     * @param entity     数据集合
+     * @param indexValue 需要判断对比的值
+     * @return
+     */
+    public Object ascOrderFixedLengthRange(Entity entity, c indexValue) {
         // 通过二分查找，计算区间下标
-        int sectionIndex = binarySearch(rangeArr, indexValue);
+        int sectionIndex = binarySearch(entity.getAllRangep(), indexValue);
         if (sectionIndex == -1) {
             throw new RuntimeException("选择区间失败");
         }
-        return indexs.get(sectionIndex - 1);
+        return entity.getVal()[sectionIndex - 1];
     }
 
     /**
@@ -79,7 +138,7 @@ public class RangesUtils<c extends Long> {
         while (low <= high) {
             if (low == high) {
                 mid = low;
-                // 最后一次
+                // 最后一次特殊处理
                 if (arr[mid] > searchNumber) {
                     break;
                 } else if (arr[mid] < searchNumber) {
@@ -133,6 +192,21 @@ public class RangesUtils<c extends Long> {
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * 范围区间数据转化为数组集合实体
+     *
+     * @author gengzi
+     * @date 2021年12月8日14:48:34
+     */
+    @Data
+    public static class Entity {
+        // map映射排序数组
+        private Long[] allRangep;
+        // 每个区间，对应的信息
+        private Object[] val;
     }
 
 
