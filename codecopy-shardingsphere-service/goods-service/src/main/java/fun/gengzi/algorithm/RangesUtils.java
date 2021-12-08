@@ -5,6 +5,7 @@ import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.math.RoundingMode;
 import java.util.*;
@@ -20,7 +21,7 @@ import java.util.*;
  * @date 2021年12月8日16:38:22
  */
 @Slf4j
-public class RangesUtils<c extends Long> {
+public class RangesUtils<c extends Long,t extends Object>{
 
 
     /**
@@ -70,7 +71,7 @@ public class RangesUtils<c extends Long> {
      * @param allrange
      * @return
      */
-    public Entity mapToArr(LinkedHashMap<Range<c>, Object> allrange) {
+    public Entity mapToArr(LinkedHashMap<Range<c>, t> allrange) {
         final ArrayList<Long> allrangeList = new ArrayList<>(allrange.size() * 2);
         final ArrayList<Object> indexValObjs = new ArrayList<>(allrange.size());
         // 将上界下界生成升序数组
@@ -101,7 +102,7 @@ public class RangesUtils<c extends Long> {
      * @param indexValue 需求判断的当前数值
      * @return 返回当前数在第几个区间(从1开始), 映射的数据
      */
-    public Object ascOrderFixedLengthRange(LinkedHashMap<Range<c>, Object> allrange, c indexValue) {
+    public Object ascOrderFixedLengthRange(LinkedHashMap<Range<c>, t> allrange, c indexValue) {
         Entity entity = mapToArr(allrange);
         log.info("create rangearr info :{}", entity);
         return ascOrderFixedLengthRange(entity, indexValue);

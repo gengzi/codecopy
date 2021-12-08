@@ -62,7 +62,7 @@ spring.shardingsphere.props.sql-show=true
 * （2） StandardShardingStrategy 为什么要求精确分片 和 范围分片都必须存在
 PreciseShardingAlgorithm是必选的，用于处理=和IN的分片
 RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不配置RangeShardingAlgorithm，SQL中的BETWEEN AND将按照全库路由处理
-
+* 多数据源配置 https://www.cnblogs.com/ll409546297/p/10496346.html
 
 
 ### 一些问题

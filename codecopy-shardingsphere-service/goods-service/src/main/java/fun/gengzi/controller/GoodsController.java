@@ -50,21 +50,21 @@ public class GoodsController {
         return ret;
     }
 
-    //TODO 临时测试
-    @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
-    @PostMapping("/test")
-    @ResponseBody
-    public ReturnData test(@RequestBody GoodsVo good) {
-        logger.info("savegood入参：{}",good);
-        GoodsEntity goodsEntity = new GoodsEntity();
-        BeanUtils.copyProperties(good, goodsEntity);
-
-        List<GoodsEntity> byIdBetweenAnd = goodsJPA.findByIdBetween(1L, 3L);
-        ReturnData ret = ReturnData.newInstance();
-        ret.setSuccess();
-        ret.setMessage(byIdBetweenAnd);
-        return ret;
-    }
+//    //TODO 临时测试
+//    @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
+//    @PostMapping("/test")
+//    @ResponseBody
+//    public ReturnData test(@RequestBody GoodsVo good) {
+//        logger.info("savegood入参：{}",good);
+//        GoodsEntity goodsEntity = new GoodsEntity();
+//        BeanUtils.copyProperties(good, goodsEntity);
+//
+//        List<GoodsEntity> byIdBetweenAnd = goodsJPA.findByIdBetween(1L, 3L);
+//        ReturnData ret = ReturnData.newInstance();
+//        ret.setSuccess();
+//        ret.setMessage(byIdBetweenAnd);
+//        return ret;
+//    }
 
     @ApiOperation(value = "根据商品id减库存", notes = "根据商品id减库存")
     @ApiImplicitParams({
@@ -97,6 +97,13 @@ public class GoodsController {
         return ret;
     }
 
+    /**
+     * 引入 sharding jdbc 此分页功能将失效，请使用 搜索引擎来提供搜索引擎
+     * @param good
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
     @ApiOperation(value = "查询单个商品信息", notes = "查询单个商品信息")
     @PostMapping("/queryInfo/{currentPage}/{pageSize}")
     @ResponseBody
