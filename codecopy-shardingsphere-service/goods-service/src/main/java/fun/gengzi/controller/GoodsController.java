@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shardingsphere.infra.hint.HintManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +43,9 @@ public class GoodsController {
         logger.info("savegood入参：{}",good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
+
+        HintManager hintManager = HintManager.getInstance();
+        hintManager.setDatabaseShardingValue("old");
 
         GoodsEntity save = goodsJPA.save(goodsEntity);
         ReturnData ret = ReturnData.newInstance();
