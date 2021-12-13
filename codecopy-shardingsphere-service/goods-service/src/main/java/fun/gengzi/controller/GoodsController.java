@@ -43,10 +43,6 @@ public class GoodsController {
         logger.info("savegood入参：{}",good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
-
-        HintManager hintManager = HintManager.getInstance();
-        hintManager.setDatabaseShardingValue("old");
-
         GoodsEntity save = goodsJPA.save(goodsEntity);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
