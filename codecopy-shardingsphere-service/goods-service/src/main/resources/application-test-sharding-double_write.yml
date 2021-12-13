@@ -80,7 +80,7 @@ spring:
               strategy: STANDARD  # 分片策略类型，支持 STANDARD(标准单分片键)、COMPLEX（复合多分片键） 或 HINT（行表达式分片）（不区分大小写）
               algorithmClassName: fun.gengzi.algorithm.InidRangeShardingStrategyConfig  # 分布式序列算法属性配置
          # 库-分片算法名称
-         intype:
+          intype:
             type: CLASS_BASED  # 分片算法类型  自定义类分片算法(CLASS_BASED)通过配置分片策略类型和算法类名，实现自定义扩展。
             props:
               strategy: HINT # 强制分片路由

@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  *  <h1>支付微服务</h1>
@@ -18,6 +19,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 // 忽略自动配置的类，排除 数据源自动配置，数据量连接池的自动配置
 @EnableEurekaClient
 // @SpringBootApplication 不使用分库分表开启
+@EnableAsync
 public class GoodsServiceApplication {
 
     public static void main(String[] args) {

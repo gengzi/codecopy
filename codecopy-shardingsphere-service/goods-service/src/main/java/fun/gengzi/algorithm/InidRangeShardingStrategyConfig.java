@@ -87,6 +87,11 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
     @Override
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
         log.info("根据id范围分片：可用目标名称[{}],分片键信息[{}]", availableTargetNames, shardingValue);
+        // 对于旧库旧表，不分表
+        if(availableTargetNames.size() == 1 && availableTargetNames.stream().filter(name->name.equals("goods")).toArray().length == 1){
+            return "goods";
+        }
+        // 其他情况
         Long keyValue = shardingValue.getValue();
         Object indexVal = rangesUtils.ascOrderFixedLengthRange(this.entity, keyValue);
         // 匹配目标表名称的名称

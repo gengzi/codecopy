@@ -53,9 +53,9 @@ public class GoodsDoubleWriteController {
         BeanUtils.copyProperties(good, goodsEntity);
         // 新旧数据库选择
         HintManager hintManager = HintManager.getInstance();
-        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getPrefix());
+        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
         GoodsEntity save = goodsJPA.save(goodsEntity);
-
+        hintManager.clearShardingValues();
         service.asyncSqlExecute("test");
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();

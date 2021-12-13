@@ -22,7 +22,7 @@ public class ShardingNewDataSourceSqlExecuteServiceImpl implements ShardingNewDa
     @Async("asyncOneThreadPool")
     public Object asyncSqlExecute(String name) {
         HintManager hintManager = HintManager.getInstance();
-        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_NEW.getPrefix());
+        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_NEW.getType());
         GoodsEntity goodsEntity = new GoodsEntity();
         goodsEntity.setId(99L);
         goodsEntity.setGoodsName("test");
