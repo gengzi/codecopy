@@ -27,6 +27,7 @@ public class ShardingNewDataSourceSqlExecuteServiceImpl implements ShardingNewDa
         goodsEntity.setId(99L);
         goodsEntity.setGoodsName("test");
         goodsJPA.save(goodsEntity);
+        hintManager.clearShardingValues();
         return null;
     }
 }
