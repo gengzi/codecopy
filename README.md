@@ -127,3 +127,7 @@ redis缓存实现
 
 * idea 没有出现 run dashboard 运行的仪表盘
     [IDEA中设置Run Dashboard](https://blog.csdn.net/chinoukin/article/details/80577890)
+
+
+## idea 使用技巧
+[IDEA的查询引用、调用关系图的功能](https://www.cnblogs.com/ghj1976/p/5382455.html) 分析方法调用链很有用
