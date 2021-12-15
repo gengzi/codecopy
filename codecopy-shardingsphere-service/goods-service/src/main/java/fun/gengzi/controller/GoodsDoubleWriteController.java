@@ -1,7 +1,9 @@
 package fun.gengzi.controller;
 
+import fun.gengzi.aspect.JpaHintSharding;
 import fun.gengzi.codecopy.vo.ReturnData;
 import fun.gengzi.dao.GoodsJPA;
+import fun.gengzi.dao.GoodsShardingJPA;
 import fun.gengzi.entity.GoodsEntity;
 //import fun.gengzi.olddao.GoodsOldJPA;
 import fun.gengzi.enums.ShardingDataSourceType;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +44,11 @@ public class GoodsDoubleWriteController {
     private GoodsJPA goodsJPA;
 
     @Autowired
-    private ShardingNewDataSourceSqlExecuteService service;
+    @Qualifier("goodsShardingJPA")
+    private GoodsShardingJPA goodsShardingJPA;
+
+//    @Autowired
+//    private ShardingNewDataSourceSqlExecuteService service;
 
 
     @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
@@ -56,7 +63,9 @@ public class GoodsDoubleWriteController {
         hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
         GoodsEntity save = goodsJPA.save(goodsEntity);
         hintManager.clearShardingValues();
-        service.asyncSqlExecute("test");
+
+        goodsShardingJPA.save(goodsEntity);
+//        service.asyncSqlExecute("test");
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(save);

@@ -1,6 +1,6 @@
 package fun.gengzi.service;
 
-public interface ShardingNewDataSourceSqlExecuteService {
+public interface ShardingNewDataSourceSqlExecuteService<T> {
 
-    Object asyncSqlExecute(String name);
+    T asyncSqlExecute(T data, String methodReference, Object args);
 }

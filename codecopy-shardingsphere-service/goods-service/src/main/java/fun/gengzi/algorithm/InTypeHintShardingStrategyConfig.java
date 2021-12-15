@@ -58,7 +58,6 @@ public final class InTypeHintShardingStrategyConfig implements HintShardingAlgor
     @Override
     public void init() {
         log.info("强制分片路由：新旧库策略<init>");
-
     }
 
     @Override

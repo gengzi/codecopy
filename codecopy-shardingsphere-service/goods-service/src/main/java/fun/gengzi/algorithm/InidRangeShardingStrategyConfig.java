@@ -31,6 +31,8 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
     private RangesUtils.Entity entity;
     // 目标表：表名称前缀
     private static final String TARGETNAME_PREFIX = "goods_";
+    // 旧表
+    private static final String OLD_TABLES_NAME = "goods";
 
     private RangesUtils<Long, Long> rangesUtils;
 
@@ -88,8 +90,9 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
         log.info("根据id范围分片：可用目标名称[{}],分片键信息[{}]", availableTargetNames, shardingValue);
         // 对于旧库旧表，不分表
-        if(availableTargetNames.size() == 1 && availableTargetNames.stream().filter(name->name.equals("goods")).toArray().length == 1){
-            return "goods";
+        if (availableTargetNames.size() == 1 &&
+                availableTargetNames.stream().filter(name -> name.equals(OLD_TABLES_NAME)).toArray().length == 1) {
+            return OLD_TABLES_NAME;
         }
         // 其他情况
         Long keyValue = shardingValue.getValue();
@@ -135,6 +138,12 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
      * @return
      */
     private Collection<String> headAndTailTargetName(Collection<String> availableTargetNames, RangeShardingValue<Long> shardingValue) {
+        // 对于旧库旧表，不分表
+        if (availableTargetNames.size() == 1 &&
+                availableTargetNames.stream().filter(name -> name.equals(OLD_TABLES_NAME)).toArray().length == 1) {
+            return availableTargetNames;
+        }
+        // 新库
         Long low = 0L;
         Long upper = 0L;
         final LinkedHashSet<String> targetNames = new LinkedHashSet<>();
