@@ -13,7 +13,6 @@ import java.util.List;
 
 
 @Repository("goodsShardingJPA")
-@JpaHintSharding(dataSourceType = "new")
 @Transactional
 public interface GoodsShardingJPA extends JpaRepository<GoodsEntity, Long>, JpaSpecificationExecutor<GoodsEntity> {
 

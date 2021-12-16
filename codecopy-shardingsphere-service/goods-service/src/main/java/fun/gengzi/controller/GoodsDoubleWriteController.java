@@ -58,13 +58,13 @@ public class GoodsDoubleWriteController {
         logger.info("savegood入参：{}",good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
-        // 新旧数据库选择
-        HintManager hintManager = HintManager.getInstance();
-        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
-        GoodsEntity save = goodsJPA.save(goodsEntity);
-        hintManager.clearShardingValues();
+//        // 新旧数据库选择
+//        HintManager hintManager = HintManager.getInstance();
+//        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
+//        goodsJPA.saveAndFlush(goodsEntity);
+//        HintManager.clear();
 
-        goodsShardingJPA.save(goodsEntity);
+        GoodsEntity save = goodsShardingJPA.save(goodsEntity);
 //        service.asyncSqlExecute("test");
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();

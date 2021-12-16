@@ -66,10 +66,11 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 
 
 ### 一些问题
-https://www.zhihu.com/question/24236515?utm_source=weibo&utm_medium=weibo_share&utm_content=share_question&utm_campaign=share_sidebar
+* https://www.zhihu.com/question/24236515?utm_source=weibo&utm_medium=weibo_share&utm_content=share_question&utm_campaign=share_sidebar
 针对一群范围对的最快查找算法设计（不要用数组）？
-
-
+* [Java反射——如何通过Java中的反射调用对象的方法？](https://blog.csdn.net/ly_xiamu/article/details/82900482)
+* [Spring AOP组合使用多个切入点表达式](https://blog.csdn.net/qq_32224047/article/details/107103819)
+* [JPA项目多数据源模式整合sharding-jdbc实现数据脱敏](http://www.kailing.pub/article/index/arcid/279.html)
      2 
  10 20 49 69
     33
@@ -94,6 +95,22 @@ https://www.zhihu.com/question/24236515?utm_source=weibo&utm_medium=weibo_share&
 需要写一批接口，用于旧项目调用，进行数据更新
 后续使用新库代替旧库，可能还存在接口调用。比较麻烦
 
+
+第三个想法：原有jpa  和 分库分表 jpa 都切换都 sharding jdbc
+通过 hint 强制分片策略，来区分old 库和 分库分表库，手动配置执行 不同sql 时，触发不同库
+
+
+
+### 第二个问题
+在规划区分数据库时，执行每个sql 都要植入一段 hintManager 的代码，会修改原有业务逻辑
+考虑，不修改原有业务逻辑，在对jpa 执行sql 时，再植入这段逻辑。
+
+第一个想法：写一个公共植入hintManager service层，根据做什么动作，就参数传递， 使用反射，生成一个jpa 方法调用
+
+
+第二个想法：这段逻辑既然每个 jpa 方法都要执行，写一个 aop 来实现，环绕通知
+好处：无需改造原有业务逻辑
+
     
     
  
@@ -101,3 +118,5 @@ https://www.zhihu.com/question/24236515?utm_source=weibo&utm_medium=weibo_share&
  
  
 
+## 推荐阅读
+[李新杰的博客园](https://www.cnblogs.com/lixinjie/tag/Spring/)
