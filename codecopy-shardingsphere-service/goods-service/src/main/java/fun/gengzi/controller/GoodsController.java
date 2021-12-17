@@ -40,7 +40,7 @@ public class GoodsController {
     @PostMapping("/savegood")
     @ResponseBody
     public ReturnData savegood(@RequestBody GoodsVo good) {
-        logger.info("savegood入参：{}",good);
+        logger.info("savegood入参：{}", good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
         GoodsEntity save = goodsJPA.save(goodsEntity);
@@ -73,12 +73,12 @@ public class GoodsController {
 
     @PostMapping("/inventoryReduction")
     @ResponseBody
-    public ReturnData inventoryReduction(@RequestParam("goodid") Long goodid ,@RequestParam("num") Integer num) {
+    public ReturnData inventoryReduction(@RequestParam("goodid") Long goodid, @RequestParam("num") Integer num) {
         logger.info("inventoryReduction入参：商品id{}，减少数目{}", goodid, num);
-        GoodsEntity save = goodsJPA.inventoryReduction(goodid, num);
+        goodsJPA.inventoryReduction(goodid, num);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-        ret.setMessage(save);
+        ret.setMessage("");
         return ret;
     }
 
@@ -99,6 +99,7 @@ public class GoodsController {
 
     /**
      * 引入 sharding jdbc 此分页功能将失效，请使用 搜索引擎来提供搜索引擎
+     *
      * @param good
      * @param currentPage
      * @param pageSize
@@ -110,13 +111,13 @@ public class GoodsController {
     public ReturnData queryInfo(@RequestBody GoodsVo good,
                                 @PathVariable("currentPage") Integer currentPage,
                                 @PathVariable("pageSize") Integer pageSize) {
-        logger.info("queryInfo入参：查询条件{},当前页码{},展示条数{}", good,currentPage,pageSize);
+        logger.info("queryInfo入参：查询条件{},当前页码{},展示条数{}", good, currentPage, pageSize);
         // spring boot 2.0推荐写法
-        Pageable pageable = PageRequest.of(currentPage,pageSize);
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
         Specification<GoodsEntity> specification = (Specification<GoodsEntity>) (root, query, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
             // like
-            Predicate p1 = criteriaBuilder.like(root.get("goodsName"),good.getGoodsName()+"%");
+            Predicate p1 = criteriaBuilder.like(root.get("goodsName"), good.getGoodsName() + "%");
             list.add(p1);
             List<Order> orders = new ArrayList<>();
             // 排序
@@ -131,9 +132,6 @@ public class GoodsController {
         ret.setMessage(all);
         return ret;
     }
-
-
-
 
 
 }

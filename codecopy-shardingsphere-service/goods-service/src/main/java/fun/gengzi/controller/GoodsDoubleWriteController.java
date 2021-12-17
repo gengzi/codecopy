@@ -51,10 +51,10 @@ public class GoodsDoubleWriteController {
     @ResponseBody
     public ReturnData inventoryReduction(@RequestParam("goodid") Long goodid ,@RequestParam("num") Integer num) {
         logger.info("inventoryReduction入参：商品id{}，减少数目{}", goodid, num);
-        GoodsEntity save = goodsJPA.inventoryReduction(goodid, num);
+        goodsJPA.inventoryReduction(goodid, num);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
-        ret.setMessage(save);
+        ret.setMessage("");
         return ret;
     }
 
@@ -72,17 +72,5 @@ public class GoodsDoubleWriteController {
         ret.setMessage(goodsEntity);
         return ret;
     }
-
-
-
-
-    // TODO 配置双数据源
-
-    //TODO 历史数据导入
-
-
-
-
-
 
 }

@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 
 import java.lang.reflect.Method;
@@ -21,6 +22,9 @@ import java.lang.reflect.Method;
  * <p>
  * 主要实现，不修改原有业务代码的情况下，支持原有库数据，和新分库分表数据更新
  * 注意：执行 saveFlush 会报错，还没有排查出来是问题
+ * <p>
+ * <p>
+ * 代码实现，执行两个sql执行，第二个不使用新线程，不会执行。 暂不清楚原因，猜测跟 sharding jdbc实现有关系
  *
  * @author gengzi
  * @date 2021年12月16日16:41:32
@@ -32,6 +36,7 @@ public class JpaHintShardingAspect {
 
     // 用于解决内部类调用  @Async 失效的方法
     @Autowired
+    @Lazy
     private JpaHintShardingAspect jpaHintShardingAspect;
 
     //切入点
@@ -54,7 +59,7 @@ public class JpaHintShardingAspect {
         HintManager.clear();
         HintManager hintManager = HintManager.getInstance();
         // 添加分片值
-        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_NEW.getType());
+        hintManager.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
         log.info("hint分片键值[{}]", HintManager.getDatabaseShardingValues());
         Object obj;
         try {
@@ -71,6 +76,12 @@ public class JpaHintShardingAspect {
         return obj;
     }
 
+    /**
+     * 开启新线程，启动对新库的处理
+     *
+     * @param joinPoint 切入点
+     * @return
+     */
     @Async("asyncOneThreadPool")
     public Object newDataSource(ProceedingJoinPoint joinPoint) {
         log.info("新库-执行sql开始,执行方法[{}]", joinPoint.getSignature().getName());

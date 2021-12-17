@@ -72,6 +72,7 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 * [Spring AOP组合使用多个切入点表达式](https://blog.csdn.net/qq_32224047/article/details/107103819)
 * [JPA项目多数据源模式整合sharding-jdbc实现数据脱敏](http://www.kailing.pub/article/index/arcid/279.html)
 * [Spring boot 注解@Async不生效 无效 不起作用](https://blog.csdn.net/weixin_37760377/article/details/103627676)
+* [第二十四章：SpringBoot项目整合JPA多数据源配置](https://www.jianshu.com/p/9f812e651319)
      2 
  10 20 49 69
     33
@@ -120,4 +121,5 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
  
 
 ## 推荐阅读
-[李新杰的博客园](https://www.cnblogs.com/lixinjie/tag/Spring/)
+* [李新杰的博客园](https://www.cnblogs.com/lixinjie/tag/Spring/)
+* [带有 Spring 框架的 AOP](https://www.tutorialspoint.com/spring/aop_with_spring.htm)

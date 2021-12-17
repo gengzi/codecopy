@@ -17,8 +17,8 @@ import java.util.List;
 public interface GoodsShardingJPA extends JpaRepository<GoodsEntity, Long>, JpaSpecificationExecutor<GoodsEntity> {
 
 
-    @Query(value = "UPDATE goods t SET t.sales = t.sales - ?2 WHERE t.id = ?1 AND t.sales > ?2;", nativeQuery = true)
-    GoodsEntity inventoryReduction(Long id,Integer num);
+    @Query(value = "UPDATE goods t SET t.sales = t.sales - ?2 WHERE t.id = ?1 AND t.sales > ?2", nativeQuery = true)
+    GoodsEntity inventoryReduction(Long id, Integer num);
 
     List<GoodsEntity> findByIdBetween(Long id, Long id1);
 
