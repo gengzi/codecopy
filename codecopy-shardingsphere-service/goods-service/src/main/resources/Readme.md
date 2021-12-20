@@ -123,3 +123,14 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 ## 推荐阅读
 * [李新杰的博客园](https://www.cnblogs.com/lixinjie/tag/Spring/)
 * [带有 Spring 框架的 AOP](https://www.tutorialspoint.com/spring/aop_with_spring.htm)
+
+
+
+## 思考
+当一个问题出现，不符合预期后。对于第三方源码实现，应该直接debug排查不符合预期的逻辑代码，不应该直接去设想是那部分代码的影响。
+依靠经验和猜测很容易偏离解决问题的方向，并且可能会尝试一些操作来实现功能。到头来，发现真正答案就在面前。
+不要被各种组件之间相容，扰乱解决问题的思路。
+
+
+
+
