@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 
@@ -28,6 +29,9 @@ public class GoodsDoubleWriteController {
     @Autowired
     private GoodsJPA goodsJPA;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
     @PostMapping("/savegood")
     @ResponseBody
@@ -35,7 +39,9 @@ public class GoodsDoubleWriteController {
         logger.info("savegood入参：{}",good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
-        GoodsEntity save = goodsJPA.save(goodsEntity);
+        GoodsEntity save = goodsJPA.saveAndFlush(goodsEntity);
+        entityManager.clear();
+        GoodsEntity save1 = goodsJPA.saveAndFlush(goodsEntity);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage(save);
