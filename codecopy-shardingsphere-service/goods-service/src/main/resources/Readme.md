@@ -3,6 +3,11 @@
 业务场景： 现有商品表存储1千万数据，每日新增商品数10万。数据库表性能达到瓶颈。
 优化：商品表分库分表
 
+本篇模拟实现，指导性文章：
+[分库分表常见概念解读+Sharding-JDBC实战](https://jishuin.proginn.com/p/763bfbd302e8)
+[大众点评订单系统分库分表实践](https://tech.meituan.com/2016/11/18/dianping-order-db-sharding.html)
+[进来抄作业：一次完美的分库分表实践！](https://database.51cto.com/art/202012/637727.htm)
+
 ### 思路
 分库分表可以拆分四种情况：
 * 垂直分库，将商品表，订单表，支付记录表 拆分到为三个库
@@ -73,9 +78,12 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 * [JPA项目多数据源模式整合sharding-jdbc实现数据脱敏](http://www.kailing.pub/article/index/arcid/279.html)
 * [Spring boot 注解@Async不生效 无效 不起作用](https://blog.csdn.net/weixin_37760377/article/details/103627676)
 * [第二十四章：SpringBoot项目整合JPA多数据源配置](https://www.jianshu.com/p/9f812e651319)
-     2 
- 10 20 49 69
-    33
+* [EntityManager常用方法简介](https://www.cnblogs.com/powerwu/articles/10733838.html)
+* [Spring 多线程事务管理](https://dzone.com/articles/spring-transaction-management-over-multiple-thread-1)
+* [Spring Data JPA手动管理事务](https://blog.csdn.net/loushangdeanshi/article/details/106322450)
+* [Spring boot 注解@Async不生效 无效 不起作用](https://blog.csdn.net/weixin_37760377/article/details/103627676)
+
+
     
 ## 新旧数据源配置 
 引入sharding 后，一个项目中包含多数据源
@@ -113,7 +121,21 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 第二个想法：这段逻辑既然每个 jpa 方法都要执行，写一个 aop 来实现，环绕通知
 好处：无需改造原有业务逻辑
 
+
+
+## 双写实践
+
+使用jmeter 模拟新增产品，商品个数减少的模拟
+（1）编写新库（分库分表）写入逻辑，可能涉及旧服务业务改造，修改原有旧库写入逻辑。代码编写好后，测试，准备上线
+     代码编写注意：新库写入逻辑，可以异步处理，不影响原有旧库逻辑
+     新库写入逻辑允许失败，失败后不抛出异常，不回滚旧库写入数据，将失败日志记录，用于排查补偿数据
+         
+（2）编写迁移旧数据脚本，编写校验数据脚本，用于对比新库旧库数据是否一致
     
+ （3）部署新旧库写入逻辑，双写开始。双写10分钟后，开始迁移现有旧库数据。防止提前迁入，导致新写入旧库一部分数据没有
+ 迁移到新库
+ 
+ 
     
  
  
@@ -130,6 +152,9 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 当一个问题出现，不符合预期后。对于第三方源码实现，应该直接debug排查不符合预期的逻辑代码，不应该直接去设想是那部分代码的影响。
 依靠经验和猜测很容易偏离解决问题的方向，并且可能会尝试一些操作来实现功能。到头来，发现真正答案就在面前。
 不要被各种组件之间相容，扰乱解决问题的思路。
+
+
+看源码，先看主线代码，忽略分支。不纠结单个方法实现，有时间再看每个方法实现。
 
 
 

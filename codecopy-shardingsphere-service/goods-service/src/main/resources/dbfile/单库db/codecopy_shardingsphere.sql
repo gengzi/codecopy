@@ -31,7 +31,7 @@ CREATE TABLE `goods` (
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_del` tinyint(1) DEFAULT '0' COMMENT '是否删除',
-  `sales` int(11) DEFAULT '0' COMMENT '销量',
+  `sales` int(11) DEFAULT '0' COMMENT '库存',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1000001 DEFAULT CHARSET=utf8;
 
