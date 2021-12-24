@@ -55,10 +55,10 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
 //        hashMap.put(open4, 1L);
 
         // 方案2 测试环境
-        Range<Long> open1 = Range.closed(1L, 500000L);
-        Range<Long> open2 = Range.closed(500001L, 1000000L);
-        Range<Long> open3 = Range.closed(1000001L, 1500000L);
-        Range<Long> open4 = Range.closed(1500001L, 2000001L);
+        Range<Long> open1 = Range.closed(1L, 1100000L);
+        Range<Long> open2 = Range.closed(1100001L, 1500000L);
+        Range<Long> open3 = Range.closed(1500001L, 1800000L);
+        Range<Long> open4 = Range.closed(1800001L, 2000001L);
         hashMap.put(open1, 0L);
         hashMap.put(open2, 1L);
         hashMap.put(open3, 2L);
@@ -99,6 +99,7 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
         Object indexVal = rangesUtils.ascOrderFixedLengthRange(this.entity, keyValue);
         // 匹配目标表名称的名称
         Optional<String> targetName = availableTargetNames.stream().filter(name -> name.equals(TARGETNAME_PREFIX + indexVal)).findFirst();
+        log.info("根据id范围分片：分片结果[{}]", targetName.get());
         if (targetName.isPresent()) {
             return targetName.get();
         }
@@ -162,6 +163,7 @@ public final class InidRangeShardingStrategyConfig implements StandardShardingAl
         for (Long i = lowVal; i < upperVal; i++) {
             targetNames.add(availableTargetNames.toArray(new String[]{})[i.intValue() - 1]);
         }
+        log.info("根据id范围分片：分片结果[{}]", targetNames);
         return targetNames;
     }
 
