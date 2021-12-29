@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableEurekaClient
 // @SpringBootApplication 不使用分库分表开启
 @EnableAsync
+@EnableJpaAuditing
 public class GoodsServiceApplication {
 
     public static void main(String[] args) {

@@ -183,11 +183,11 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 
  
 
- 
+### 接入sharding jdbc 对jpa 原有影响
+jpa 自动追加创建时间 和 更新时间，好像不生效了。需要手动设置创建时间和更新时间了
     
- 
- 
- 
+ time_zone	否	Asia/Shanghai	
+ 当前连接的mysql 必须断开连接，执行的sql才能生效
  
 
 ## 推荐阅读
