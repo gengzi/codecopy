@@ -194,6 +194,11 @@ jpa 自动追加创建时间 和 更新时间，好像不生效了。需要手�
 * [李新杰的博客园](https://www.cnblogs.com/lixinjie/tag/Spring/)
 * [带有 Spring 框架的 AOP](https://www.tutorialspoint.com/spring/aop_with_spring.htm)
 
+### idea 技巧
+* [如何看源码系列-idea中配置jdk源码和中文注释](https://blog.csdn.net/l773772189/article/details/105067297/)
+* [源码如何添加注释](https://blog.csdn.net/qq_40495860/article/details/121011875)
+* [IDEA类和方法注释模板设置（非常详细）](https://blog.csdn.net/xiaoliulang0324/article/details/79030752)
+
 
 
 ## 思考

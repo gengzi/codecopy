@@ -17,5 +17,7 @@ public class ConfigConsts {
     public static final String APP_VERSION = "1.0.0";
     // swagger-config-全局controller包名
     public static final String SWAGGER_CONTROLLER_PACKAGE = "fun.gengzi.controller";
+    // 额外的包名
+    public static final String OTHERR_PACKAGE = "fun.gengzi.job";
 
 }

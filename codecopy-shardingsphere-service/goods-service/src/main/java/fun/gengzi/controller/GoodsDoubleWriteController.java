@@ -1,7 +1,7 @@
 package fun.gengzi.controller;
 
 import fun.gengzi.codecopy.vo.ReturnData;
-import fun.gengzi.dao.GoodsJPA;
+import fun.gengzi.dao.GoodsShardingJPA;
 import fun.gengzi.entity.GoodsEntity;
 import fun.gengzi.vo.GoodsVo;
 import io.swagger.annotations.Api;
@@ -27,7 +27,7 @@ public class GoodsDoubleWriteController {
     private Logger logger = LoggerFactory.getLogger(GoodsDoubleWriteController.class);
 
     @Autowired
-    private GoodsJPA goodsJPA;
+    private GoodsShardingJPA goodsJPA;
 
 
     @ApiOperation(value = "新增商品信息", notes = "新增商品信息")

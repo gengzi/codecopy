@@ -1,8 +1,11 @@
 package fun.gengzi.config;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -42,12 +45,14 @@ public class SwaggerConfig {
 //        tokenPar.name("Authorization").description("AccessToken令牌").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
 //        pars.add(tokenPar.build());
 //        // =========添加head参数end===================
+        Predicate<RequestHandler> basePackage = RequestHandlerSelectors.basePackage(ConfigConsts.SWAGGER_CONTROLLER_PACKAGE);
+        Predicate<RequestHandler> otherPackage = RequestHandlerSelectors.basePackage(ConfigConsts.OTHERR_PACKAGE);
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
                 // 指定 controller包路径
-                .apis(RequestHandlerSelectors.basePackage(ConfigConsts.SWAGGER_CONTROLLER_PACKAGE))
+                .apis(Predicates.or(basePackage,otherPackage))
                 // 指定扫描 @RestController 注解
 //                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .paths(PathSelectors.any())

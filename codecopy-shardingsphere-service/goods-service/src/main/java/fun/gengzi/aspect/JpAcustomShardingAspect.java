@@ -4,29 +4,20 @@ import fun.gengzi.enums.ShardingDataSourceType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.infra.hint.HintManager;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import javax.persistence.EntityManager;
-import java.lang.reflect.Method;
 
 /**
- * <h1>声明Jpahint 模式下分片策略</h1>
+ * <h1>jpa自定义分片切面</h1>
  * <p>
  * <p>
- * 特别注意： Spring的AOP只能支持到方法级别的切入。换句话说，切入点只能是某个方法。
- * <p>
- * 主要实现，不修改原有业务代码的情况下，支持原有库数据，和新分库分表数据更新
- * 注意：执行 saveFlush 会报错，还没有排查出来是问题
- * <p>
- * <p>
- * 代码实现，执行两个sql执行，第二个不使用新线程，不会执行。 暂不清楚原因，猜测跟 sharding jdbc实现有关系
+ * 通过不同参数，指定执行旧库，还是新库
  *
  * @author gengzi
  * @date 2021年12月16日16:41:32
@@ -35,38 +26,31 @@ import java.lang.reflect.Method;
 @Configuration
 @Slf4j
 @Order(5)
-public class JpaHintShardingAspect {
+public class JpAcustomShardingAspect {
 
-    // 用于解决内部类调用  @Async 失效的方法
-//    @Autowired
-//    @Lazy
-//    private JpaHintShardingAspect jpaHintShardingAspect;
     @Autowired
     private EntityManager entityManager;
 
 
     //切入点
-    @Pointcut("execution(* fun.gengzi.dao.GoodsShardingJPA.*(..))")
-    public void jpaHintShardingAspectNew() {
+    @Pointcut("execution(* fun.gengzi.dao.GoodsJPA.*(..))")
+    public void jpAcustomShardingAspect() {
     }
 
 
-    @Around("jpaHintShardingAspectNew()")
+    @Around("jpAcustomShardingAspect()")
     public Object aroundNew(ProceedingJoinPoint joinPoint) {
-        log.info("hintsharding start");
-        Object obj = oldDataSource(joinPoint);
-        // 由于jpa save 和 saveflush 在同一个线程执行中，会检测当前实例对象，是否为相同的对象。如果为相同的对象，save 方法将不再执行
-        // 需要手动清除当前
-        entityManager.clear();
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        JpaisSharding annotation = method.getAnnotation(JpaisSharding.class);
-        if (annotation != null && JpaisSharding.Type.N.equals(annotation.value())) {
-            // 存在判断是否新库旧库执行注解
-            return obj;
+        log.info("acustomsharding start");
+
+        if (ShardingDataSourceType.TYPE_OLD.getType().equals(JpaThreadLocalManager.getDatabaseShardingValues().stream().findFirst().get())) {
+            return oldDataSource(joinPoint);
         }
-        newDataSource(joinPoint);
-        return obj;
+
+        if (ShardingDataSourceType.TYPE_NEW.getType().equals(JpaThreadLocalManager.getDatabaseShardingValues().stream().findFirst().get())) {
+            return newDataSource(joinPoint);
+        }
+
+        throw new UnsupportedOperationException();
     }
 
     private Object oldDataSource(ProceedingJoinPoint joinPoint) {
