@@ -181,10 +181,15 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 
 
 
+### 热配置
+为了避免后续的切库，再重启服务，实现一个热配置，用于关停对新库，或者 老库的写入，读取
+可以在配置中心，配置一个标志来控制。
+如果没有，可以借助redis mysql 等实现，不再阐述。
+
+
  
 
 ### 接入sharding jdbc 对jpa 原有影响
-jpa 自动追加创建时间 和 更新时间，好像不生效了。需要手动设置创建时间和更新时间了
     
  time_zone	否	Asia/Shanghai	
  当前连接的mysql 必须断开连接，执行的sql才能生效

@@ -51,8 +51,9 @@ public class GoodsNewOldDataContrast {
     public ReturnData checkData() {
         Date date = new Date();
         List<Long> longs = goodsShardingJPA.queryIdByUpdate(DateUtil.beginOfDay(date).toString(), DateUtil.endOfDay(date).toString());
+        JpaThreadLocalManager instance = JpaThreadLocalManager.getInstance();
         for (Long id : longs) {
-            JpaThreadLocalManager instance = JpaThreadLocalManager.getInstance();
+
             instance.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
             Optional<GoodsEntity> oldGoodsEntity = goodsJPA.findById(id);
             GoodsEntity oldEntity = oldGoodsEntity.orElseThrow(() -> new DataException("数据不存在", new SQLException()));
@@ -60,10 +61,18 @@ public class GoodsNewOldDataContrast {
             instance.setDatabaseShardingValue(ShardingDataSourceType.TYPE_NEW.getType());
             Optional<GoodsEntity> newGoodEntiy = goodsJPA.findById(id);
             GoodsEntity newEntity = newGoodEntiy.orElseThrow(() -> new DataException("数据不存在", new SQLException()));
-            instance.close();
+            instance.clearShardingValues();
             boolean equal = ObjectUtil.equal(oldEntity, newEntity);
             log.info("对比结果：{}", equal);
+            // 对比失败，旧库覆盖新库数据
+            if(!equal){
+                log.error("数据对比失败，请检查");
+                instance.setDatabaseShardingValue(ShardingDataSourceType.TYPE_NEW.getType());
+                goodsJPA.save(oldEntity);
+                instance.clearShardingValues();
+            }
         }
+        instance.close();
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         return ret;
