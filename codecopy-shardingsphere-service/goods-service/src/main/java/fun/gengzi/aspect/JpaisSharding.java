@@ -30,7 +30,13 @@ public @interface JpaisSharding {
     @Getter
     @AllArgsConstructor
     enum Type {
+        /**
+         * Y 新库旧库都执行
+         */
         Y("Y"),
+        /**
+         * N 只执行旧库
+         */
         N("N");
 
         String code;

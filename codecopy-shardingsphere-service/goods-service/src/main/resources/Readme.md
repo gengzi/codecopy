@@ -82,6 +82,8 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 * [Spring 多线程事务管理](https://dzone.com/articles/spring-transaction-management-over-multiple-thread-1)
 * [Spring Data JPA手动管理事务](https://blog.csdn.net/loushangdeanshi/article/details/106322450)
 * [Spring boot 注解@Async不生效 无效 不起作用](https://blog.csdn.net/weixin_37760377/article/details/103627676)
+* [浅谈数据迁移测试](https://www.cnblogs.com/imyalost/p/7923208.html)
+* [数据库数据迁移完成后完整性的校验](http://blog.itpub.net/26736162/viewspace-2735067/)
 
 
     
@@ -203,6 +205,7 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 * [如何看源码系列-idea中配置jdk源码和中文注释](https://blog.csdn.net/l773772189/article/details/105067297/)
 * [源码如何添加注释](https://blog.csdn.net/qq_40495860/article/details/121011875)
 * [IDEA类和方法注释模板设置（非常详细）](https://blog.csdn.net/xiaoliulang0324/article/details/79030752)
+* [IDEA方法API中文显示](https://www.cnblogs.com/lu-zlz/p/13627672.html)
 
 
 

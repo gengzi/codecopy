@@ -17,6 +17,12 @@ import java.util.List;
 public interface GoodsJPA extends JpaRepository<GoodsEntity, Long>, JpaSpecificationExecutor<GoodsEntity> {
 
 
+    /**
+     * 根据商品id 减少存储数
+     *
+     * @param id  商品id
+     * @param num 库存数
+     */
     @Modifying
     @Transactional
     @Query(value = "UPDATE goods t SET t.sales = t.sales - ?2 WHERE t.id = ?1 AND t.sales > ?2", nativeQuery = true)
@@ -27,8 +33,11 @@ public interface GoodsJPA extends JpaRepository<GoodsEntity, Long>, JpaSpecifica
 
     /**
      * 只查询旧库，不进行新库执行
-     * @param updateTimeStart
-     * @param updateTimeEnd
+     *
+     * 根据时间范围查询，在此时间修改的数据
+     *
+     * @param updateTimeStart 开始时间，yyyy-MM-dd 00:00:00
+     * @param updateTimeEnd  结束时间, yyyy-MM-dd 23:59:59
      * @return
      */
     @JpaisSharding(value = JpaisSharding.Type.N)

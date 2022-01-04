@@ -15,7 +15,7 @@ import java.util.*;
  * <p>
  * <p>
  * 主要用于计算，区间范围对应的下标
- *
+ * <p>
  * 注意：** 此类实现的方法，都未校验手动赋值的区间是否正确 ** 请确保赋值的区间不存在重叠和乱序
  *
  * @author gengzi
@@ -131,7 +131,8 @@ public class RangesUtils<c extends Long, t extends Object> {
      * @return 区间下标 -1 为匹配区间失败
      */
     private int binarySearch(Long[] arr, long searchNumber) {
-        int low = 0; // 开始坐标
+        // 开始坐标
+        int low = 0;
         int high = arr.length - 1; // 结束坐标
         int mid; // 中间值
         log.info("arr length:{}", arr.length);

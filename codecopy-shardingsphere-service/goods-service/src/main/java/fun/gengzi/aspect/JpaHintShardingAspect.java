@@ -17,7 +17,7 @@ import javax.persistence.EntityManager;
 import java.lang.reflect.Method;
 
 /**
- * <h1>声明Jpahint 模式下分片策略</h1>
+ * <h1>声明Jpa hint 模式下分片策略</h1>
  * <p>
  * <p>
  * 特别注意： Spring的AOP只能支持到方法级别的切入。换句话说，切入点只能是某个方法。

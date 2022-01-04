@@ -53,7 +53,6 @@ public class GoodsNewOldDataContrast {
         List<Long> longs = goodsShardingJPA.queryIdByUpdate(DateUtil.beginOfDay(date).toString(), DateUtil.endOfDay(date).toString());
         JpaThreadLocalManager instance = JpaThreadLocalManager.getInstance();
         for (Long id : longs) {
-
             instance.setDatabaseShardingValue(ShardingDataSourceType.TYPE_OLD.getType());
             Optional<GoodsEntity> oldGoodsEntity = goodsJPA.findById(id);
             GoodsEntity oldEntity = oldGoodsEntity.orElseThrow(() -> new DataException("数据不存在", new SQLException()));

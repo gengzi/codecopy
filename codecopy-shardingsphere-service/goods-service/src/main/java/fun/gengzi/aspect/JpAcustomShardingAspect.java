@@ -32,7 +32,9 @@ public class JpAcustomShardingAspect {
     private EntityManager entityManager;
 
 
-    //切入点
+    /**
+     * 切入点
+     */
     @Pointcut("execution(* fun.gengzi.dao.GoodsJPA.*(..))")
     public void jpAcustomShardingAspect() {
     }
@@ -41,11 +43,11 @@ public class JpAcustomShardingAspect {
     @Around("jpAcustomShardingAspect()")
     public Object aroundNew(ProceedingJoinPoint joinPoint) {
         log.info("acustomsharding start");
-
+        // 执行旧库
         if (ShardingDataSourceType.TYPE_OLD.getType().equals(JpaThreadLocalManager.getDatabaseShardingValues().stream().findFirst().get())) {
             return oldDataSource(joinPoint);
         }
-
+        // 执行新库
         if (ShardingDataSourceType.TYPE_NEW.getType().equals(JpaThreadLocalManager.getDatabaseShardingValues().stream().findFirst().get())) {
             return newDataSource(joinPoint);
         }
@@ -53,6 +55,11 @@ public class JpAcustomShardingAspect {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 旧库执行
+     * @param joinPoint
+     * @return
+     */
     private Object oldDataSource(ProceedingJoinPoint joinPoint) {
         log.info("旧库-执行sql开始,执行方法[{}]", joinPoint.getSignature().getName());
         // 先清除当前存放的分片值

@@ -44,8 +44,6 @@ public class GoodsController {
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
         goodsEntity.setAutoOnlineTime(new Date());
-//        goodsEntity.setCreateTime(new Date());
-//        goodsEntity.setUpdateTime(new Date());
         GoodsEntity save = goodsJPA.save(goodsEntity);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
