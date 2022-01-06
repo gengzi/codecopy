@@ -8,11 +8,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shardingsphere.transaction.annotation.ShardingSphereTransactionType;
+import org.apache.shardingsphere.transaction.core.TransactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -72,6 +75,37 @@ public class GoodsDoubleWriteController {
         ret.setSuccess();
         ret.setMessage(goodsEntity);
         return ret;
+    }
+
+    @ApiOperation(value = "根据商品id减库存", notes = "根据商品id减库存")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "goodid", value = "商品id", required = true),
+            @ApiImplicitParam(name = "num", value = "减少数目", required = true)})
+
+    @PostMapping("/inventoryReductionTest")
+    @ResponseBody
+    public ReturnData inventoryReductionTest(@RequestParam("goodid") Long goodid) {
+        logger.info("inventoryReduction入参：商品id{}", goodid);
+        inventoryReductionsService(goodid);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage("");
+        return ret;
+    }
+
+    /**
+     * @param goodid
+     */
+    @ShardingSphereTransactionType(TransactionType.XA)
+    @Transactional
+    public void inventoryReductionsService(Long goodid) {
+        for (int i = 0; i < 2; i++) {
+            // 正常测试
+            goodsJPA.inventoryReduction(goodid, 1);
+            // 模拟异常情况。看是否回滚
+
+            throw new RuntimeException("测试回滚");
+        }
     }
 
 }
