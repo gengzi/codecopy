@@ -3,6 +3,7 @@ package fun.gengzi.controller;
 import fun.gengzi.codecopy.vo.ReturnData;
 import fun.gengzi.dao.GoodsShardingJPA;
 import fun.gengzi.entity.GoodsEntity;
+import fun.gengzi.service.ShardingTransactionGoodsService;
 import fun.gengzi.vo.GoodsVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,12 +32,15 @@ public class GoodsDoubleWriteController {
     @Autowired
     private GoodsShardingJPA goodsJPA;
 
+    @Autowired
+    private ShardingTransactionGoodsService shardingTransactionGoodsService;
+
 
     @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
     @PostMapping("/savegood")
     @ResponseBody
     public ReturnData savegood(@RequestBody GoodsVo good) {
-        logger.info("savegood入参：{}",good);
+        logger.info("savegood入参：{}", good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
         GoodsEntity save = goodsJPA.saveAndFlush(goodsEntity);
@@ -53,7 +57,7 @@ public class GoodsDoubleWriteController {
 
     @PostMapping("/inventoryReduction")
     @ResponseBody
-    public ReturnData inventoryReduction(@RequestParam("goodid") Long goodid ,@RequestParam("num") Integer num) {
+    public ReturnData inventoryReduction(@RequestParam("goodid") Long goodid, @RequestParam("num") Integer num) {
         logger.info("inventoryReduction入参：商品id{}，减少数目{}", goodid, num);
         goodsJPA.inventoryReduction(goodid, num);
         ReturnData ret = ReturnData.newInstance();
@@ -77,7 +81,7 @@ public class GoodsDoubleWriteController {
         return ret;
     }
 
-    @ApiOperation(value = "根据商品id减库存", notes = "根据商品id减库存")
+    @ApiOperation(value = "根据商品id减库存--测试shardingjdbc分布式事务", notes = "根据商品id减库存--测试shardingjdbc分布式事务")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "goodid", value = "商品id", required = true),
             @ApiImplicitParam(name = "num", value = "减少数目", required = true)})
@@ -86,26 +90,12 @@ public class GoodsDoubleWriteController {
     @ResponseBody
     public ReturnData inventoryReductionTest(@RequestParam("goodid") Long goodid) {
         logger.info("inventoryReduction入参：商品id{}", goodid);
-        inventoryReductionsService(goodid);
+        shardingTransactionGoodsService.inventoryReductions(goodid);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage("");
         return ret;
     }
 
-    /**
-     * @param goodid
-     */
-    @ShardingSphereTransactionType(TransactionType.XA)
-    @Transactional
-    public void inventoryReductionsService(Long goodid) {
-        for (int i = 0; i < 2; i++) {
-            // 正常测试
-            goodsJPA.inventoryReduction(goodid, 1);
-            // 模拟异常情况。看是否回滚
-
-            throw new RuntimeException("测试回滚");
-        }
-    }
 
 }
