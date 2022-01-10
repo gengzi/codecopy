@@ -189,6 +189,13 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 如果没有，可以借助redis mysql 等实现，不再阐述。
 
 
+
+### 分布式事务
+
+
+Seata 西塔
+
+
  
 
 ### 接入sharding jdbc 对jpa 原有影响
@@ -206,6 +213,7 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 * [源码如何添加注释](https://blog.csdn.net/qq_40495860/article/details/121011875)
 * [IDEA类和方法注释模板设置（非常详细）](https://blog.csdn.net/xiaoliulang0324/article/details/79030752)
 * [IDEA方法API中文显示](https://www.cnblogs.com/lu-zlz/p/13627672.html)
+* [IDEA使用-Debug回到上一步](https://www.cnblogs.com/dyaqi/p/13213568.html)
 
 
 
@@ -216,6 +224,8 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 
 
 看源码，先看主线代码，忽略分支。不纠结单个方法实现，有时间再看每个方法实现。
+
+看源码，最重要是让我们为所欲为
 
 
 
