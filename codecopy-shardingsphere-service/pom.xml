@@ -19,6 +19,7 @@
 
     <properties>
         <shardingsphere.version>5.0.0</shardingsphere.version>
+        <seata.version>1.4.2</seata.version>
     </properties>
 
 

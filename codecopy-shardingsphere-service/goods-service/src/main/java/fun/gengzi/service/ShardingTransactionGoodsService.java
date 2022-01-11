@@ -19,5 +19,11 @@ public interface ShardingTransactionGoodsService {
      */
     void inventoryReductions(Long goodId);
 
+    /**
+     * 默认执行
+     *
+     * @param goodId
+     */
+    void inventoryReductionsByBase(Long goodId);
 
 }

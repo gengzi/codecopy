@@ -81,7 +81,7 @@ public class GoodsDoubleWriteController {
         return ret;
     }
 
-    @ApiOperation(value = "根据商品id减库存--测试shardingjdbc分布式事务", notes = "根据商品id减库存--测试shardingjdbc分布式事务")
+    @ApiOperation(value = "根据商品id减库存--测试shardingjdbc分布式事务(XA)", notes = "根据商品id减库存--测试shardingjdbc分布式事务(XA)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "goodid", value = "商品id", required = true),
             @ApiImplicitParam(name = "num", value = "减少数目", required = true)})
@@ -91,6 +91,22 @@ public class GoodsDoubleWriteController {
     public ReturnData inventoryReductionTest(@RequestParam("goodid") Long goodid) {
         logger.info("inventoryReduction入参：商品id{}", goodid);
         shardingTransactionGoodsService.inventoryReductions(goodid);
+        ReturnData ret = ReturnData.newInstance();
+        ret.setSuccess();
+        ret.setMessage("");
+        return ret;
+    }
+
+    @ApiOperation(value = "根据商品id减库存--测试shardingjdbc分布式事务(BASE)", notes = "根据商品id减库存--测试shardingjdbc分布式事务(BASE)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "goodid", value = "商品id", required = true),
+            @ApiImplicitParam(name = "num", value = "减少数目", required = true)})
+
+    @PostMapping("/inventoryReductionTestByBase")
+    @ResponseBody
+    public ReturnData inventoryReductionTestByBase(@RequestParam("goodid") Long goodid) {
+        logger.info("inventoryReduction入参：商品id{}", goodid);
+        shardingTransactionGoodsService.inventoryReductionsByBase(goodid);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage("");

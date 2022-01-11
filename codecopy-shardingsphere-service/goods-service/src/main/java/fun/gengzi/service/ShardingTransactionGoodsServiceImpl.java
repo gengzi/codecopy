@@ -38,4 +38,23 @@ public class ShardingTransactionGoodsServiceImpl implements ShardingTransactionG
         // 可以成功
         throw new RuntimeException("测试回滚是否成功");
     }
+
+    /**
+     *  配置分布式事务 注意shariding jdbc xa 两阶段提交，我认为并不能控制远程请求的 事务
+     *  只能控制，当前sharding jdbc 执行sql 的库和表的事务
+     *  如果需要使用远程控制，需要使用 sharding jdbc 接入西塔的分布式事务
+     * @param goodId
+     */
+    @ShardingSphereTransactionType(TransactionType.BASE)
+    @Transactional
+    @Override
+    public void inventoryReductionsByBase(Long goodId) {
+        for (int i = 0; i < 2; i++) {
+            // 正常测试
+            goodsJPA.inventoryReduction(goodId, 1);
+            // 模拟异常情况。看是否回滚
+        }
+        // 可以成功
+        throw new RuntimeException("测试回滚是否成功");
+    }
 }

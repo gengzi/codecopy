@@ -26,25 +26,53 @@
             <version>${shardingsphere.version}</version>
         </dependency>
 
-        <!--使用 XA 事务时，需要引入此模块-->
+        <!--        &lt;!&ndash;使用 XA 事务时，需要引入此模块&ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.shardingsphere</groupId>-->
+        <!--            <artifactId>shardingsphere-transaction-xa-core</artifactId>-->
+        <!--            <version>${shardingsphere.version}</version>-->
+        <!--        </dependency>-->
+
+        <!--        &lt;!&ndash; 使用 BASE 事务时，需要引入此模块 &ndash;&gt;-->
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
-            <artifactId>shardingsphere-transaction-xa-core</artifactId>
+            <artifactId>shardingsphere-transaction-base-seata-at</artifactId>
             <version>${shardingsphere.version}</version>
         </dependency>
 
-        <!--        &lt;!&ndash; 使用 BASE 事务时，需要引入此模块 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.shardingsphere</groupId>-->
-<!--            <artifactId>shardingsphere-transaction-base-seata-at</artifactId>-->
-<!--            <version>${shardingsphere.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-all</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>${seata.version}</version>
+        </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.apache.logging.log4j</groupId>-->
-<!--            <artifactId>log4j-core</artifactId>-->
-<!--            <version>2.13.2</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.logging.log4j</groupId>-->
+        <!--            <artifactId>log4j-core</artifactId>-->
+        <!--            <version>2.13.2</version>-->
+        <!--        </dependency>-->
 
     </dependencies>
 </project>

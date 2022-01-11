@@ -194,6 +194,8 @@ RangeShardingAlgorithm是可选的，用于处理BETWEEN AND分片，如果不�
 
 
 Seata 西塔
+https://seata.io/zh-cn/docs/user/quickstart.html
+
 
 
  
