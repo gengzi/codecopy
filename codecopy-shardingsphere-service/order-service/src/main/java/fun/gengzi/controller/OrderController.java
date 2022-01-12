@@ -17,26 +17,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
- * sharding jdbc 测试接口
+ * 订单管理
  *
  * @author gengzi
- * @date 2020年6月23日13:49:42
+ * @date 2022年1月12日13:55:44
  */
-@Api(value = "sharding jdbc 测试接口-使用行表达式分片", tags = {"sharding jdbc 测试接口-使用行表达式分片-按照主键id分表和version分库"})
+@Api(value = "订单管理", tags = {"订单管理"})
 @Controller
-public class PayController {
+public class OrderController {
 
-    private Logger logger = LoggerFactory.getLogger(PayController.class);
+    private Logger logger = LoggerFactory.getLogger(OrderController.class);
 
 
     @Autowired
     private PayOrderRecordJPA payOrderRecordJPA;
 
 
-    @ApiOperation(value = "新增商品信息", notes = "新增商品信息")
-    @PostMapping("/queryInfo")
+    @ApiOperation(value = "新增订单", notes = "新增订单")
+    @PostMapping("/save")
     @ResponseBody
-    public ReturnData queryInfo(@RequestBody GoodsVo good) {
+    public ReturnData save(@RequestBody GoodsVo good) {
         logger.info("queryInfo入参：{}",good);
         GoodsEntity goodsEntity = new GoodsEntity();
         BeanUtils.copyProperties(good, goodsEntity);
