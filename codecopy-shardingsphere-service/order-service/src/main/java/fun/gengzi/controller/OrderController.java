@@ -3,7 +3,9 @@ package fun.gengzi.controller;
 import fun.gengzi.codecopy.vo.ReturnData;
 import fun.gengzi.dao.PayOrderRecordJPA;
 import fun.gengzi.entity.GoodsEntity;
+import fun.gengzi.service.OrderService;
 import fun.gengzi.vo.GoodsVo;
+import fun.gengzi.vo.OrderVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -30,17 +32,14 @@ public class OrderController {
 
 
     @Autowired
-    private PayOrderRecordJPA payOrderRecordJPA;
-
+    private OrderService orderService;
 
     @ApiOperation(value = "新增订单", notes = "新增订单")
     @PostMapping("/save")
     @ResponseBody
-    public ReturnData save(@RequestBody GoodsVo good) {
-        logger.info("queryInfo入参：{}",good);
-        GoodsEntity goodsEntity = new GoodsEntity();
-        BeanUtils.copyProperties(good, goodsEntity);
-
+    public ReturnData save(@RequestBody OrderVo orderVo) {
+        logger.info("queryInfo入参：{}", orderVo);
+        orderService.generateOrder(orderVo);
         ReturnData ret = ReturnData.newInstance();
         ret.setSuccess();
         ret.setMessage("");

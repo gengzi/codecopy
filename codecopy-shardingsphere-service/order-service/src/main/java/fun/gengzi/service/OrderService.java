@@ -1,6 +1,6 @@
 package fun.gengzi.service;
 
-import fun.gengzi.vo.GoodsVo;
+import fun.gengzi.vo.OrderVo;
 
 /**
  * <h1> </h1>
@@ -11,7 +11,7 @@ import fun.gengzi.vo.GoodsVo;
 public interface OrderService {
 
 
-     void generateOrder(GoodsVo goodsVo);
+    void generateOrder(OrderVo orderVo);
 
 
 }

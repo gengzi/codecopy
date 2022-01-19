@@ -14,7 +14,7 @@
     <!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
     <!-- 普通日志 -->
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/spring-boot-info.log</file>
+        <file>log/spring-boot-order-service-info.log</file>
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志命名:单个文件大于128MB 按照时间+自增i 生成log文件 -->

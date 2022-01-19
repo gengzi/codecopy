@@ -12,7 +12,7 @@ public class ConfigConsts {
     // 项目名称
     public static final String APP_NAME_TITLE = "pay-service";
     // 项目说明
-    public static final String APP_EXPLANATION = "支付微服务";
+    public static final String APP_EXPLANATION = "订单微服务";
     // 项目版本
     public static final String APP_VERSION = "1.0.0";
     // swagger-config-全局controller包名

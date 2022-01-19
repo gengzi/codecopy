@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2022年1月17日14:53:04
  */
 @Repository
-@Transactional
 public interface PayOrderJPA extends JpaRepository<PayOrderEntity, Long>, JpaSpecificationExecutor<PayOrderEntity> {
 
 }
