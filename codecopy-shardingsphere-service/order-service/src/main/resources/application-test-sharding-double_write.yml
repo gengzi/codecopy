@@ -1,0 +1,90 @@
+server:
+  port: 8883
+eureka:
+  client:
+    service-url: # eureka-server 的地址
+      defaultZone: http://localhost:8761/eureka/ #把 eureka 集群中的所有 url 都填写了进来，也可以只写⼀台，因为各个 eureka server 可以同步注册表
+  instance:
+    #使⽤ip注册，否则会使⽤主机名注册了（此处考虑到对⽼版本的兼容，新版本经过实验都是ip）
+    prefer-ip-address: true
+    #⾃定义实例显示格式，加上版本号，便于多版本管理，注意是ip-address，早期版本是ipAddress
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}:@project.version@
+
+spring:
+  shardingsphere:
+    mode:
+      ## 特别注意： 在shardingsphere 5.0 版本必须配置 mode ，不配置会报  No qualifying bean of type 'org.apache.shardingsphere.infra.config.mode.ModeConfiguration' type: question
+      type: Memory
+    # 显示sql
+    # 5.0版本之前
+    # sql:
+    #  show: true
+    props:
+      sql-show: true
+    # 数据源配置
+    datasource:
+      # 配置俩个数据源，逗号分隔 oldgoods 代表旧数据库，newgoods 代表分库分表数据库
+      names: newgoods,oldgoods
+      #  数据源
+      newgoods: # 新库
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/codecopy_shardingsphere_goods?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+      oldgoods: # 旧库
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/codecopy_shardingsphere?autoReconnect=true&serverTimezone=Asia/Shanghai
+        username: root
+        password: 111
+
+    ### 特别注意： 做分片的字段，必须是能够执行 行表达式的， 比如 id 分片，id 是根据雪花算法生成的，那么实体 bean 中的id 类型应该是 long
+    ## No signature of method: java.lang.String.mod() 错误就是 进行分片是，计算分片的字段类型 有问题导致的
+    ## 版本号，参与分片。  算法是 dataVersion % 2 , 那么这个类型，就不能是 String ，否则会导致错误  No signature of method: java.lang.String.mod()
+    ## 需要设置为 integer 类型
+    ###
+    ## 使用 shadingjdc 就要配置分片策略
+    rules:
+      sharding:
+        tables:
+          # 业务表
+          orders:
+            # 标准分片表配置，真实数据节点 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持inline表达式。
+            actual-data-nodes: oldgoods.pay_order,newgoods$->{1..2}.pay_order_$->{1..2}
+            #  分布式序列策略配置（主键）
+            key-generate-strategy:
+              column: id  # 分布式序列列名称
+              key-generator-name: SNOWFLAKE # 分布式序列算法名称  类型：SNOWFLAKE（雪花算法）  UUID
+            # 分表策略
+            table-strategy:
+              # 用于单分片键的标准分片场景
+              complex:
+                sharding-column: amount,count  # 分片列名称
+                sharding-algorithm-name: complexamountandcount # 分片算法名称
+            # 分库策略
+            database-strategy:
+              # 用于多分片键的复合分片场景
+              standard:
+                sharding-column: order_no   #分片列名称，多个列以逗号分隔
+                sharding-algorithm-name: ordernohash # 分片算法名称
+        # 分片算法配置
+        sharding-algorithms:
+          # 分片算法名称
+          ordernohash:
+            type: CLASS_BASED  # 分片算法类型  自定义类分片算法(CLASS_BASED)通过配置分片策略类型和算法类名，实现自定义扩展。
+            # 分片算法属性配置
+            props:
+              strategy: STANDARD  # 分片策略类型，支持 STANDARD(标准单分片键)、COMPLEX（复合多分片键） 或 HINT（行表达式分片）（不区分大小写）
+              algorithmClassName: fun.gengzi.algorithm.InidRangeShardingStrategyConfig  # 分布式序列算法属性配置
+         # 库-分片算法名称
+          complexamountandcount:
+            type: CLASS_BASED  # 分片算法类型  自定义类分片算法(CLASS_BASED)通过配置分片策略类型和算法类名，实现自定义扩展。
+            props:
+              strategy: COMPLEX
+              algorithmClassName: fun.gengzi.algorithm.InTypeHintShardingStrategyConfig  # 分布式序列算法属性配置
+
+
+
+
+
