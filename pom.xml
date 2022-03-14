@@ -7,6 +7,8 @@
         <module>codecopy-eureka-server</module>
         <module>codecopy-bussiness-old-service</module>
         <module>codecopy-shardingsphere-service</module>
+        <module>design-patterns</module>
+        <module>codecopy-design-patterns</module>
     </modules>
 
 
