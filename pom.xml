@@ -9,6 +9,7 @@
         <module>codecopy-shardingsphere-service</module>
         <module>design-patterns</module>
         <module>codecopy-design-patterns</module>
+        <module>codecopy-rabbitmq-service</module>
     </modules>
 
 
