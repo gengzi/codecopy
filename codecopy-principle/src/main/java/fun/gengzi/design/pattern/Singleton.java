@@ -44,17 +44,57 @@ package fun.gengzi.design.pattern;
 /**
  * 双重检查锁定
  */
+//public class Singleton {
+//
+//
+//    private static volatile Singleton singleton;
+//
+//
+//    private Singleton() {
+//    }
+//
+//
+//    public Singleton getInstance() {
+//        if (singleton == null) {
+//            synchronized (Singleton.class) {
+//                if (singleton == null) {
+//                    singleton = new Singleton();
+//                }
+//            }
+//        }
+//        return singleton;
+//    }
+//
+//
+//}
+
+
+/// **
+// * 静态内部类
+// */
+//public class Singleton{
+//
+//    private Singleton(){}
+//
+//    public static class SingletonHolder{
+//        private static final Singleton singleton = new Singleton();
+//    }
+//
+//    public static Singleton getInstance(){
+//        return SingletonHolder.singleton;
+//    }
+//
+//}
+
+
 public class Singleton {
 
-
     private static volatile Singleton singleton;
-
 
     private Singleton() {
     }
 
-
-    public Singleton getInstance() {
+    public static Singleton getInstance() {
         if (singleton == null) {
             synchronized (Singleton.class) {
                 if (singleton == null) {
@@ -65,5 +105,6 @@ public class Singleton {
         return singleton;
     }
 
-
 }
+
+
